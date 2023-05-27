@@ -15,14 +15,14 @@ public class MenuPanel extends JPanel {
     private void setupButtons(){
         JButton singlePlayerButton = GameUtil.createMenuButton("Single Player",GameUtil.centerComponentsX(500,0,Launcher.WindowWidth),300,500,100,Color.green);
         singlePlayerButton.addActionListener(e -> {
-            GameEngine.createGame(new SimpleGame(false), 60);
+            GameEngine.createGame(new SimpleGame(true), 60);
             frame.setVisible(false);
         });
         this.add(singlePlayerButton);
 
         JButton doublePlayerButton = GameUtil.createMenuButton("Double Player",GameUtil.centerComponentsX(500,0,Launcher.WindowWidth),430,500,100,Color.blue);
         doublePlayerButton.addActionListener(e -> {
-            GameEngine.createGame(new SimpleGame(true));
+            GameEngine.createGame(new SimpleGame(false), 60);
             frame.setVisible(false);
         });
         this.add(doublePlayerButton);
