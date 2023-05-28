@@ -69,7 +69,7 @@ public class MenuPanel extends JPanel {
     //tells the program to paint itself
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        this.setBackground(Color.BLACK);
+        this.setBackground(new Color(21, 21, 21));
         g.drawImage(Launcher.logoIcon.getImage(), 150, 20, 500, 250, null);
     }
 }

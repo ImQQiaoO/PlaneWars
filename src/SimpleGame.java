@@ -116,32 +116,34 @@ public class SimpleGame extends GameEngine{
         //-------------------------------------------------------
         // Player 2 Key Control
         //-------------------------------------------------------
-        if(e.getKeyCode() == KeyEvent.VK_A) {
-            // Move Left
-            if(playerPlane[1].getX() > playerPlane[1].getWidth()/2) {
-                playerPlane[1].setVx(-playerPlane[1].getMovingSpeed());
+        if (!isSinglePlayer) {
+            if(e.getKeyCode() == KeyEvent.VK_A) {
+                // Move Left
+                if(playerPlane[1].getX() > playerPlane[1].getWidth()/2) {
+                    playerPlane[1].setVx(-playerPlane[1].getMovingSpeed());
+                }
             }
-        }
-        if(e.getKeyCode() == KeyEvent.VK_D) {
-            // Move Right
-            if(playerPlane[1].getX() < gameWidth - playerPlane[1].getWidth()/2) {
-                playerPlane[1].setVx(playerPlane[1].getMovingSpeed());
+            if(e.getKeyCode() == KeyEvent.VK_D) {
+                // Move Right
+                if(playerPlane[1].getX() < gameWidth - playerPlane[1].getWidth()/2) {
+                    playerPlane[1].setVx(playerPlane[1].getMovingSpeed());
+                }
             }
-        }
-        if(e.getKeyCode() == KeyEvent.VK_W) {
-            // Move Up
-            if(playerPlane[1].getY() > playerPlane[1].getHeight()/2) {
-                playerPlane[1].setVy(-playerPlane[1].getMovingSpeed());
+            if(e.getKeyCode() == KeyEvent.VK_W) {
+                // Move Up
+                if(playerPlane[1].getY() > playerPlane[1].getHeight()/2) {
+                    playerPlane[1].setVy(-playerPlane[1].getMovingSpeed());
+                }
             }
-        }
-        if(e.getKeyCode() == KeyEvent.VK_S) {
-            // Move Down
-            if(playerPlane[1].getY() < gameHeight - playerPlane[1].getHeight()/2) {
-                playerPlane[1].setVy(playerPlane[1].getMovingSpeed());
+            if(e.getKeyCode() == KeyEvent.VK_S) {
+                // Move Down
+                if(playerPlane[1].getY() < gameHeight - playerPlane[1].getHeight()/2) {
+                    playerPlane[1].setVy(playerPlane[1].getMovingSpeed());
+                }
             }
-        }
-        if(e.getKeyCode() == KeyEvent.VK_Q) {
-            // Shot a bullet
+            if(e.getKeyCode() == KeyEvent.VK_Q) {
+                // Shot a bullet
+            }
         }
     }
 
@@ -174,24 +176,26 @@ public class SimpleGame extends GameEngine{
         // Player 2 Key Control
         //-------------------------------------------------------
         // If player releases left key
-        if(e.getKeyCode() == KeyEvent.VK_A) {
-            // Stop moving
-            playerPlane[1].setVx(0);
-        }
-        // If player releases right key
-        if(e.getKeyCode() == KeyEvent.VK_D) {
-            // Stop moving
-            playerPlane[1].setVx(0);
-        }
-        // If player releases up key
-        if(e.getKeyCode() == KeyEvent.VK_W) {
-            // Stop moving
-            playerPlane[1].setVy(0);
-        }
-        // If player releases down key
-        if(e.getKeyCode() == KeyEvent.VK_S) {
-            // Stop moving
-            playerPlane[1].setVy(0);
+        if (!isSinglePlayer) {
+            if(e.getKeyCode() == KeyEvent.VK_A) {
+                // Stop moving
+                playerPlane[1].setVx(0);
+            }
+            // If player releases right key
+            if(e.getKeyCode() == KeyEvent.VK_D) {
+                // Stop moving
+                playerPlane[1].setVx(0);
+            }
+            // If player releases up key
+            if(e.getKeyCode() == KeyEvent.VK_W) {
+                // Stop moving
+                playerPlane[1].setVy(0);
+            }
+            // If player releases down key
+            if(e.getKeyCode() == KeyEvent.VK_S) {
+                // Stop moving
+                playerPlane[1].setVy(0);
+            }
         }
     }
 }
