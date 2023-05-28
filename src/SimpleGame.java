@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 public class SimpleGame extends GameEngine{
@@ -95,8 +94,44 @@ public class SimpleGame extends GameEngine{
             waitTime = new Random().nextDouble(0, 2) / generateSeed;
         }
 
+        // Check collision between player plane and enemies
+        checkCollisionEnemies(enemyList);
+
         //Help Garbage Collection
-        enemyList.removeIf(enemy -> enemy.getY() > gameHeight + enemy.getHeight() / 2);
+        enemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
+    }
+
+    /**
+     * Check if the player's plane collides with bullets or enemies' planes.
+     * @param hostileList ArrayList of enemies or bullets
+     */
+    public void checkCollisionEnemies(ArrayList<? extends GameObject> hostileList) {
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
+            for (GameObject object : hostileList) {
+                if (isCollision(playerPlane[pi],object)) {
+                    System.out.println("Collision!"); //TODO: only for test
+                }
+            }
+        }
+    }
+
+    /**
+     * Check collision between player plane and enemies or bullets use AABB method
+     * @param player PlayerPlane
+     * @param enemy Enemy or Bullet
+     * @return true if collision
+     */
+    @SuppressWarnings("Duplicates")
+    public boolean isCollision(GameObject player, GameObject enemy) {
+        double playerLeft = player.getX() - player.getWidth() / 2;
+        double playerRight = player.getX() + player.getWidth() / 2;
+        double playerTop = player.getY() - player.getHeight() / 2;
+        double playerBottom = player.getY() + player.getHeight() / 2;
+        double enemyLeft = enemy.getX() - enemy.getWidth() / 2;
+        double enemyRight = enemy.getX() + enemy.getWidth() / 2;
+        double enemyTop = enemy.getY() - enemy.getHeight() / 2;
+        double enemyBottom = enemy.getY() + enemy.getHeight() / 2;
+        return !(playerLeft > enemyRight || playerRight < enemyLeft || playerTop > enemyBottom || playerBottom < enemyTop);
     }
 
     /**
