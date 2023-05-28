@@ -108,7 +108,8 @@ public class SimpleGame extends GameEngine{
         // Check collision between player plane and enemies
         checkCollisionEnemies(enemyList);
 
-        //
+        // Check collision between friendly bullets and enemies
+        checkCollisionFriendlyButtons(friendlyBulletList);
 
         //Help Garbage Collection
         enemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
@@ -116,8 +117,8 @@ public class SimpleGame extends GameEngine{
     }
 
     /**
-     * Check if the player's plane collides with bullets or enemies' planes.
-     * @param hostileList ArrayList of enemies or bullets
+     * Check if the player's plane collides with enemies' bullets or enemies' planes.
+     * @param hostileList ArrayList of enemies or enemies' bullets
      */
     public void checkCollisionEnemies(ArrayList<? extends GameObject> hostileList) {
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
@@ -129,22 +130,33 @@ public class SimpleGame extends GameEngine{
         }
     }
 
+    public void checkCollisionFriendlyButtons(ArrayList<Bullet> friendlyBulletList) {
+        for (Enemy enemy : enemyList) {
+            for (Bullet bullet : friendlyBulletList) {
+                if (isCollision(enemy, bullet)) {
+                    System.out.println("Hit!!"); //TODO: only for test
+                    enemy.setEnemyHP(enemy.getEnemyHP() - bullet.getDamage());
+                }
+            }
+        }
+    }
+
     /**
-     * Check collision between player plane and enemies or bullets use AABB method
-     * @param player PlayerPlane
-     * @param enemy Enemy or Bullet
+     * Check collision between playerObjects plane and enemies or bullets use AABB method
+     * @param playerObjects PlayerPlane
+     * @param enemyObjects Enemy or Bullet
      * @return true if collision
      */
     @SuppressWarnings("Duplicates")
-    public boolean isCollision(GameObject player, GameObject enemy) {
-        double playerLeft = player.getX() - player.getWidth() / 2;
-        double playerRight = player.getX() + player.getWidth() / 2;
-        double playerTop = player.getY() - player.getHeight() / 2;
-        double playerBottom = player.getY() + player.getHeight() / 2;
-        double enemyLeft = enemy.getX() - enemy.getWidth() / 2;
-        double enemyRight = enemy.getX() + enemy.getWidth() / 2;
-        double enemyTop = enemy.getY() - enemy.getHeight() / 2;
-        double enemyBottom = enemy.getY() + enemy.getHeight() / 2;
+    public boolean isCollision(GameObject playerObjects, GameObject enemyObjects) {
+        double playerLeft = playerObjects.getX() - playerObjects.getWidth() / 2;
+        double playerRight = playerObjects.getX() + playerObjects.getWidth() / 2;
+        double playerTop = playerObjects.getY() - playerObjects.getHeight() / 2;
+        double playerBottom = playerObjects.getY() + playerObjects.getHeight() / 2;
+        double enemyLeft = enemyObjects.getX() - enemyObjects.getWidth() / 2;
+        double enemyRight = enemyObjects.getX() + enemyObjects.getWidth() / 2;
+        double enemyTop = enemyObjects.getY() - enemyObjects.getHeight() / 2;
+        double enemyBottom = enemyObjects.getY() + enemyObjects.getHeight() / 2;
         return !(playerLeft > enemyRight || playerRight < enemyLeft || playerTop > enemyBottom || playerBottom < enemyTop);
     }
 
@@ -178,11 +190,12 @@ public class SimpleGame extends GameEngine{
         double bulletVy = -1000;
         Image enemyImage = loadImage("src/resources/Bullet01.png");
         int bulletType = 1;
-        friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, enemyImage, bulletType));
+        int bulletDamage = 1;
+        friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, enemyImage, bulletType, bulletDamage));
         if (PlayerPlane.playerNumber == 2) {
             double bulletX2 = playerPlane[1].getX();
             double bulletY2 = playerPlane[1].getY() - playerPlane[1].getHeight() / 2;
-            friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, enemyImage, bulletType));
+            friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, enemyImage, bulletType, bulletDamage));
         }
     }
 
