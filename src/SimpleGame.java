@@ -1,5 +1,8 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 
 public class SimpleGame extends GameEngine{
 
@@ -17,7 +20,11 @@ public class SimpleGame extends GameEngine{
     boolean isWKeyPressed = false;
     boolean isSKeyPressed = false;
 
-    private PlayerPlane[] playerPlane = new PlayerPlane[2];
+    private final PlayerPlane[] playerPlane = new PlayerPlane[2];
+    private ArrayList<Enemy> enemyList;
+    private double waitTime = 0;
+    private double spendTime = 0;
+    private long startTime;
 
     SimpleGame(boolean isSinglePlayer) {
         this.isSinglePlayer = isSinglePlayer;
@@ -40,6 +47,8 @@ public class SimpleGame extends GameEngine{
             playerPlane[pi] = new PlayerPlane(playerImage[pi]);
         }
 
+        startTime = System.currentTimeMillis();// Get the start time of the game
+        enemyList = new ArrayList<>(); // Store all enemies in the game
     }
 
     private void checkCollision() {
@@ -69,7 +78,42 @@ public class SimpleGame extends GameEngine{
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
             playerPlane[pi].updateLocation(dt);
         }
+
+        //Update the location of the enemies
+        for (Enemy enemy : enemyList) {
+            enemy.updateLocation(dt);
+        }
+
         checkCollision();
+
+        // Generate enemies
+        spendTime = spendTime + dt;
+        double generateSeed = (double) ((System.currentTimeMillis() - startTime) / 1000) / 80 + 1;
+        if (spendTime >= waitTime) {
+            spendTime = 0;
+            generateEnemies();
+            waitTime = new Random().nextDouble(0, 2) / generateSeed;
+        }
+
+        //Help Garbage Collection
+        enemyList.removeIf(enemy -> enemy.getY() > gameHeight + enemy.getHeight() / 2);
+    }
+
+    /**
+     * Generate common enemies
+     */
+    public void generateEnemies() {
+        // Enemy Type 1
+        double enemyWidth = 31;
+        double enemyHeight = 23;
+        double enemyX = new Random().nextDouble(enemyWidth / 2, gameWidth - enemyWidth / 2);
+        double enemyY = -enemyHeight / 2;
+        double enemyVx = 0;
+        double enemyVy = 200;
+        Image enemyImage = loadImage("src/resources/Enemy01.png");
+        int enemyType = 1;
+        int enemyHp = 10;
+        enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
     }
 
     @Override
@@ -83,9 +127,19 @@ public class SimpleGame extends GameEngine{
             drawImage(playerPlane[pi].getImage(), playerPlane[pi].getX()-playerPlane[pi].getWidth()/2, playerPlane[pi].getY()-playerPlane[pi].getHeight()/2, playerPlane[pi].getWidth(), playerPlane[pi].getHeight());
         }
 
+        // Draw the enemies
+        for (Enemy enemy : enemyList) {
+            drawImage(enemy.getImage(), enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
+        }
+
         changeColor(green);//TODO: for testing only
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
             drawRectangle(playerPlane[pi].getX()-playerPlane[pi].getWidth()/2, playerPlane[pi].getY()-playerPlane[pi].getHeight()/2, playerPlane[pi].getWidth(), playerPlane[pi].getHeight());
+        }
+
+        changeColor(red);//TODO: for testing only
+        for (Enemy enemy : enemyList) {
+            drawRectangle(enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
         }
     }
 
