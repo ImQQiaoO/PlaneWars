@@ -21,6 +21,7 @@ public class SimpleGame extends GameEngine{
 
     private final PlayerPlane[] playerPlane = new PlayerPlane[2];
     private ArrayList<Enemy> enemyList;
+    private ArrayList<Bullet> friendlyBulletList;
     private double waitTime = 0;
     private double spendTime = 0;
     private long startTime;
@@ -48,6 +49,8 @@ public class SimpleGame extends GameEngine{
 
         startTime = System.currentTimeMillis();// Get the start time of the game
         enemyList = new ArrayList<>(); // Store all enemies in the game
+        friendlyBulletList = new ArrayList<>(); // Store all friendly bullets in the game
+
     }
 
     private void checkCollision() {
@@ -83,22 +86,33 @@ public class SimpleGame extends GameEngine{
             enemy.updateLocation(dt);
         }
 
+        //Update the location of the bullets
+        for (Bullet bullet : friendlyBulletList) {
+            bullet.updateLocation(dt);
+        }
+
         checkCollision();
 
         // Generate enemies
         spendTime = spendTime + dt;
-        double generateSeed = (double) ((System.currentTimeMillis() - startTime) / 1000) / 80 + 1;
+        double generateEnemiesSeed = (double) ((System.currentTimeMillis() - startTime) / 1000) / 80 + 1;
         if (spendTime >= waitTime) {
             spendTime = 0;
             generateEnemies();
-            waitTime = new Random().nextDouble(0, 2) / generateSeed;
+            waitTime = new Random().nextDouble(0, 2) / generateEnemiesSeed;
         }
+
+        // Generate friendly bullets
+        generateFriendlyBullets();
 
         // Check collision between player plane and enemies
         checkCollisionEnemies(enemyList);
 
+        //
+
         //Help Garbage Collection
         enemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
+        friendlyBulletList.removeIf(bullet -> (bullet.getY() < -bullet.getHeight() / 2) || bullet.getY() > gameHeight + bullet.getHeight() / 2);
     }
 
     /**
@@ -151,6 +165,27 @@ public class SimpleGame extends GameEngine{
         enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
     }
 
+    /**
+     * Generate friendly bullets
+     */
+    public void generateFriendlyBullets() {
+        // Bullet Type 1
+        double bulletWidth = 14;
+        double bulletHeight = 29;
+        double bulletX1 = playerPlane[0].getX();
+        double bulletY1 = playerPlane[0].getY() - playerPlane[0].getHeight() / 2;
+        double bulletVx = 0;
+        double bulletVy = -1000;
+        Image enemyImage = loadImage("src/resources/Bullet01.png");
+        int bulletType = 1;
+        friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, enemyImage, bulletType));
+        if (PlayerPlane.playerNumber == 2) {
+            double bulletX2 = playerPlane[1].getX();
+            double bulletY2 = playerPlane[1].getY() - playerPlane[1].getHeight() / 2;
+            friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, enemyImage, bulletType));
+        }
+    }
+
     @Override
     public void paintComponent() {
         // Clear the background to black
@@ -167,6 +202,11 @@ public class SimpleGame extends GameEngine{
             drawImage(enemy.getImage(), enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
         }
 
+        // Draw the bullets
+        for (Bullet bullet : friendlyBulletList) {
+            drawImage(bullet.getImage(), bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
+        }
+
         changeColor(green);//TODO: for testing only
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
             drawRectangle(playerPlane[pi].getX()-playerPlane[pi].getWidth()/2, playerPlane[pi].getY()-playerPlane[pi].getHeight()/2, playerPlane[pi].getWidth(), playerPlane[pi].getHeight());
@@ -175,6 +215,11 @@ public class SimpleGame extends GameEngine{
         changeColor(red);//TODO: for testing only
         for (Enemy enemy : enemyList) {
             drawRectangle(enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
+        }
+
+        changeColor(blue);//TODO: for testing only
+        for (Bullet bullet : friendlyBulletList) {
+            drawRectangle(bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
         }
     }
 
