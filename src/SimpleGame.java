@@ -8,6 +8,15 @@ public class SimpleGame extends GameEngine{
 
     boolean isSinglePlayer;
 
+    boolean isLeftKeyPressed = false;
+    boolean isRightKeyPressed = false;
+    boolean isUpKeyPressed = false;
+    boolean isDownKeyPressed = false;
+    boolean isAKeyPressed = false;
+    boolean isDKeyPressed = false;
+    boolean isWKeyPressed = false;
+    boolean isSKeyPressed = false;
+
     private PlayerPlane[] playerPlane = new PlayerPlane[2];
 
     SimpleGame(boolean isSinglePlayer) {
@@ -87,25 +96,28 @@ public class SimpleGame extends GameEngine{
         //-------------------------------------------------------
         if(e.getKeyCode() == KeyEvent.VK_LEFT) {
             // Move Left
+            isLeftKeyPressed = true;
             if(playerPlane[0].getX() > playerPlane[0].getWidth()/2) {
-                System.out.println(playerPlane[0].getX() + " " + playerPlane[0].getWidth()/2);
                 playerPlane[0].setVx(-playerPlane[0].getMovingSpeed());
             }
         }
         if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
             // Move Right
+            isRightKeyPressed = true;
             if(playerPlane[0].getX() < gameWidth - playerPlane[0].getWidth()/2) {
                 playerPlane[0].setVx(playerPlane[0].getMovingSpeed());
             }
         }
         if(e.getKeyCode() == KeyEvent.VK_UP) {
             // Move Up
+            isUpKeyPressed = true;
             if(playerPlane[0].getY() > playerPlane[0].getHeight()/2) {
                 playerPlane[0].setVy(-playerPlane[0].getMovingSpeed());
             }
         }
         if(e.getKeyCode() == KeyEvent.VK_DOWN) {
             // Move Down
+            isDownKeyPressed = true;
             if(playerPlane[0].getY() < gameHeight - playerPlane[0].getHeight()/2) {
                 playerPlane[0].setVy(playerPlane[0].getMovingSpeed());
             }
@@ -119,24 +131,28 @@ public class SimpleGame extends GameEngine{
         if (!isSinglePlayer) {
             if(e.getKeyCode() == KeyEvent.VK_A) {
                 // Move Left
+                isAKeyPressed = true;
                 if(playerPlane[1].getX() > playerPlane[1].getWidth()/2) {
                     playerPlane[1].setVx(-playerPlane[1].getMovingSpeed());
                 }
             }
             if(e.getKeyCode() == KeyEvent.VK_D) {
                 // Move Right
+                isDKeyPressed = true;
                 if(playerPlane[1].getX() < gameWidth - playerPlane[1].getWidth()/2) {
                     playerPlane[1].setVx(playerPlane[1].getMovingSpeed());
                 }
             }
             if(e.getKeyCode() == KeyEvent.VK_W) {
                 // Move Up
+                isWKeyPressed = true;
                 if(playerPlane[1].getY() > playerPlane[1].getHeight()/2) {
                     playerPlane[1].setVy(-playerPlane[1].getMovingSpeed());
                 }
             }
             if(e.getKeyCode() == KeyEvent.VK_S) {
                 // Move Down
+                isSKeyPressed = true;
                 if(playerPlane[1].getY() < gameHeight - playerPlane[1].getHeight()/2) {
                     playerPlane[1].setVy(playerPlane[1].getMovingSpeed());
                 }
@@ -155,46 +171,86 @@ public class SimpleGame extends GameEngine{
         // If player releases left key
         if(e.getKeyCode() == KeyEvent.VK_LEFT) {
             // Stop moving
-            playerPlane[0].setVx(0);
+            isLeftKeyPressed = false;
+            if(!isRightKeyPressed){
+                playerPlane[0].setVx(0);
+            } else {
+                playerPlane[0].setVx(playerPlane[0].getMovingSpeed());
+            }
         }
         // If player releases right key
         if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
             // Stop moving
-            playerPlane[0].setVx(0);
+            isRightKeyPressed = false;
+            if(!isLeftKeyPressed){
+                playerPlane[0].setVx(0);
+            } else {
+                playerPlane[0].setVx(-playerPlane[0].getMovingSpeed());
+            }
         }
         // If player releases up key
         if(e.getKeyCode() == KeyEvent.VK_UP) {
             // Stop moving
-            playerPlane[0].setVy(0);
+            isUpKeyPressed = false;
+            if(!isDownKeyPressed){
+                playerPlane[0].setVy(0);
+            } else {
+                playerPlane[0].setVy(playerPlane[0].getMovingSpeed());
+            }
         }
         // If player releases down key
         if(e.getKeyCode() == KeyEvent.VK_DOWN) {
             // Stop moving
-            playerPlane[0].setVy(0);
+            isDownKeyPressed = false;
+            if(!isUpKeyPressed){
+                playerPlane[0].setVy(0);
+            } else {
+                playerPlane[0].setVy(-playerPlane[0].getMovingSpeed());
+            }
         }
         //-------------------------------------------------------
         // Player 2 Key Control
         //-------------------------------------------------------
-        // If player releases left key
         if (!isSinglePlayer) {
+            // If player releases left key
             if(e.getKeyCode() == KeyEvent.VK_A) {
                 // Stop moving
-                playerPlane[1].setVx(0);
+                isAKeyPressed = false;
+                if(!isDKeyPressed){
+                    playerPlane[1].setVx(0);
+                } else {
+                    playerPlane[1].setVx(playerPlane[1].getMovingSpeed());
+                }
             }
             // If player releases right key
             if(e.getKeyCode() == KeyEvent.VK_D) {
                 // Stop moving
-                playerPlane[1].setVx(0);
+                isDKeyPressed = false;
+                if(!isAKeyPressed){
+                    playerPlane[1].setVx(0);
+                } else {
+                    playerPlane[1].setVx(-playerPlane[1].getMovingSpeed());
+                }
             }
             // If player releases up key
             if(e.getKeyCode() == KeyEvent.VK_W) {
                 // Stop moving
-                playerPlane[1].setVy(0);
+                isWKeyPressed = false;
+                if(!isSKeyPressed){
+                    playerPlane[1].setVy(0);
+                } else {
+                    playerPlane[1].setVy(playerPlane[1].getMovingSpeed());
+                }
             }
             // If player releases down key
             if(e.getKeyCode() == KeyEvent.VK_S) {
                 // Stop moving
-                playerPlane[1].setVy(0);
+                isSKeyPressed = false;
+                if(!isWKeyPressed){
+                    playerPlane[1].setVy(0);
+                } else {
+                    playerPlane[1].setVy(-playerPlane[1].getMovingSpeed());
+                }
             }
         }
     }
