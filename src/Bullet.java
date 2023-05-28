@@ -5,6 +5,18 @@ public class Bullet extends GameObject{
     private int bulletType;
     private int damage;
 
+    /**
+     * Constructor of Bullet
+     * @param x              Bullet x coordinate
+     * @param y              Bullet y coordinate
+     * @param vx             Bullet x velocity
+     * @param vy             Bullet y velocity
+     * @param width          Bullet width
+     * @param height         Bullet height
+     * @param image          Bullet image
+     * @param bulletType     Bullet type
+     * @param damage         Bullet damage
+     */
     public Bullet(double x, double y, double vx, double vy, double width, double height, Image image, int bulletType, int damage) {
         super(x, y, vx, vy, width, height, image);
         this.bulletType = bulletType;

@@ -130,6 +130,10 @@ public class SimpleGame extends GameEngine{
         }
     }
 
+    /**
+     * Check if the enemies' plane collides with friendly bullets.
+     * @param friendlyBulletList  ArrayList of Friendly bullets
+     */
     public void checkCollisionFriendlyButtons(ArrayList<Bullet> friendlyBulletList) {
         for (Enemy enemy : enemyList) {
             for (Bullet bullet : friendlyBulletList) {
