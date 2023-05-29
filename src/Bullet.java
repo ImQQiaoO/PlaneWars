@@ -6,6 +6,11 @@ public class Bullet extends GameObject{
     private int damage;
 
     /**
+     * shootInterval: The interval between two shots of the same type of bullet(Frames).
+     */
+    private int shootInterval;
+
+    /**
      * Constructor of Bullet
      * @param x              Bullet x coordinate
      * @param y              Bullet y coordinate
@@ -17,10 +22,11 @@ public class Bullet extends GameObject{
      * @param bulletType     Bullet type
      * @param damage         Bullet damage
      */
-    public Bullet(double x, double y, double vx, double vy, double width, double height, Image image, int bulletType, int damage) {
+    public Bullet(double x, double y, double vx, double vy, double width, double height, Image image, int bulletType, int damage, int shootInterval) {
         super(x, y, vx, vy, width, height, image);
         this.bulletType = bulletType;
         this.damage = damage;
+        this.shootInterval = shootInterval;
     }
 
     public void updateLocation(double dt) {
@@ -59,6 +65,22 @@ public class Bullet extends GameObject{
      */
     public void setDamage(int damage) {
         this.damage = damage;
+    }
+
+    /**
+     * 获取
+     * @return shootInterval
+     */
+    public int getShootInterval() {
+        return shootInterval;
+    }
+
+    /**
+     * 设置
+     * @param shootInterval
+     */
+    public void setShootInterval(int shootInterval) {
+        this.shootInterval = shootInterval;
     }
 
     public String toString() {

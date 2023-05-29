@@ -26,6 +26,8 @@ public class SimpleGame extends GameEngine{
     private double waitTime = 0;
     private double spendTime = 0;
     private long startTime;
+    //  Interval Counter
+    private long intervalCounter = 0L;
 
     SimpleGame(boolean isSinglePlayer) {
         this.isSinglePlayer = isSinglePlayer;
@@ -201,11 +203,18 @@ public class SimpleGame extends GameEngine{
         Image enemyImage = loadImage("src/resources/Bullet01.png");
         int bulletType = 1;
         int bulletDamage = 1;
-        friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, enemyImage, bulletType, bulletDamage));
+        int bulletIntervalP1 = 10; // TODO: Shoot every 10 frames
+        intervalCounter++;
+        if (intervalCounter % bulletIntervalP1 == 0) {
+            friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, enemyImage, bulletType, bulletDamage, bulletIntervalP1));
+        }
         if (PlayerPlane.playerNumber == 2) {
             double bulletX2 = playerPlane[1].getX();
             double bulletY2 = playerPlane[1].getY() - playerPlane[1].getHeight() / 2;
-            friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, enemyImage, bulletType, bulletDamage));
+            int bulletIntervalP2 = 10; // TODO: Shoot every 10 frames
+            if (intervalCounter % bulletIntervalP2 == 0){
+                friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, enemyImage, bulletType, bulletDamage, bulletIntervalP1));
+            }
         }
     }
 
