@@ -161,15 +161,33 @@ public class SimpleGame extends GameEngine{
      */
     @SuppressWarnings("Duplicates")
     public boolean isCollision(GameObject playerObjects, GameObject enemyObjects) {
-        double playerLeft = playerObjects.getX() - playerObjects.getWidth() / 2;
-        double playerRight = playerObjects.getX() + playerObjects.getWidth() / 2;
-        double playerTop = playerObjects.getY() - playerObjects.getHeight() / 2;
-        double playerBottom = playerObjects.getY() + playerObjects.getHeight() / 2;
-        double enemyLeft = enemyObjects.getX() - enemyObjects.getWidth() / 2;
-        double enemyRight = enemyObjects.getX() + enemyObjects.getWidth() / 2;
-        double enemyTop = enemyObjects.getY() - enemyObjects.getHeight() / 2;
-        double enemyBottom = enemyObjects.getY() + enemyObjects.getHeight() / 2;
-        return !(playerLeft > enemyRight || playerRight < enemyLeft || playerTop > enemyBottom || playerBottom < enemyTop);
+        if (playerObjects instanceof PlayerPlane) {
+            // If the object is playPlane
+            double playerPlaneWingLeft = playerObjects.getX() - playerObjects.getWidth() / 2;
+            double playerPlaneWingRight = playerObjects.getX() + playerObjects.getWidth() / 2;
+            double playerPlaneHeadLeft = playerObjects.getX() - playerObjects.getWidth() / 2 + (playerObjects.getWidth() / 3);
+            double playerPlaneHeadRight = playerObjects.getX() + playerObjects.getWidth() / 2 - (playerObjects.getWidth() / 3);
+            double playerPlaneTop = playerObjects.getY() - playerObjects.getHeight() / 2;
+            double playerPlaneBottom = playerObjects.getY() + playerObjects.getHeight() / 2;
+            double playerPlaneWingTop = playerObjects.getY() - playerObjects.getHeight() / 2 + (playerObjects.getHeight() / 3);
+            double enemyLeft = enemyObjects.getX() - enemyObjects.getWidth() / 2;
+            double enemyRight = enemyObjects.getX() + enemyObjects.getWidth() / 2;
+            double enemyTop = enemyObjects.getY() - enemyObjects.getHeight() / 2;
+            double enemyBottom = enemyObjects.getY() + enemyObjects.getHeight() / 2;
+            return !(playerPlaneHeadLeft > enemyRight || playerPlaneHeadRight < enemyLeft || playerPlaneTop > enemyBottom || playerPlaneWingTop < enemyTop)
+                    || !(playerPlaneWingLeft > enemyRight || playerPlaneWingRight < enemyLeft || playerPlaneWingTop > enemyBottom || playerPlaneBottom < enemyTop);
+        } else {
+            // If the object is enemy or bullet
+            double playerLeft = playerObjects.getX() - playerObjects.getWidth() / 2;
+            double playerRight = playerObjects.getX() + playerObjects.getWidth() / 2;
+            double playerTop = playerObjects.getY() - playerObjects.getHeight() / 2;
+            double playerBottom = playerObjects.getY() + playerObjects.getHeight() / 2;
+            double enemyLeft = enemyObjects.getX() - enemyObjects.getWidth() / 2;
+            double enemyRight = enemyObjects.getX() + enemyObjects.getWidth() / 2;
+            double enemyTop = enemyObjects.getY() - enemyObjects.getHeight() / 2;
+            double enemyBottom = enemyObjects.getY() + enemyObjects.getHeight() / 2;
+            return !(playerLeft > enemyRight || playerRight < enemyLeft || playerTop > enemyBottom || playerBottom < enemyTop);
+        }
     }
 
     /**
@@ -182,7 +200,7 @@ public class SimpleGame extends GameEngine{
         double enemyX = new Random().nextDouble(enemyWidth / 2, gameWidth - enemyWidth / 2);
         double enemyY = -enemyHeight / 2;
         double enemyVx = 0;
-        double enemyVy = 200;
+        double enemyVy = 20; //200
         Image enemyImage = loadImage("src/resources/Enemy01.png");
         int enemyType = 1;
         int enemyHp = 10;
