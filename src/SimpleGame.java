@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 public class SimpleGame extends GameEngine{
@@ -132,14 +133,19 @@ public class SimpleGame extends GameEngine{
 
     /**
      * Check if the enemies' plane collides with friendly bullets.
+     * If collision, the enemy's HP will be reduced by the damage of the bullet.
+     * The bullet will be removed from the friendlyBulletList.
      * @param friendlyBulletList  ArrayList of Friendly bullets
      */
     public void checkCollisionFriendlyButtons(ArrayList<Bullet> friendlyBulletList) {
         for (Enemy enemy : enemyList) {
-            for (Bullet bullet : friendlyBulletList) {
+            Iterator<Bullet> bulletIterator = friendlyBulletList.iterator();
+            while (bulletIterator.hasNext()) {
+                Bullet bullet = bulletIterator.next();
                 if (isCollision(enemy, bullet)) {
                     System.out.println("Hit!!"); //TODO: only for test
                     enemy.setEnemyHP(enemy.getEnemyHP() - bullet.getDamage());
+                    bulletIterator.remove();
                 }
             }
         }
