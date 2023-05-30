@@ -135,7 +135,7 @@ public class SimpleGame extends GameEngine{
         checkCollisionEnemies(enemyList);
 
         // Check collision between friendly bullets and enemies
-        checkCollisionFriendlyButtons(friendlyBulletList);
+        checkCollisionFriendlyBullets(friendlyBulletList);
 
         //Help Garbage Collection
         enemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
@@ -163,8 +163,11 @@ public class SimpleGame extends GameEngine{
      * The bullet will be removed from the friendlyBulletList.
      * @param friendlyBulletList  ArrayList of Friendly bullets
      */
-    public void checkCollisionFriendlyButtons(ArrayList<Bullet> friendlyBulletList) {
-        for (Enemy enemy : enemyList) {
+    public void checkCollisionFriendlyBullets(ArrayList<Bullet> friendlyBulletList) {
+        ArrayList<Enemy> currEnemyList = new ArrayList<>();
+        currEnemyList.addAll(enemyList);
+        currEnemyList.addAll(specialEnemyList);
+        for (Enemy enemy : currEnemyList) {
             Iterator<Bullet> bulletIterator = friendlyBulletList.iterator();
             while (bulletIterator.hasNext()) {
                 Bullet bullet = bulletIterator.next();
