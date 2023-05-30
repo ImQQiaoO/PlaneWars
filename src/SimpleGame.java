@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -24,10 +25,13 @@ public class SimpleGame extends GameEngine{
     private ArrayList<Enemy> enemyList;
     private ArrayList<Bullet> friendlyBulletList;
     private double waitTime = 0;
-    private double spendTime = 0;
+    private double commonEnemySpendTime = 0;
+    private double specialEnemySpendTime = 0;
     private long startTime;
     //  Interval Counter
     private long intervalCounter = 0L;
+    private ArrayList<Enemy> specialEnemyList;
+    double specialEnemyWaitTime = 0;
 
     SimpleGame(boolean isSinglePlayer) {
         this.isSinglePlayer = isSinglePlayer;
@@ -53,6 +57,9 @@ public class SimpleGame extends GameEngine{
         startTime = System.currentTimeMillis();// Get the start time of the game
         enemyList = new ArrayList<>(); // Store all enemies in the game
         friendlyBulletList = new ArrayList<>(); // Store all friendly bullets in the game
+        specialEnemyList = new ArrayList<>();// Store all special enemies in the game
+        specialEnemyWaitTime = new Random().nextDouble(24, 36) * 5; //2-3min
+        specialEnemyWaitTime = 10; //TODO: Only for test
 
     }
 
@@ -89,6 +96,11 @@ public class SimpleGame extends GameEngine{
             enemy.updateLocation(dt);
         }
 
+        //Update the location of the three elite group
+        for (Enemy enemy : specialEnemyList) {
+            enemy.updateLocation(dt);
+        }
+
         //Update the location of the bullets
         for (Bullet bullet : friendlyBulletList) {
             bullet.updateLocation(dt);
@@ -96,14 +108,25 @@ public class SimpleGame extends GameEngine{
 
         checkCollision();
 
-        // Generate enemies
-        spendTime = spendTime + dt;
-        double generateEnemiesSeed = (double) ((System.currentTimeMillis() - startTime) / 1000) / 80 + 1;
-        if (spendTime >= waitTime) {
-            spendTime = 0;
-            generateEnemies();
-            waitTime = new Random().nextDouble(0, 2) / generateEnemiesSeed;
+        // Generate common enemies
+        specialEnemySpendTime = specialEnemySpendTime + dt;
+        if (specialEnemySpendTime <= specialEnemyWaitTime) {
+            if (specialEnemyList.size() == 0) {
+                commonEnemySpendTime = commonEnemySpendTime + dt;
+                double generateEnemiesSeed = (double) ((System.currentTimeMillis() - startTime) / 1000) / 80 + 1;
+                if (commonEnemySpendTime >= waitTime) {
+                    commonEnemySpendTime = 0;
+                    generateEnemies(EnemyType.NORMAL_ENEMY);
+                    waitTime = new Random().nextDouble(0, 2) / generateEnemiesSeed;
+                }
+            }
+        } else if (enemyList.size() == 0) {
+            generateEnemies(EnemyType.THREE_MEMBER_GROUP);
+            specialEnemyWaitTime = new Random().nextDouble(24, 36) * 5; //2-3min
+            specialEnemyWaitTime = 10;
+            specialEnemySpendTime = 0;
         }
+
 
         // Generate friendly bullets
         generateFriendlyBullets();
@@ -117,6 +140,7 @@ public class SimpleGame extends GameEngine{
         //Help Garbage Collection
         enemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
         friendlyBulletList.removeIf(bullet -> (bullet.getY() < -bullet.getHeight() / 2) || bullet.getY() > gameHeight + bullet.getHeight() / 2);
+        specialEnemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
     }
 
     /**
@@ -191,20 +215,38 @@ public class SimpleGame extends GameEngine{
     }
 
     /**
-     * Generate common enemies
+     * Creating Enemy Objects
      */
-    public void generateEnemies() {
-        // Enemy Type 1
-        double enemyWidth = 31;
-        double enemyHeight = 23;
-        double enemyX = new Random().nextDouble(enemyWidth / 2, gameWidth - enemyWidth / 2);
-        double enemyY = -enemyHeight / 2;
-        double enemyVx = 0;
-        double enemyVy = 20; //200
-        Image enemyImage = loadImage("src/resources/Enemy01.png");
-        int enemyType = 1;
-        int enemyHp = 10;
-        enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
+    public void generateEnemies(int enemyType) {
+        if (enemyType == EnemyType.NORMAL_ENEMY) {
+            // Create normal enemy
+            double enemyWidth = 31;
+            double enemyHeight = 23;
+            double enemyX = new Random().nextDouble(enemyWidth / 2, gameWidth - enemyWidth / 2);
+            double enemyY = -enemyHeight / 2;
+            double enemyVx = 0;
+            double enemyVy = 200; //200
+            Image enemyImage = loadImage("src/resources/Enemy01.png");
+            int enemyHp = 10;
+            enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
+        } else if (enemyType == EnemyType.THREE_MEMBER_GROUP) {
+            // Create three-member group
+            double enemyWidth = 171;
+            double enemyHeight = 111;
+            double enemyXL = 100;
+            double enemyXM = 300;
+            double enemyXR = 500;
+            double enemyYSide = -enemyHeight / 2 - enemyHeight;
+            double enemyYMiddle = -enemyHeight / 2;
+            double enemyVx = 0;
+            double enemyVy = 200; //200
+            Image enemyImage = loadImage("src/resources/EE0.png");
+            int enemyHp = 10;
+            Enemy groupEliteEnemyLeft = new Enemy(enemyXL, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
+            Enemy groupEliteEnemyMiddle = new Enemy(enemyXM, enemyYMiddle, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
+            Enemy groupEliteEnemyRight = new Enemy(enemyXR, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
+            Collections.addAll(specialEnemyList, groupEliteEnemyRight, groupEliteEnemyMiddle, groupEliteEnemyLeft);
+        }
     }
 
     /**
@@ -249,6 +291,11 @@ public class SimpleGame extends GameEngine{
 
         // Draw the enemies
         for (Enemy enemy : enemyList) {
+            drawImage(enemy.getImage(), enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
+        }
+
+        //Draw three Elite Group
+        for (Enemy enemy : specialEnemyList) {
             drawImage(enemy.getImage(), enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
         }
 
