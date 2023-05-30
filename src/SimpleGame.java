@@ -24,6 +24,7 @@ public class SimpleGame extends GameEngine{
     private final PlayerPlane[] playerPlane = new PlayerPlane[2];
     private ArrayList<Enemy> enemyList;
     private ArrayList<Bullet> friendlyBulletList;
+    private ArrayList<Item> itemList;
     private double waitTime = 0;
     private double commonEnemySpendTime = 0;
     private double specialEnemySpendTime = 0;
@@ -55,6 +56,8 @@ public class SimpleGame extends GameEngine{
         specialEnemyList = new ArrayList<>();// Store all special enemies in the game
         specialEnemyWaitTime = new Random().nextDouble(24, 36) * 5; //2-3min
         specialEnemyWaitTime = 10; //TODO: Only for test
+
+        itemList = new ArrayList<>(); // Store all items in the game
 
     }
 
@@ -96,6 +99,11 @@ public class SimpleGame extends GameEngine{
             enemy.updateLocation(dt);
         }
 
+        //Update the location of the items
+        for (Item item : itemList) {
+            item.updateLocation(dt, playerPlane);
+        }
+
         //Update the location of the bullets
         for (Bullet bullet : friendlyBulletList) {
             bullet.updateLocation(dt);
@@ -122,6 +130,14 @@ public class SimpleGame extends GameEngine{
             specialEnemySpendTime = 0;
         }
 
+        // Generate items
+        //TODO: edit generate rule
+        int randNum = rand(100);
+        int randItemNum = rand(4);
+        if(randNum == 0) {
+            itemList.add(new Item(50, 50, Item.itemImages[randItemNum], randItemNum));
+        }
+
 
         // Generate friendly bullets
         generateFriendlyBullets();
@@ -132,10 +148,16 @@ public class SimpleGame extends GameEngine{
         // Check collision between friendly bullets and enemies
         checkCollisionFriendlyBullets(friendlyBulletList);
 
+        // Check collision between player plane and items
+        checkCollisionItems(itemList);
+
         //Help Garbage Collection
         enemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
         friendlyBulletList.removeIf(bullet -> (bullet.getY() < -bullet.getHeight() / 2) || bullet.getY() > gameHeight + bullet.getHeight() / 2);
         specialEnemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
+
+        itemList.removeIf(item -> (item.getY() > gameHeight + item.getHeight() / 2) || item.getY() < -item.getHeight() / 2
+                || item.getX() > gameWidth + item.getWidth() / 2 || item.getX() < -item.getWidth() / 2 || item.isCollected());
     }
 
     /**
@@ -209,6 +231,18 @@ public class SimpleGame extends GameEngine{
             double enemyTop = enemyObjects.getY() - enemyObjects.getHeight() / 2;
             double enemyBottom = enemyObjects.getY() + enemyObjects.getHeight() / 2;
             return !(playerLeft > enemyRight || playerRight < enemyLeft || playerTop > enemyBottom || playerBottom < enemyTop);
+        }
+    }
+
+    // check collision between player plane and items
+    public void checkCollisionItems(ArrayList<Item> itemList) {
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
+            for (Item item : itemList) {
+                if (isCollision(playerPlane[pi], item)) {
+                    System.out.println("Item collected!"); //TODO: only for test
+                    item.setCollected(true);
+                }
+            }
         }
     }
 
@@ -325,6 +359,11 @@ public class SimpleGame extends GameEngine{
         changeColor(blue);//TODO: for testing only
         for (Bullet bullet : friendlyBulletList) {
             drawRectangle(bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
+        }
+
+        // Draw the item
+        for (Item item : itemList) {
+            drawImage(item.getImage(), item.getX() - item.getWidth() / 2, item.getY() - item.getHeight() / 2, item.getWidth(), item.getHeight());
         }
     }
 
