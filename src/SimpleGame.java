@@ -51,7 +51,7 @@ public class SimpleGame extends GameEngine{
         }
 
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
-            playerPlane[pi] = new PlayerPlane(playerImage[pi]);
+            playerPlane[pi] = new PlayerPlane(pi+1);
         }
 
         startTime = System.currentTimeMillis();// Get the start time of the game
@@ -88,7 +88,7 @@ public class SimpleGame extends GameEngine{
     @Override
     public void update(double dt) {
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
-            playerPlane[pi].updateLocation(dt);
+            playerPlane[pi].updatePlane(dt);
         }
 
         //Update the location of the enemies
@@ -284,9 +284,19 @@ public class SimpleGame extends GameEngine{
         changeBackgroundColor(black);
         clearBackground(gameWidth, gameHeight);
 
-        // Draw the player plane
+        // Draw the plane
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
-            drawImage(playerPlane[pi].getImage(), playerPlane[pi].getX()-playerPlane[pi].getWidth()/2, playerPlane[pi].getY()-playerPlane[pi].getHeight()/2, playerPlane[pi].getWidth(), playerPlane[pi].getHeight());
+            // Draw the player plane
+            double playerPlaneWidth = playerPlane[pi].getWidth();
+            double playerPlaneHeight = playerPlane[pi].getHeight();
+            drawImage(playerPlane[pi].getImage(), playerPlane[pi].getX()-playerPlaneWidth/2, playerPlane[pi].getY()-playerPlaneHeight/2, playerPlaneWidth, playerPlaneHeight);
+            // Draw the tail fire
+            double tailFireWidth = PlayerPlane.normalTailFireImage.getWidth(null);
+            double tailFireHeight = PlayerPlane.normalTailFireImage.getHeight(null);
+            if(playerPlane[pi].getVy() < 0){
+                tailFireHeight = tailFireHeight * 2;    // If the plane is moving up, the tail fire is longer
+            }
+            drawImage(PlayerPlane.normalTailFireImage, playerPlane[pi].getX()-tailFireWidth/2.0, playerPlane[pi].getY()+playerPlaneHeight/2, tailFireWidth, tailFireHeight);
         }
 
         // Draw the enemies

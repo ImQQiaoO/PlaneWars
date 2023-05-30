@@ -466,7 +466,7 @@ public abstract class GameEngine implements KeyListener, MouseListener, MouseMot
     //-------------------------------------------------------
 
     // Loads an image from file
-    public Image loadImage(String filename) {
+    public static Image loadImage(String filename) {
         try {
             // Load Image
             Image image = ImageIO.read(new File(filename));
