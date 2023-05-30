@@ -44,11 +44,6 @@ public class SimpleGame extends GameEngine{
 
     public void init() {
         setWindowSize(gameWidth, gameHeight);
-        Image[] playerImage = new Image[PlayerPlane.playerNumber];
-        playerImage[0] = loadImage("src/resources/PlayerPlane01.png");
-        if (!isSinglePlayer) {
-            playerImage[1] = loadImage("src/resources/PlayerPlane02.png");
-        }
 
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
             playerPlane[pi] = new PlayerPlane(pi+1);
