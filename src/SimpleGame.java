@@ -167,7 +167,7 @@ public class SimpleGame extends GameEngine{
 
 
         // Generate friendly bullets
-        generateFriendlyBullets();
+        generateFriendlyBullets(BulletType.NORMAL_Bullet,BulletType.NORMAL_Bullet);
 
         // Check collision between player plane and enemies
         checkCollisionEnemies(enemyList);
@@ -327,28 +327,38 @@ public class SimpleGame extends GameEngine{
     /**
      * Generate friendly bullets
      */
-    public void generateFriendlyBullets() {
-        // Bullet Type 1
-        double bulletWidth = 14;
-        double bulletHeight = 29;
-        double bulletX1 = playerPlane[0].getX();
-        double bulletY1 = playerPlane[0].getY() - playerPlane[0].getHeight() / 2;
-        double bulletVx = 0;
-        double bulletVy = -1000;
-        Image enemyImage = loadImage("src/resources/Bullet01.png");
-        int bulletType = 1;
-        int bulletDamage = 1;
-        int bulletIntervalP1 = 10; // TODO: Shoot every 10 frames
-        intervalCounter++;
-        if (intervalCounter % bulletIntervalP1 == 0) {
-            friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, enemyImage, bulletType, bulletDamage, bulletIntervalP1));
+    public void generateFriendlyBullets(int type1, int type2) {
+        // Player 1
+        if (type1 == BulletType.NORMAL_Bullet) {
+            double bulletWidth = 14;
+            double bulletHeight = 29;
+            double bulletX1 = playerPlane[0].getX();
+            double bulletY1 = playerPlane[0].getY() - playerPlane[0].getHeight() / 2;
+            double bulletVx = 0;
+            double bulletVy = -1000;
+            Image bulletImage = loadImage("src/resources/Bullet01.png");
+            int bulletDamage = 1;
+            int bulletIntervalP1 = 10; // TODO: Shoot every 10 frames
+            intervalCounter++;
+            if (intervalCounter % bulletIntervalP1 == 0) {
+                friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, type1, bulletDamage, bulletIntervalP1));
+            }
         }
+        // Player 2
         if (PlayerPlane.playerNumber == 2) {
-            double bulletX2 = playerPlane[1].getX();
-            double bulletY2 = playerPlane[1].getY() - playerPlane[1].getHeight() / 2;
-            int bulletIntervalP2 = 10; // TODO: Shoot every 10 frames
-            if (intervalCounter % bulletIntervalP2 == 0){
-                friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, enemyImage, bulletType, bulletDamage, bulletIntervalP1));
+            if (type2 == BulletType.NORMAL_Bullet) {
+                double bulletWidth = 14;
+                double bulletHeight = 29;
+                double bulletX2 = playerPlane[1].getX();
+                double bulletY2 = playerPlane[1].getY() - playerPlane[1].getHeight() / 2;
+                double bulletVx = 0;
+                double bulletVy = -1000;
+                Image bulletImage = loadImage("src/resources/Bullet01.png");
+                int bulletDamage = 1;
+                int bulletIntervalP2 = 10; // TODO: Shoot every 10 frames
+                if (intervalCounter % bulletIntervalP2 == 0) {
+                    friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, type2, bulletDamage, bulletIntervalP2));
+                }
             }
         }
     }
