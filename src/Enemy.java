@@ -26,6 +26,10 @@ public class Enemy extends GameObject {
         this.enemyHP = enemyHP;
     }
 
+    public void updateEnemy(double dt) {
+        updateLocation(dt);
+    }
+
     public void updateLocation(double dt) {
         setX(getX() + getVx() * dt);
         setY(getY() + getVy() * dt);

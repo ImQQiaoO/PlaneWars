@@ -41,6 +41,7 @@ public class SimpleGame extends GameEngine {
 
     private ArrayList<Bullet> enemyBulletList;
     private ArrayList<Item> itemList;
+    private ArrayList<Explode> explodeList;
     private double waitTime = 0;
     private double commonEnemySpendTime = 0;
     private double specialEnemySpendTime = 0;
@@ -62,6 +63,7 @@ public class SimpleGame extends GameEngine {
 
     public void init() {
         setWindowSize(gameWidth, gameHeight);
+        Explode.loadExplodeImage();
 
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File("src/resources/fighting.wav"));
@@ -98,6 +100,7 @@ public class SimpleGame extends GameEngine {
 
         itemList = new ArrayList<>(); // Store all items in the game
         enemyBulletList = new ArrayList<>(); // Store all enemy bullets in the game
+        explodeList = new ArrayList<>(); // Store all explodes in the game
 
     }
 
@@ -131,7 +134,7 @@ public class SimpleGame extends GameEngine {
 
         //Update the location of the enemies
         for (Enemy enemy : enemyList) {
-            enemy.updateLocation(dt);
+            enemy.updateEnemy(dt);
         }
 
         //Update the location of special enemies
@@ -140,6 +143,11 @@ public class SimpleGame extends GameEngine {
         //Update the location of the items
         for (Item item : itemList) {
             item.updateLocation(dt, playerPlane);
+        }
+
+        //Update the frame of the explodes
+        for (Explode explode : explodeList) {
+            explode.updateExplosionIndex();
         }
 
         //Update the location of the bullets
@@ -215,6 +223,7 @@ public class SimpleGame extends GameEngine {
 
         itemList.removeIf(item -> (item.getY() > gameHeight + item.getHeight() / 2) || item.getY() < -item.getHeight() / 2
                 || item.getX() > gameWidth + item.getWidth() / 2 || item.getX() < -item.getWidth() / 2 || item.isCollected());
+        explodeList.removeIf(explode -> explode.getExplosionIndex() == 0);
     }
 
     /**
@@ -251,6 +260,18 @@ public class SimpleGame extends GameEngine {
                 if (isCollision(enemy, bullet)) {
                     System.out.println("Hit!!"); //TODO: only for test
                     enemy.setEnemyHP(enemy.getEnemyHP() - bullet.getDamage());
+                    if(enemy.getEnemyHP() <= 0) {
+                        switch (enemy.getEnemyType()){
+                            case EnemyType.NORMAL_ENEMY -> {
+                                //TODO: add score
+                                explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1));
+                            }
+                            case EnemyType.THREE_MEMBER_GROUP -> {
+                                //TODO: add score
+                                explodeList.add(new Explode(enemy.getX(), enemy.getY(), 2.5));
+                            }
+                        }
+                    }
                     bulletIterator.remove();
                 }
             }
@@ -338,7 +359,7 @@ public class SimpleGame extends GameEngine {
             double enemyVx = 0;
             double enemyVy = 200; //200
             Image enemyImage = loadImage("src/resources/Enemy01.png");
-            int enemyHp = 10;
+            int enemyHp = 5;
             enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
         } else if (enemyType == EnemyType.THREE_MEMBER_GROUP) {
             // Create three-member group
@@ -518,6 +539,14 @@ public class SimpleGame extends GameEngine {
                 tailFireHeight = tailFireHeight / 2;    // If the plane is moving down, the tail fire is shorter
             }
             drawImage(PlayerPlane.normalTailFireImage, playerPlane[pi].getX() - tailFireWidth / 2.0, playerPlane[pi].getY() + playerPlaneHeight / 2, tailFireWidth, tailFireHeight, alpha);
+            drawImage(PlayerPlane.normalTailFireImage, playerPlane[pi].getX()-tailFireWidth/2.0, playerPlane[pi].getY()+playerPlaneHeight/2, tailFireWidth, tailFireHeight, alpha);
+            // Draw the plane explosion
+            double explosionIndex = playerPlane[pi].getExplosionIndex();
+            if(explosionIndex > 0){
+                int explosionFrameIndex = floor(16 - explosionIndex);
+                drawImage(Explode.frames[explosionFrameIndex], playerPlane[pi].getX()-playerPlaneWidth/2, playerPlane[pi].getY()-playerPlaneHeight/2, playerPlaneWidth, playerPlaneHeight);
+                System.out.println("Explosion frame index: " + explosionFrameIndex);
+            }
         }
 
         // Draw the enemies
@@ -538,6 +567,16 @@ public class SimpleGame extends GameEngine {
         // Draw the enemy bullets
         for (Bullet bullet : enemyBulletList) {
             drawImage(bullet.getImage(), bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
+        }
+
+        // Draw the explosion
+        System.out.println("Explode list size: " + explodeList.size());
+        for (Explode explode : explodeList) {
+            System.out.println("Explosion index: " + explode.getExplosionIndex());
+            double explodeWidth = explode.getWidth();
+            double explodeHeight = explode.getHeight();
+            int explodeFrameIndex = floor(16 - explode.getExplosionIndex());
+            drawImage(Explode.frames[explodeFrameIndex], explode.getX() - explodeWidth / 2, explode.getY() - explodeHeight / 2, explodeWidth, explodeHeight);
         }
 
         changeColor(green);//TODO: for testing only

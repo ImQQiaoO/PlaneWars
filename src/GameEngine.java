@@ -484,7 +484,7 @@ public abstract class GameEngine implements KeyListener, MouseListener, MouseMot
     }
 
     // Loads a sub-image out of an image
-    public Image subImage(Image source, int x, int y, int w, int h) {
+    public static Image subImage(Image source, int x, int y, int w, int h) {
         // Check if image is null
         if(source == null) {
             // Print Error message

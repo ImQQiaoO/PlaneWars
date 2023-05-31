@@ -8,6 +8,7 @@ public class PlayerPlane extends GameObject{
     private int score = 0;
     private int life = 3;
     private double protectTime = 0;
+    private double explosionIndex = 0;
     private Image normalImage;
     private Image turnLeftImage;
     private Image turnRightImage;
@@ -31,6 +32,7 @@ public class PlayerPlane extends GameObject{
         updateLocation(dt);
         updateImage();
         updateProtectTime(dt);
+        updateExplosionIndex(dt);
     }
 
     public void updateLocation(double dt) {
@@ -53,6 +55,12 @@ public class PlayerPlane extends GameObject{
     public void updateProtectTime(double dt) {
         if(protectTime > 0) {
             protectTime -= dt;
+        }
+    }
+
+    public void updateExplosionIndex(double dt) {
+        if(explosionIndex > 0) {
+            explosionIndex -= 1;
         }
     }
 
@@ -86,9 +94,18 @@ public class PlayerPlane extends GameObject{
         }
         this.life--;
         protectTime = 3.0;
+        setExplosionIndex();
     }
 
     public double getProtectTime() {
         return protectTime;
+    }
+
+    public void setExplosionIndex() {
+        this.explosionIndex = 16;
+    }
+
+    public double getExplosionIndex() {
+        return explosionIndex;
     }
 }

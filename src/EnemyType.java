@@ -23,7 +23,7 @@ public class EnemyType {
     public static void specialEnemyPositionController(double dt, int enemyType, ArrayList<Enemy> specialEnemyList) {
         if (enemyType == THREE_MEMBER_GROUP) {
             for (Enemy enemy : specialEnemyList) {
-                enemy.updateLocation(dt);
+                enemy.updateEnemy(dt);
                 if ((enemy == specialEnemyList.get(specialEnemyList.size() - 1)) && (enemy.getY() > 200)) {
                     // If the position of last enemy in the list is larger than 100,
                     // clear the velocity of all enemies in the list.
