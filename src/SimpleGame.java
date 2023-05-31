@@ -188,6 +188,7 @@ public class SimpleGame extends GameEngine {
 
         // Check collision between player plane and enemies
         checkCollisionEnemies(enemyList);
+        checkCollisionEnemies(specialEnemyList);
 
         // Check collision between friendly bullets and enemies
         checkCollisionFriendlyBullets(friendlyBulletList);
