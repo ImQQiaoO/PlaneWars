@@ -21,33 +21,35 @@ public class EnemyType {
      * @param specialEnemyList The list of special enemies.
      */
     public static void specialEnemyPositionController(double dt, int enemyType, ArrayList<Enemy> specialEnemyList) {
-        for (Enemy enemy : specialEnemyList) {
-            enemy.updateLocation(dt);
-            if ((enemy == specialEnemyList.get(specialEnemyList.size() - 1)) && (enemy.getY() > 200)) {
-                // If the position of last enemy in the list is larger than 100,
-                // clear the velocity of all enemies in the list.
-                clearVerticalVelocity(specialEnemyList);
-            }
-        }
-        if (timeToStop) {
-            if (specialEnemyList.isEmpty()) {
-                timeToStop = false;
-                return;
-            }
-            if (goLeft && specialEnemyList.get(0).getX() - specialEnemyList.get(0).getWidth() / 2 > 0) {
-                for (Enemy enemy : specialEnemyList) {
-                    enemy.setVx(-30);
-                }
-            } else if (!goLeft && specialEnemyList.get(specialEnemyList.size() - 1).getX() + specialEnemyList.get(specialEnemyList.size() - 1).getWidth() / 2 < SimpleGame.gameWidth) {
-                for (Enemy enemy : specialEnemyList) {
-                    enemy.setVx(30);
+        if (enemyType == THREE_MEMBER_GROUP) {
+            for (Enemy enemy : specialEnemyList) {
+                enemy.updateLocation(dt);
+                if ((enemy == specialEnemyList.get(specialEnemyList.size() - 1)) && (enemy.getY() > 200)) {
+                    // If the position of last enemy in the list is larger than 100,
+                    // clear the velocity of all enemies in the list.
+                    clearVerticalVelocity(specialEnemyList);
                 }
             }
+            if (timeToStop) {
+                if (specialEnemyList.isEmpty()) {
+                    timeToStop = false;
+                    return;
+                }
+                if (goLeft && specialEnemyList.get(0).getX() - specialEnemyList.get(0).getWidth() / 2 > 0) {
+                    for (Enemy enemy : specialEnemyList) {
+                        enemy.setVx(-30);
+                    }
+                } else if (!goLeft && specialEnemyList.get(specialEnemyList.size() - 1).getX() + specialEnemyList.get(specialEnemyList.size() - 1).getWidth() / 2 < SimpleGame.gameWidth) {
+                    for (Enemy enemy : specialEnemyList) {
+                        enemy.setVx(30);
+                    }
+                }
 
-           if (specialEnemyList.get(0).getX() - specialEnemyList.get(0).getWidth() / 2 <= 0) {
-                goLeft = false;
-            } else if (specialEnemyList.get(specialEnemyList.size() - 1).getX() + specialEnemyList.get(specialEnemyList.size() - 1).getWidth() / 2 >= SimpleGame.gameWidth) {
-                goLeft = true;
+               if (specialEnemyList.get(0).getX() - specialEnemyList.get(0).getWidth() / 2 <= 0) {
+                    goLeft = false;
+                } else if (specialEnemyList.get(specialEnemyList.size() - 1).getX() + specialEnemyList.get(specialEnemyList.size() - 1).getWidth() / 2 >= SimpleGame.gameWidth) {
+                    goLeft = true;
+                }
             }
         }
 
