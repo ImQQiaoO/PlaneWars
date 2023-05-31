@@ -4,7 +4,7 @@ public class EnemyType {
     public static final int NORMAL_ENEMY = 0;
     public static final int THREE_MEMBER_GROUP = 1;
 
-    private static boolean timeToStop = false;
+    public static boolean timeToStop = false;
     private static boolean goLeft = true;
 
     /**

@@ -456,7 +456,7 @@ public class SimpleGame extends GameEngine {
      */
     public void generateSpecialEnemyBullets() {
         for (Enemy enemy : specialEnemyList) {
-            if (enemy.getEnemyType() == EnemyType.THREE_MEMBER_GROUP) {
+            if (enemy.getEnemyType() == EnemyType.THREE_MEMBER_GROUP && EnemyType.timeToStop) {
                 double bulletWidth = 14;
                 double bulletHeight = 29;
                 double bulletX = enemy.getX();
