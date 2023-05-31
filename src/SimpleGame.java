@@ -196,6 +196,7 @@ public class SimpleGame extends GameEngine{
             for (GameObject object : hostileList) {
                 if (isCollision(playerPlane[pi],object)) {
                     System.out.println("Collision!"); //TODO: only for test
+                    playerPlane[pi].decreaseLife();
                 }
             }
         }
@@ -266,8 +267,23 @@ public class SimpleGame extends GameEngine{
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
             for (Item item : itemList) {
                 if (isCollision(playerPlane[pi], item)) {
-                    System.out.println("Item collected!"); //TODO: only for test
                     item.setCollected(true);
+                    // Set item effect
+                    switch (item.getItemType()){
+                        case Item.ITEM_TYPE_LIFE -> {
+                            playerPlane[pi].increaseLife();
+                            System.out.println("Collected: ITEM_TYPE_LIFE");
+                        }
+                        case Item.ITEM_TYPE_FIRE -> {
+                            System.out.println("Collected: ITEM_TYPE_FIRE");    //TODO: add item effect
+                        }
+                        case Item.ITEM_TYPE_LASER -> {
+                            System.out.println("Collected: ITEM_TYPE_LASER");    //TODO: add item effect
+                        }
+                        case Item.ITEM_TYPE_MISSILE -> {
+                            System.out.println("Collected: ITEM_TYPE_MISSILE");    //TODO: add item effect
+                        }
+                    }
                 }
             }
         }
@@ -346,9 +362,13 @@ public class SimpleGame extends GameEngine{
         // Draw the plane
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
             // Draw the player plane
+            int alpha = 255;
+            if (playerPlane[pi].getProtectTime() > 0){
+                alpha = 150;
+            }
             double playerPlaneWidth = playerPlane[pi].getWidth();
             double playerPlaneHeight = playerPlane[pi].getHeight();
-            drawImage(playerPlane[pi].getImage(), playerPlane[pi].getX()-playerPlaneWidth/2, playerPlane[pi].getY()-playerPlaneHeight/2, playerPlaneWidth, playerPlaneHeight);
+            drawImage(playerPlane[pi].getImage(), playerPlane[pi].getX()-playerPlaneWidth/2, playerPlane[pi].getY()-playerPlaneHeight/2, playerPlaneWidth, playerPlaneHeight, alpha);
             // Draw the tail fire
             double tailFireWidth = PlayerPlane.normalTailFireImage.getWidth(null);
             double tailFireHeight = PlayerPlane.normalTailFireImage.getHeight(null);
@@ -357,7 +377,7 @@ public class SimpleGame extends GameEngine{
             } else if(playerPlane[pi].getVy() > 0){
                 tailFireHeight = tailFireHeight / 2;    // If the plane is moving down, the tail fire is shorter
             }
-            drawImage(PlayerPlane.normalTailFireImage, playerPlane[pi].getX()-tailFireWidth/2.0, playerPlane[pi].getY()+playerPlaneHeight/2, tailFireWidth, tailFireHeight);
+            drawImage(PlayerPlane.normalTailFireImage, playerPlane[pi].getX()-tailFireWidth/2.0, playerPlane[pi].getY()+playerPlaneHeight/2, tailFireWidth, tailFireHeight, alpha);
         }
 
         // Draw the enemies
@@ -388,6 +408,11 @@ public class SimpleGame extends GameEngine{
         changeColor(blue);//TODO: for testing only
         for (Bullet bullet : friendlyBulletList) {
             drawRectangle(bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
+        }
+
+        changeColor(white);//TODO: for testing only
+        for(int pi = 0; pi < PlayerPlane.playerNumber; pi++){
+            drawText(20 + 300 * pi, 50, "Player " + (pi+1) + " Life: " + playerPlane[pi].getLife());
         }
 
         // Draw the item

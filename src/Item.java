@@ -10,12 +10,12 @@ public class Item extends GameObject{
     public static Image laserItemImage = GameEngine.loadImage("src/resources/ItemLaser.png");
     public static Image missileItemImage = GameEngine.loadImage("src/resources/ItemMissile.png");
     public static Image[] itemImages = {lifeItemImage, fireItemImage, laserItemImage, missileItemImage};
-    private final int ItemID;
+    private final int ItemType;
     private boolean isCollected = false;
     public static final int movingSpeed = 50;
-    public Item(double x, double y, Image image, int ItemID) {
+    public Item(double x, double y, Image image, int ItemType) {
         super(x, y, 0, movingSpeed, 32, 32, image);
-        this.ItemID = ItemID;
+        this.ItemType = ItemType;
     }
 
     public void updateLocation(double dt, PlayerPlane[] playerPlane) {
@@ -69,5 +69,9 @@ public class Item extends GameObject{
 
     public void setCollected(boolean collected) {
         isCollected = collected;
+    }
+
+    public int getItemType() {
+        return ItemType;
     }
 }
