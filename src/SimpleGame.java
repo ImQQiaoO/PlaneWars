@@ -1,5 +1,8 @@
+import javax.sound.sampled.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -21,6 +24,7 @@ public class SimpleGame extends GameEngine{
     boolean isWKeyPressed = false;
     boolean isSKeyPressed = false;
 
+    private static Clip clip;
     private final PlayerPlane[] playerPlane = new PlayerPlane[2];
     private ArrayList<Enemy> enemyList;
     private ArrayList<Bullet> friendlyBulletList;
@@ -45,6 +49,15 @@ public class SimpleGame extends GameEngine{
 
     public void init() {
         setWindowSize(gameWidth, gameHeight);
+
+        try {
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File("src/resources/fighting.wav"));
+            clip = AudioSystem.getClip();
+            clip.open(audioIn);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
 
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
             playerPlane[pi] = new PlayerPlane(pi+1);
