@@ -28,14 +28,14 @@ public class SimpleGame extends GameEngine {
     private static Clip clip_background, clip_shoot;
     private final PlayerPlane[] playerPlane = new PlayerPlane[2];
 
-    private boolean[] isNormal = new boolean[2];
-    private boolean[] isFire = new boolean[2];
+    private final boolean[] isNormal = new boolean[2];
+    private final boolean[] isFire = new boolean[2];
 
-    private boolean[] isMissile = new boolean[2];
+    private final boolean[] isMissile = new boolean[2];
 
-    private boolean[] isLaser = new boolean[2];
+    private final boolean[] isLaser = new boolean[2];
 
-    private int[] fireCount = new int[2];
+    private final int[] fireCount = new int[2];
     private ArrayList<Enemy> enemyList;
     private ArrayList<Bullet> friendlyBulletList;
     private ArrayList<Item> itemList;
@@ -184,7 +184,7 @@ public class SimpleGame extends GameEngine {
 
         // Generate friendly bullets
 
-        generateFriendlyBullets(isNormal, isFire, isMissile, isLaser);
+        generateFriendlyBullets();
 
         // Check collision between player plane and enemies
         checkCollisionEnemies(enemyList);
@@ -351,7 +351,7 @@ public class SimpleGame extends GameEngine {
     /**
      * Generate friendly bullets
      */
-    public void generateFriendlyBullets(boolean[] isNormal, boolean[] isFire, boolean[] isMissile, boolean[] isLaser) {
+    public void generateFriendlyBullets() {
         // Player 1
         if (isNormal[0]) {
             double bulletWidth = 14;
