@@ -24,7 +24,7 @@ public class SimpleGame extends GameEngine{
     boolean isWKeyPressed = false;
     boolean isSKeyPressed = false;
 
-    private static Clip clip;
+    private static Clip clip_background, clip_shoot;
     private final PlayerPlane[] playerPlane = new PlayerPlane[2];
     private ArrayList<Enemy> enemyList;
     private ArrayList<Bullet> friendlyBulletList;
@@ -53,12 +53,12 @@ public class SimpleGame extends GameEngine{
 
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File("src/resources/fighting.wav"));
-            clip = AudioSystem.getClip();
-            clip.open(audioIn);
+            clip_background = AudioSystem.getClip();
+            clip_background.open(audioIn);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
+        clip_background.loop(Clip.LOOP_CONTINUOUSLY);
 
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
             if(PlayerPlane.playerNumber == 1)
@@ -342,6 +342,8 @@ public class SimpleGame extends GameEngine{
             intervalCounter++;
             if (intervalCounter % bulletIntervalP1 == 0) {
                 friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, type1, bulletDamage, bulletIntervalP1));
+                initialize_ShootSound();
+                clip_shoot.start();
             }
         }
         // Player 2
@@ -358,6 +360,8 @@ public class SimpleGame extends GameEngine{
                 int bulletIntervalP2 = 10; // TODO: Shoot every 10 frames
                 if (intervalCounter % bulletIntervalP2 == 0) {
                     friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, type2, bulletDamage, bulletIntervalP2));
+                    initialize_ShootSound();
+                    clip_shoot.start();
                 }
             }
         }
@@ -594,6 +598,16 @@ public class SimpleGame extends GameEngine{
                     playerPlane[1].setVy(-playerPlane[1].getMovingSpeed());
                 }
             }
+        }
+    }
+    //Add bullet firing sound
+    private static void initialize_ShootSound() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/resources/shoot.wav"));
+            clip_shoot = AudioSystem.getClip();
+            clip_shoot.open(audioInputStream);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
         }
     }
 }
