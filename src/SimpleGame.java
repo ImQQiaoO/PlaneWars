@@ -8,10 +8,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Random;
 
-public class SimpleGame extends GameEngine{
+public class SimpleGame extends GameEngine {
 
     public static final int gameWidth = 600;
     public static final int gameHeight = 700;
+
 
     boolean isSinglePlayer;
 
@@ -26,6 +27,15 @@ public class SimpleGame extends GameEngine{
 
     private static Clip clip_background, clip_shoot;
     private final PlayerPlane[] playerPlane = new PlayerPlane[2];
+
+    private boolean[] isNormal = new boolean[2];
+    private boolean[] isFire = new boolean[2];
+
+    private boolean[] isMissile = new boolean[2];
+
+    private boolean[] isLaser = new boolean[2];
+
+    private int[] fireCount = new int[2];
     private ArrayList<Enemy> enemyList;
     private ArrayList<Bullet> friendlyBulletList;
     private ArrayList<Item> itemList;
@@ -60,17 +70,23 @@ public class SimpleGame extends GameEngine{
         }
         clip_background.loop(Clip.LOOP_CONTINUOUSLY);
 
-        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
-            if(PlayerPlane.playerNumber == 1)
-                playerPlane[pi] = new PlayerPlane(SimpleGame.gameWidth/2.0, SimpleGame.gameHeight*0.9, 1);
-            else if(PlayerPlane.playerNumber == 2){
-                if(pi == 0)
-                    playerPlane[pi] = new PlayerPlane(SimpleGame.gameWidth*2.0/3.0, SimpleGame.gameHeight*0.9, 1);
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
+            if (PlayerPlane.playerNumber == 1)
+                playerPlane[pi] = new PlayerPlane(SimpleGame.gameWidth / 2.0, SimpleGame.gameHeight * 0.9, 1);
+            else if (PlayerPlane.playerNumber == 2) {
+                if (pi == 0)
+                    playerPlane[pi] = new PlayerPlane(SimpleGame.gameWidth * 2.0 / 3.0, SimpleGame.gameHeight * 0.9, 1);
                 else
-                    playerPlane[pi] = new PlayerPlane(SimpleGame.gameWidth/3.0, SimpleGame.gameHeight*0.9, 2);
+                    playerPlane[pi] = new PlayerPlane(SimpleGame.gameWidth / 3.0, SimpleGame.gameHeight * 0.9, 2);
             }
         }
-
+        for (int i = 0; i < 2; i++) {
+            isNormal[i] = true;
+            isFire[i] = false;
+            isMissile[i] = false;
+            isLaser[i] = false;
+            fireCount[i] = 0;
+        }
         startTime = System.currentTimeMillis();// Get the start time of the game
         enemyList = new ArrayList<>(); // Store all enemies in the game
         friendlyBulletList = new ArrayList<>(); // Store all friendly bullets in the game
@@ -84,19 +100,19 @@ public class SimpleGame extends GameEngine{
 
     private void checkCollision() {
         // Check collision between player plane and walls
-        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
-            if(playerPlane[pi].getX() < playerPlane[pi].getWidth()/2) {
-                playerPlane[pi].setX(playerPlane[pi].getWidth()/2);
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
+            if (playerPlane[pi].getX() < playerPlane[pi].getWidth() / 2) {
+                playerPlane[pi].setX(playerPlane[pi].getWidth() / 2);
                 playerPlane[pi].setVx(0);
-            } else if(playerPlane[pi].getX() > gameWidth - playerPlane[pi].getWidth()/2) {
-                playerPlane[pi].setX(gameWidth - playerPlane[pi].getWidth()/2);
+            } else if (playerPlane[pi].getX() > gameWidth - playerPlane[pi].getWidth() / 2) {
+                playerPlane[pi].setX(gameWidth - playerPlane[pi].getWidth() / 2);
                 playerPlane[pi].setVx(0);
             }
-            if(playerPlane[pi].getY() < playerPlane[pi].getHeight()/2) {
-                playerPlane[pi].setY(playerPlane[pi].getHeight()/2);
+            if (playerPlane[pi].getY() < playerPlane[pi].getHeight() / 2) {
+                playerPlane[pi].setY(playerPlane[pi].getHeight() / 2);
                 playerPlane[pi].setVy(0);
-            } else if(playerPlane[pi].getY() > gameHeight - playerPlane[pi].getHeight()/2) {
-                playerPlane[pi].setY(gameHeight - playerPlane[pi].getHeight()/2);
+            } else if (playerPlane[pi].getY() > gameHeight - playerPlane[pi].getHeight() / 2) {
+                playerPlane[pi].setY(gameHeight - playerPlane[pi].getHeight() / 2);
                 playerPlane[pi].setVy(0);
             }
         }
@@ -106,7 +122,7 @@ public class SimpleGame extends GameEngine{
 
     @Override
     public void update(double dt) {
-        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
             playerPlane[pi].updatePlane(dt);
         }
 
@@ -161,13 +177,14 @@ public class SimpleGame extends GameEngine{
         //TODO: edit generate rule
         int randNum = rand(100);
         int randItemNum = rand(4);
-        if(randNum == 0) {
+        if (randNum == 0) {
             itemList.add(new Item(50, 50, Item.itemImages[randItemNum], randItemNum));
         }
 
 
         // Generate friendly bullets
-        generateFriendlyBullets(BulletType.NORMAL_Bullet,BulletType.NORMAL_Bullet);
+
+        generateFriendlyBullets(isNormal, isFire, isMissile, isLaser);
 
         // Check collision between player plane and enemies
         checkCollisionEnemies(enemyList);
@@ -189,12 +206,13 @@ public class SimpleGame extends GameEngine{
 
     /**
      * Check if the player's plane collides with enemies' bullets or enemies' planes.
+     *
      * @param hostileList ArrayList of enemies or enemies' bullets
      */
     public void checkCollisionEnemies(ArrayList<? extends GameObject> hostileList) {
-        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
             for (GameObject object : hostileList) {
-                if (isCollision(playerPlane[pi],object)) {
+                if (isCollision(playerPlane[pi], object)) {
                     System.out.println("Collision!"); //TODO: only for test
                     playerPlane[pi].decreaseLife();
                 }
@@ -206,7 +224,8 @@ public class SimpleGame extends GameEngine{
      * Check if the enemies' plane collides with friendly bullets.
      * If collision, the enemy's HP will be reduced by the damage to the bullet.
      * The bullet will be removed from the friendlyBulletList.
-     * @param friendlyBulletList  ArrayList of Friendly bullets
+     *
+     * @param friendlyBulletList ArrayList of Friendly bullets
      */
     public void checkCollisionFriendlyBullets(ArrayList<Bullet> friendlyBulletList) {
         ArrayList<Enemy> currEnemyList = new ArrayList<>();
@@ -227,8 +246,9 @@ public class SimpleGame extends GameEngine{
 
     /**
      * Check collision between playerObjects plane and enemies or bullets use AABB method
+     *
      * @param playerObjects PlayerPlane
-     * @param enemyObjects Enemy or Bullet
+     * @param enemyObjects  Enemy or Bullet
      * @return true if collision
      */
     @SuppressWarnings("Duplicates")
@@ -264,18 +284,22 @@ public class SimpleGame extends GameEngine{
 
     // check collision between player plane and items
     public void checkCollisionItems(ArrayList<Item> itemList) {
-        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
             for (Item item : itemList) {
                 if (isCollision(playerPlane[pi], item)) {
                     item.setCollected(true);
                     // Set item effect
-                    switch (item.getItemType()){
+                    switch (item.getItemType()) {
                         case Item.ITEM_TYPE_LIFE -> {
                             playerPlane[pi].increaseLife();
                             System.out.println("Collected: ITEM_TYPE_LIFE");
                         }
                         case Item.ITEM_TYPE_FIRE -> {
                             System.out.println("Collected: ITEM_TYPE_FIRE");    //TODO: add item effect
+                            isFire[pi] = true;
+                            isNormal[pi] = false;
+                            isMissile[pi] = false;
+                            isLaser[pi] = false;
                         }
                         case Item.ITEM_TYPE_LASER -> {
                             System.out.println("Collected: ITEM_TYPE_LASER");    //TODO: add item effect
@@ -327,9 +351,9 @@ public class SimpleGame extends GameEngine{
     /**
      * Generate friendly bullets
      */
-    public void generateFriendlyBullets(int type1, int type2) {
+    public void generateFriendlyBullets(boolean[] isNormal, boolean[] isFire, boolean[] isMissile, boolean[] isLaser) {
         // Player 1
-        if (type1 == BulletType.NORMAL_Bullet) {
+        if (isNormal[0]) {
             double bulletWidth = 14;
             double bulletHeight = 29;
             double bulletX1 = playerPlane[0].getX();
@@ -341,14 +365,39 @@ public class SimpleGame extends GameEngine{
             int bulletIntervalP1 = 10; // TODO: Shoot every 10 frames
             intervalCounter++;
             if (intervalCounter % bulletIntervalP1 == 0) {
-                friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, type1, bulletDamage, bulletIntervalP1));
+                friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP1));
                 initialize_ShootSound();
                 clip_shoot.start();
             }
         }
+        if (isFire[0]) {
+            double bulletWidth = 32;
+            double bulletHeight = 64;
+            double bulletX1 = playerPlane[0].getX();
+            double bulletY1 = playerPlane[0].getY() - playerPlane[0].getHeight() / 2;
+            double bulletVx = 0;
+            double bulletVy = -500;
+            Image bulletImage = loadImage("src/resources/Bullet02.png");
+            int bulletDamage = 5;
+            int bulletIntervalP1 = 8; // TODO: Shoot every 10 frames
+            intervalCounter++;
+            if (intervalCounter % bulletIntervalP1 == 0) {
+                if (fireCount[0] < 30) {
+                    friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.FIRE_BULLET, bulletDamage, bulletIntervalP1));
+                    initialize_ShootSound();
+                    clip_shoot.start();
+                    fireCount[0]++;
+                } else {
+                    fireCount[0] = 0;
+                    isFire[0] = false;
+                    isNormal[0] = true;
+                }
+            }
+
+        }
         // Player 2
         if (PlayerPlane.playerNumber == 2) {
-            if (type2 == BulletType.NORMAL_Bullet) {
+            if (isNormal[1]) {
                 double bulletWidth = 14;
                 double bulletHeight = 29;
                 double bulletX2 = playerPlane[1].getX();
@@ -359,11 +408,45 @@ public class SimpleGame extends GameEngine{
                 int bulletDamage = 1;
                 int bulletIntervalP2 = 10; // TODO: Shoot every 10 frames
                 if (intervalCounter % bulletIntervalP2 == 0) {
-                    friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, type2, bulletDamage, bulletIntervalP2));
+                    friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP2));
                     initialize_ShootSound();
                     clip_shoot.start();
                 }
             }
+            if (isFire[1]) {
+                double bulletWidth = 32;
+                double bulletHeight = 64;
+                double bulletX1 = playerPlane[1].getX();
+                double bulletY1 = playerPlane[1].getY() - playerPlane[0].getHeight() / 2;
+                double bulletVx = 0;
+                double bulletVy = -500;
+                Image bulletImage = loadImage("src/resources/Bullet02.png");
+                int bulletDamage = 5;
+                int bulletIntervalP2 = 8; // TODO: Shoot every 10 frames
+                if (intervalCounter % bulletIntervalP2 == 0) {
+                    if (fireCount[1] < 30) {
+                        friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.FIRE_BULLET, bulletDamage, bulletIntervalP2));
+                        initialize_ShootSound();
+                        clip_shoot.start();
+                        fireCount[1]++;
+                    } else {
+                        fireCount[1] = 0;
+                        isFire[1] = false;
+                        isNormal[1] = true;
+                    }
+                }
+            }
+        }
+    }
+
+    //Add bullet firing sound
+    private static void initialize_ShootSound() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/resources/shoot.wav"));
+            clip_shoot = AudioSystem.getClip();
+            clip_shoot.open(audioInputStream);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
         }
     }
 
@@ -374,24 +457,24 @@ public class SimpleGame extends GameEngine{
         clearBackground(gameWidth, gameHeight);
 
         // Draw the plane
-        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
             // Draw the player plane
             int alpha = 255;
-            if (playerPlane[pi].getProtectTime() > 0){
+            if (playerPlane[pi].getProtectTime() > 0) {
                 alpha = 150;
             }
             double playerPlaneWidth = playerPlane[pi].getWidth();
             double playerPlaneHeight = playerPlane[pi].getHeight();
-            drawImage(playerPlane[pi].getImage(), playerPlane[pi].getX()-playerPlaneWidth/2, playerPlane[pi].getY()-playerPlaneHeight/2, playerPlaneWidth, playerPlaneHeight, alpha);
+            drawImage(playerPlane[pi].getImage(), playerPlane[pi].getX() - playerPlaneWidth / 2, playerPlane[pi].getY() - playerPlaneHeight / 2, playerPlaneWidth, playerPlaneHeight, alpha);
             // Draw the tail fire
             double tailFireWidth = PlayerPlane.normalTailFireImage.getWidth(null);
             double tailFireHeight = PlayerPlane.normalTailFireImage.getHeight(null);
-            if(playerPlane[pi].getVy() < 0){
+            if (playerPlane[pi].getVy() < 0) {
                 tailFireHeight = tailFireHeight * 2;    // If the plane is moving up, the tail fire is longer
-            } else if(playerPlane[pi].getVy() > 0){
+            } else if (playerPlane[pi].getVy() > 0) {
                 tailFireHeight = tailFireHeight / 2;    // If the plane is moving down, the tail fire is shorter
             }
-            drawImage(PlayerPlane.normalTailFireImage, playerPlane[pi].getX()-tailFireWidth/2.0, playerPlane[pi].getY()+playerPlaneHeight/2, tailFireWidth, tailFireHeight, alpha);
+            drawImage(PlayerPlane.normalTailFireImage, playerPlane[pi].getX() - tailFireWidth / 2.0, playerPlane[pi].getY() + playerPlaneHeight / 2, tailFireWidth, tailFireHeight, alpha);
         }
 
         // Draw the enemies
@@ -410,8 +493,8 @@ public class SimpleGame extends GameEngine{
         }
 
         changeColor(green);//TODO: for testing only
-        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
-            drawRectangle(playerPlane[pi].getX()-playerPlane[pi].getWidth()/2, playerPlane[pi].getY()-playerPlane[pi].getHeight()/2, playerPlane[pi].getWidth(), playerPlane[pi].getHeight());
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
+            drawRectangle(playerPlane[pi].getX() - playerPlane[pi].getWidth() / 2, playerPlane[pi].getY() - playerPlane[pi].getHeight() / 2, playerPlane[pi].getWidth(), playerPlane[pi].getHeight());
         }
 
         changeColor(red);//TODO: for testing only
@@ -425,8 +508,8 @@ public class SimpleGame extends GameEngine{
         }
 
         changeColor(white);//TODO: for testing only
-        for(int pi = 0; pi < PlayerPlane.playerNumber; pi++){
-            drawText(20 + 300 * pi, 50, "Player " + (pi+1) + " Life: " + playerPlane[pi].getLife());
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
+            drawText(20 + 300 * pi, 50, "Player " + (pi + 1) + " Life: " + playerPlane[pi].getLife());
         }
 
         // Draw the item
@@ -440,70 +523,70 @@ public class SimpleGame extends GameEngine{
         //-------------------------------------------------------
         // Player 1 Key Control
         //-------------------------------------------------------
-        if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             // Move Left
             isLeftKeyPressed = true;
-            if(playerPlane[0].getX() > playerPlane[0].getWidth()/2) {
+            if (playerPlane[0].getX() > playerPlane[0].getWidth() / 2) {
                 playerPlane[0].setVx(-playerPlane[0].getMovingSpeed());
             }
         }
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             // Move Right
             isRightKeyPressed = true;
-            if(playerPlane[0].getX() < gameWidth - playerPlane[0].getWidth()/2) {
+            if (playerPlane[0].getX() < gameWidth - playerPlane[0].getWidth() / 2) {
                 playerPlane[0].setVx(playerPlane[0].getMovingSpeed());
             }
         }
-        if(e.getKeyCode() == KeyEvent.VK_UP) {
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
             // Move Up
             isUpKeyPressed = true;
-            if(playerPlane[0].getY() > playerPlane[0].getHeight()/2) {
+            if (playerPlane[0].getY() > playerPlane[0].getHeight() / 2) {
                 playerPlane[0].setVy(-playerPlane[0].getMovingSpeed());
             }
         }
-        if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             // Move Down
             isDownKeyPressed = true;
-            if(playerPlane[0].getY() < gameHeight - playerPlane[0].getHeight()/2) {
+            if (playerPlane[0].getY() < gameHeight - playerPlane[0].getHeight() / 2) {
                 playerPlane[0].setVy(playerPlane[0].getMovingSpeed());
             }
         }
-        if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             // Shot a bullet
         }
         //-------------------------------------------------------
         // Player 2 Key Control
         //-------------------------------------------------------
         if (!isSinglePlayer) {
-            if(e.getKeyCode() == KeyEvent.VK_A) {
+            if (e.getKeyCode() == KeyEvent.VK_A) {
                 // Move Left
                 isAKeyPressed = true;
-                if(playerPlane[1].getX() > playerPlane[1].getWidth()/2) {
+                if (playerPlane[1].getX() > playerPlane[1].getWidth() / 2) {
                     playerPlane[1].setVx(-playerPlane[1].getMovingSpeed());
                 }
             }
-            if(e.getKeyCode() == KeyEvent.VK_D) {
+            if (e.getKeyCode() == KeyEvent.VK_D) {
                 // Move Right
                 isDKeyPressed = true;
-                if(playerPlane[1].getX() < gameWidth - playerPlane[1].getWidth()/2) {
+                if (playerPlane[1].getX() < gameWidth - playerPlane[1].getWidth() / 2) {
                     playerPlane[1].setVx(playerPlane[1].getMovingSpeed());
                 }
             }
-            if(e.getKeyCode() == KeyEvent.VK_W) {
+            if (e.getKeyCode() == KeyEvent.VK_W) {
                 // Move Up
                 isWKeyPressed = true;
-                if(playerPlane[1].getY() > playerPlane[1].getHeight()/2) {
+                if (playerPlane[1].getY() > playerPlane[1].getHeight() / 2) {
                     playerPlane[1].setVy(-playerPlane[1].getMovingSpeed());
                 }
             }
-            if(e.getKeyCode() == KeyEvent.VK_S) {
+            if (e.getKeyCode() == KeyEvent.VK_S) {
                 // Move Down
                 isSKeyPressed = true;
-                if(playerPlane[1].getY() < gameHeight - playerPlane[1].getHeight()/2) {
+                if (playerPlane[1].getY() < gameHeight - playerPlane[1].getHeight() / 2) {
                     playerPlane[1].setVy(playerPlane[1].getMovingSpeed());
                 }
             }
-            if(e.getKeyCode() == KeyEvent.VK_Q) {
+            if (e.getKeyCode() == KeyEvent.VK_Q) {
                 // Shot a bullet
             }
         }
@@ -515,40 +598,40 @@ public class SimpleGame extends GameEngine{
         // Player 1 Key Control
         //-------------------------------------------------------
         // If player releases left key
-        if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             // Stop moving
             isLeftKeyPressed = false;
-            if(!isRightKeyPressed){
+            if (!isRightKeyPressed) {
                 playerPlane[0].setVx(0);
             } else {
                 playerPlane[0].setVx(playerPlane[0].getMovingSpeed());
             }
         }
         // If player releases right key
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             // Stop moving
             isRightKeyPressed = false;
-            if(!isLeftKeyPressed){
+            if (!isLeftKeyPressed) {
                 playerPlane[0].setVx(0);
             } else {
                 playerPlane[0].setVx(-playerPlane[0].getMovingSpeed());
             }
         }
         // If player releases up key
-        if(e.getKeyCode() == KeyEvent.VK_UP) {
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
             // Stop moving
             isUpKeyPressed = false;
-            if(!isDownKeyPressed){
+            if (!isDownKeyPressed) {
                 playerPlane[0].setVy(0);
             } else {
                 playerPlane[0].setVy(playerPlane[0].getMovingSpeed());
             }
         }
         // If player releases down key
-        if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             // Stop moving
             isDownKeyPressed = false;
-            if(!isUpKeyPressed){
+            if (!isUpKeyPressed) {
                 playerPlane[0].setVy(0);
             } else {
                 playerPlane[0].setVy(-playerPlane[0].getMovingSpeed());
@@ -559,55 +642,45 @@ public class SimpleGame extends GameEngine{
         //-------------------------------------------------------
         if (!isSinglePlayer) {
             // If player releases left key
-            if(e.getKeyCode() == KeyEvent.VK_A) {
+            if (e.getKeyCode() == KeyEvent.VK_A) {
                 // Stop moving
                 isAKeyPressed = false;
-                if(!isDKeyPressed){
+                if (!isDKeyPressed) {
                     playerPlane[1].setVx(0);
                 } else {
                     playerPlane[1].setVx(playerPlane[1].getMovingSpeed());
                 }
             }
             // If player releases right key
-            if(e.getKeyCode() == KeyEvent.VK_D) {
+            if (e.getKeyCode() == KeyEvent.VK_D) {
                 // Stop moving
                 isDKeyPressed = false;
-                if(!isAKeyPressed){
+                if (!isAKeyPressed) {
                     playerPlane[1].setVx(0);
                 } else {
                     playerPlane[1].setVx(-playerPlane[1].getMovingSpeed());
                 }
             }
             // If player releases up key
-            if(e.getKeyCode() == KeyEvent.VK_W) {
+            if (e.getKeyCode() == KeyEvent.VK_W) {
                 // Stop moving
                 isWKeyPressed = false;
-                if(!isSKeyPressed){
+                if (!isSKeyPressed) {
                     playerPlane[1].setVy(0);
                 } else {
                     playerPlane[1].setVy(playerPlane[1].getMovingSpeed());
                 }
             }
             // If player releases down key
-            if(e.getKeyCode() == KeyEvent.VK_S) {
+            if (e.getKeyCode() == KeyEvent.VK_S) {
                 // Stop moving
                 isSKeyPressed = false;
-                if(!isWKeyPressed){
+                if (!isWKeyPressed) {
                     playerPlane[1].setVy(0);
                 } else {
                     playerPlane[1].setVy(-playerPlane[1].getMovingSpeed());
                 }
             }
-        }
-    }
-    //Add bullet firing sound
-    private static void initialize_ShootSound() {
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/resources/shoot.wav"));
-            clip_shoot = AudioSystem.getClip();
-            clip_shoot.open(audioInputStream);
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
         }
     }
 }

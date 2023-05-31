@@ -1,8 +1,13 @@
 public class BulletType {
-    public static final int NORMAL_Bullet = 1;
-    public static final int Fire_Bullet = 2;
+    public static final int NORMAL_BULLET = 1;
+    public static final int FIRE_BULLET = 2;
+
+    public static final int MISSILE_BULLET = 3;
+
+    public static final int LASER_BULLET = 4;
 
     private BulletType() {
+
     }
 
 
