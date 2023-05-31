@@ -37,6 +37,7 @@ public class SimpleGame extends GameEngine{
     private long intervalCounter = 0L;
     private ArrayList<Enemy> specialEnemyList;
     double specialEnemyWaitTime = 0;
+    private boolean isSpecialEnemy = false;
 
     SimpleGame(boolean isSinglePlayer) {
         this.isSinglePlayer = isSinglePlayer;
@@ -107,10 +108,8 @@ public class SimpleGame extends GameEngine{
             enemy.updateLocation(dt);
         }
 
-        //Update the location of the three elite group
-        for (Enemy enemy : specialEnemyList) {
-            enemy.updateLocation(dt);
-        }
+        //Update the location of special enemies
+        EnemyType.specialEnemyPositionController(dt, EnemyType.THREE_MEMBER_GROUP, specialEnemyList);
 
         //Update the location of the items
         for (Item item : itemList) {
@@ -124,7 +123,16 @@ public class SimpleGame extends GameEngine{
 
         checkCollision();
 
-        // Generate common enemies
+        // Reset the generate time of special enemy
+        if (isSpecialEnemy && specialEnemyList.size() == 0) {
+            specialEnemyWaitTime = new Random().nextDouble(24, 36) * 5; //2-3min
+            specialEnemyWaitTime = 10; //TODO: FOR TEST
+            specialEnemySpendTime = 0;
+            System.out.println("reset special enemy wait time");
+            isSpecialEnemy = false;
+        }
+
+        // Generate enemies
         specialEnemySpendTime = specialEnemySpendTime + dt;
         if (specialEnemySpendTime <= specialEnemyWaitTime) {
             if (specialEnemyList.size() == 0) {
@@ -136,12 +144,11 @@ public class SimpleGame extends GameEngine{
                     waitTime = new Random().nextDouble(0, 2) / generateEnemiesSeed;
                 }
             }
-        } else if (enemyList.size() == 0) {
-            generateEnemies(EnemyType.THREE_MEMBER_GROUP);
-            specialEnemyWaitTime = new Random().nextDouble(24, 36) * 5; //2-3min
-            specialEnemyWaitTime = 10;
-            specialEnemySpendTime = 0;
+        } else if (enemyList.size() == 0 && specialEnemyList.size() == 0) {
+            generateEnemies(EnemyType.THREE_MEMBER_GROUP); // Generate special enemies
+            isSpecialEnemy = true;
         }
+
 
         // Generate items
         //TODO: edit generate rule
@@ -290,7 +297,7 @@ public class SimpleGame extends GameEngine{
             Enemy groupEliteEnemyLeft = new Enemy(enemyXL, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
             Enemy groupEliteEnemyMiddle = new Enemy(enemyXM, enemyYMiddle, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
             Enemy groupEliteEnemyRight = new Enemy(enemyXR, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
-            Collections.addAll(specialEnemyList, groupEliteEnemyRight, groupEliteEnemyMiddle, groupEliteEnemyLeft);
+            Collections.addAll(specialEnemyList, groupEliteEnemyLeft, groupEliteEnemyMiddle, groupEliteEnemyRight);
         }
     }
 
