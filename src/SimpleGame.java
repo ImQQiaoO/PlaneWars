@@ -38,6 +38,7 @@ public class SimpleGame extends GameEngine {
     private final int[] fireCount = new int[2];
     private ArrayList<Enemy> enemyList;
     private ArrayList<Bullet> friendlyBulletList;
+
     private ArrayList<Bullet> enemyBulletList;
     private ArrayList<Item> itemList;
     private double waitTime = 0;
@@ -310,14 +311,13 @@ public class SimpleGame extends GameEngine {
                             System.out.println("Collected: ITEM_TYPE_FIRE");    //TODO: add item effect
                             isFire[pi] = true;
                             isNormal[pi] = false;
-                            isMissile[pi] = false;
-                            isLaser[pi] = false;
                         }
                         case Item.ITEM_TYPE_LASER -> {
                             System.out.println("Collected: ITEM_TYPE_LASER");    //TODO: add item effect
                         }
                         case Item.ITEM_TYPE_MISSILE -> {
                             System.out.println("Collected: ITEM_TYPE_MISSILE");    //TODO: add item effect
+                            isMissile[pi] = true;
                         }
                     }
                 }
@@ -407,6 +407,15 @@ public class SimpleGame extends GameEngine {
             }
 
         }
+        if(isMissile[0]){
+            double bulletWidth = 38;
+            double bulletHeight = 26;
+            double bulletX1 = playerPlane[0].getX()-playerPlane[0].getWidth()/4;
+            double bulletY1 = playerPlane[0].getY() - playerPlane[0].getHeight()/4;
+            double bulletVx = -500;
+            double bulletVy = -500;
+            Image bulletImage = loadImage("src/resources/Bullet01.png");
+        }
         // Player 2
         if (PlayerPlane.playerNumber == 2) {
             if (isNormal[1]) {
@@ -418,7 +427,7 @@ public class SimpleGame extends GameEngine {
                 double bulletVy = -1000;
                 Image bulletImage = loadImage("src/resources/Bullet01.png");
                 int bulletDamage = 1;
-                int bulletIntervalP2 = 10; // TODO: Shoot every 10 frames
+                int bulletIntervalP2 = 50; // TODO: Shoot every 10 frames
                 if (intervalCounter % bulletIntervalP2 == 0) {
                     friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP2));
                     initialize_ShootSound();
