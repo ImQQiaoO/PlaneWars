@@ -529,6 +529,31 @@ public abstract class GameEngine implements KeyListener, MouseListener, MouseMot
         mGraphics.drawImage(image, (int)x, (int)y, (int)w, (int)h, null);
     }
 
+    // Mirrors an image horizontally
+    public Image mirrorImage(Image image) {
+        // Check if image is null
+        if(image == null) {
+            // Print Error message
+            System.out.println("Error: cannot mirror null image.\n");
+            return null;
+        }
+
+        // Convert to a buffered image
+        BufferedImage buffered = (BufferedImage)image;
+
+        // Create a new buffered image
+        BufferedImage mirror = new BufferedImage(buffered.getWidth(), buffered.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        // Create a graphics context
+        Graphics2D g = mirror.createGraphics();
+
+        // Draw the image mirrored
+        g.drawImage(buffered, buffered.getWidth(), 0, 0, buffered.getHeight(), 0, 0, buffered.getWidth(), buffered.getHeight(), null);
+
+        // Return the mirrored image
+        return mirror;
+    }
+
     //-------------------------------------------------------
     // Transform Functions
     //-------------------------------------------------------

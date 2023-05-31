@@ -5,14 +5,16 @@ public class PlayerPlane extends GameObject{
     public static int playerNumber = 0;
     private double movingSpeed;
     private final int playerID; // 1 for player 1, 2 for player 2
+    private int score = 0;
+    private int life = 3;
     private Image normalImage;
     private Image turnLeftImage;
     private Image turnRightImage;
     public static Image normalTailFireImage = GameEngine.loadImage("src/resources/TailFire01.png");
     public static Image superTailFireImage = GameEngine.loadImage("src/resources/TailFire02.png");
 
-    public PlayerPlane(int playerID) {
-        super(SimpleGame.gameWidth/2.0, SimpleGame.gameHeight*0.8, 0, 0, 61, 63, GameEngine.loadImage("src/resources/PlayerPlane0"+ playerID +".png"));
+    public PlayerPlane(double x, double y,int playerID) {
+        super(x, y, 0, 0, 61, 63, GameEngine.loadImage("src/resources/PlayerPlane0"+ playerID +".png"));
         this.playerID = playerID;
         movingSpeed = 200;
         loadImage();
@@ -52,5 +54,25 @@ public class PlayerPlane extends GameObject{
 
     public void setMovingSpeed(double movingSpeed) {
         this.movingSpeed = movingSpeed;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void addScore(int score) {
+        this.score += score;
+    }
+
+    public int getLife() {
+        return life;
+    }
+
+    public void increaseLife() {
+        this.life++;
+    }
+
+    public void decreaseLife() {
+        this.life--;
     }
 }

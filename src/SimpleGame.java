@@ -61,7 +61,14 @@ public class SimpleGame extends GameEngine{
         clip.loop(Clip.LOOP_CONTINUOUSLY);
 
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
-            playerPlane[pi] = new PlayerPlane(pi+1);
+            if(PlayerPlane.playerNumber == 1)
+                playerPlane[pi] = new PlayerPlane(SimpleGame.gameWidth/2.0, SimpleGame.gameHeight*0.9, 1);
+            else if(PlayerPlane.playerNumber == 2){
+                if(pi == 0)
+                    playerPlane[pi] = new PlayerPlane(SimpleGame.gameWidth*2.0/3.0, SimpleGame.gameHeight*0.9, 1);
+                else
+                    playerPlane[pi] = new PlayerPlane(SimpleGame.gameWidth/3.0, SimpleGame.gameHeight*0.9, 2);
+            }
         }
 
         startTime = System.currentTimeMillis();// Get the start time of the game
@@ -196,7 +203,7 @@ public class SimpleGame extends GameEngine{
 
     /**
      * Check if the enemies' plane collides with friendly bullets.
-     * If collision, the enemy's HP will be reduced by the damage of the bullet.
+     * If collision, the enemy's HP will be reduced by the damage to the bullet.
      * The bullet will be removed from the friendlyBulletList.
      * @param friendlyBulletList  ArrayList of Friendly bullets
      */
@@ -347,6 +354,8 @@ public class SimpleGame extends GameEngine{
             double tailFireHeight = PlayerPlane.normalTailFireImage.getHeight(null);
             if(playerPlane[pi].getVy() < 0){
                 tailFireHeight = tailFireHeight * 2;    // If the plane is moving up, the tail fire is longer
+            } else if(playerPlane[pi].getVy() > 0){
+                tailFireHeight = tailFireHeight / 2;    // If the plane is moving down, the tail fire is shorter
             }
             drawImage(PlayerPlane.normalTailFireImage, playerPlane[pi].getX()-tailFireWidth/2.0, playerPlane[pi].getY()+playerPlaneHeight/2, tailFireWidth, tailFireHeight);
         }
