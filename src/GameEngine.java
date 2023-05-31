@@ -917,71 +917,71 @@ public abstract class GameEngine implements KeyListener, MouseListener, MouseMot
     }
 
     // Converts an angle in radians to degrees
-    public double toDegrees(double radians) {
+    public static double toDegrees(double radians) {
         // Calculate and return the degrees
         return Math.toDegrees(radians);
     }
 
     // Converts an angle in degrees to radians
-    public double toRadians(double degrees) {
+    public static double toRadians(double degrees) {
         // Calculate and return the radians
         return Math.toRadians(degrees);
     }
 
     // Returns the absolute value of the parameter
-    public int abs(int value) {
+    public static int abs(int value) {
         // Calculate and return abs
         return Math.abs(value);
     }
 
     // Returns the absolute value of the parameter
-    public float abs(float value) {
+    public static float abs(float value) {
         // Calculate and return abs
         return Math.abs(value);
     }
 
     // Returns the absolute value of the parameter
-    public double abs(double value) {
+    public static double abs(double value) {
         // Calculate and return abs
         return Math.abs(value);
     }
 
     // Returns the cos of value
-    public double cos(double value) {
+    public static double cos(double value) {
         // Calculate and return cos
         return Math.cos(Math.toRadians(value));
     }
 
     // Returns the acos of value
-    public double acos(double value) {
+    public static double acos(double value) {
         // Calculate and return acos
         return Math.toDegrees(Math.acos(value));
     }
 
     // Returns the sin of value
-    public double sin(double value) {
+    public static double sin(double value) {
         // Calculate and return sin
         return Math.sin(Math.toRadians(value));
     }
 
     // Returns the asin of value
-    public double asin(double value) {
+    public static double asin(double value) {
         // Calculate and return asin
         return Math.toDegrees(Math.asin(value));
     }
 
     // Returns the tan of value
-    public double tan(double value) {
+    public static double tan(double value) {
         // Calculate and return tan
         return Math.tan(Math.toRadians(value));
     }
     // Returns the atan of value
-    public double atan(double value) {
+    public static double atan(double value) {
         // Calculate and return atan
         return Math.toDegrees(Math.atan(value));
     }
     // Returns the atan2 of value
-    public double atan2(double x, double y) {
+    public static double atan2(double x, double y) {
         // Calculate and return atan2
         return Math.toDegrees(Math.atan2(x,y));
     }

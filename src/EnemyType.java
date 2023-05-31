@@ -19,9 +19,20 @@ public class EnemyType {
      */
     public static void specialEnemyPositionController(double dt, int enemyType, ArrayList<Enemy> specialEnemyList) {
         for (Enemy enemy : specialEnemyList) {
-            if (specialEnemyList.get(0).getY() < 100) { //189
-                enemy.updateLocation(dt);
+            enemy.updateLocation(dt);
+            if((enemy == specialEnemyList.get(specialEnemyList.size() - 1)) && (enemy.getY() > 100)){
+                // If the position of last enemy in the list is larger than 100,
+                // clear the velocity of all enemies in the list.
+                clearVelocity(specialEnemyList);
             }
+        }
+
+    }
+
+    public static void clearVelocity(ArrayList<Enemy> specialEnemyList){
+        for (Enemy enemy : specialEnemyList) {
+            enemy.setVx(0);
+            enemy.setVy(0);
         }
     }
 

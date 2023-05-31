@@ -43,13 +43,20 @@ public class Item extends GameObject{
             double dirY = playerPlane[minIndex].getY() - this.getY();
 
             //Normalized vector of direction
-            setVx((dirX / minDist) * movingSpeed);
-            setVy((dirY / minDist) * movingSpeed);
+            double normalizedDirX = dirX / minDist;
+            double normalizedDirY = dirY / minDist;
 
-            //Change the velocity according to the distance between item and player
-            //The closer the object is to the player, the faster the speed
-            setVx(getVx() * (200 / minDist));
-            setVy(getVy() * (200 / minDist));
+            //Calculate the angle between current velocity and desired velocity
+            double angle = GameEngine.atan2(normalizedDirY * getVx() - normalizedDirX * getVy(),
+                    normalizedDirX * getVx() + normalizedDirY * getVy());
+
+            //Rotate the velocity vector towards the desired direction
+            double rotateAngle = Math.min(dt * Math.PI, GameEngine.abs(angle));
+            double newVx = getVx() * Math.cos(rotateAngle) + normalizedDirX * movingSpeed * Math.sin(rotateAngle);
+            double newVy = getVy() * Math.cos(rotateAngle) + normalizedDirY * movingSpeed * Math.sin(rotateAngle);
+            setVx(newVx);
+            setVy(newVy);
+
         }
         //Assign the direction for item
         setX(getX() + getVx() * dt);
