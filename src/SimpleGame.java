@@ -388,7 +388,7 @@ public class SimpleGame extends GameEngine {
                 double enemyX = new Random().nextDouble(enemyWidth / 2, gameWidth - enemyWidth / 2);
                 double enemyY = -enemyHeight / 2;
                 double enemyVx = 0;
-                double enemyVy = 100; //200
+                double enemyVy = 100; //100
                 Image enemyImage = loadImage("src/resources/Enemy02.png");
                 int enemyHp = 15;
                 enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
@@ -417,7 +417,7 @@ public class SimpleGame extends GameEngine {
             double enemyVx = 0;
             double enemyVy = 200; //200
             Image enemyImage = loadImage("src/resources/EE0.png");
-            int enemyHp = 10;
+            int enemyHp = 100;
             Enemy groupEliteEnemyLeft = new Enemy(enemyXL, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
             Enemy groupEliteEnemyMiddle = new Enemy(enemyXM, enemyYMiddle, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
             Enemy groupEliteEnemyRight = new Enemy(enemyXR, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
@@ -534,18 +534,36 @@ public class SimpleGame extends GameEngine {
 
         for (Enemy enemy : specialEnemyList) {
             if (enemy.getEnemyType() == EnemyType.THREE_MEMBER_GROUP && EnemyType.timeToStop) {
-                double bulletWidth = 14;
-                double bulletHeight = 29;
-                double bulletX = enemy.getX();
-                double bulletY = enemy.getY() + enemy.getHeight() / 2;
-                double bulletVx = 0;
-                double bulletVy = 1000;
-                Image bulletImage = loadImage("src/resources/Bullet01.png");
-                int bulletDamage = 1;
-                int bulletInterval = 10; // TODO: Shoot every 10 frames
-                if (intervalCounter % bulletInterval == 0) { //TODO
-                    enemyBulletList.add(new Bullet(bulletX, bulletY, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletInterval));
+                double bulletWidth_simple = 14;
+                double bulletHeight_simple = 29;
+                double bulletX_simple = enemy.getX();
+                double bulletY_simple = enemy.getY() + enemy.getHeight() / 2;
+                double bulletX_simple_left = enemy.getX() - 60;
+                double bulletY_simple_left = enemy.getY() + enemy.getHeight() / 2;
+                double bulletX_simple_right = enemy.getX() + 60;
+                double bulletY_simple_right = enemy.getY() + enemy.getHeight() / 2;
+                double bulletVx_simpe = 0;
+                double bulletVy_simple = 1000;
+                double bulletVy_simple_side = 200;
+                Image bulletImage_simple = loadImage("src/resources/Bullet01.png");
+                Image bulletImage_simple_side = loadImage("src/resources/Bullet04.png");
+                int bulletDamage_simple = 1;
+                int bulletDamage_simple_side = 2;
+                int bulletInterval_simple = 30;// TODO: Shoot every 30 frames
+
+                //Randomly fire the center and side rounds
+                if(intervalCounter % bulletInterval_simple == 0){
+                    int x = rand(10);
+                    if(x < 3)
+                    enemyBulletList.add(new Bullet(bulletX_simple_left, bulletY_simple_left, bulletVx_simpe, bulletVy_simple_side, bulletWidth_simple, bulletHeight_simple, bulletImage_simple_side, BulletType.NORMAL_BULLET, bulletDamage_simple_side, bulletInterval_simple));
+                    else if(x < 6)
+                    enemyBulletList.add(new Bullet(bulletX_simple_right, bulletY_simple_right, bulletVx_simpe, bulletVy_simple_side, bulletWidth_simple, bulletHeight_simple, bulletImage_simple_side, BulletType.NORMAL_BULLET, bulletDamage_simple_side, bulletInterval_simple));
+                    else
+                    enemyBulletList.add(new Bullet(bulletX_simple, bulletY_simple, bulletVx_simpe, bulletVy_simple, bulletWidth_simple, bulletHeight_simple, bulletImage_simple, BulletType.NORMAL_BULLET, bulletDamage_simple, bulletInterval_simple));
                 }
+            }
+            else if(enemy.getEnemyType() == EnemyType.IMPACT_BOSS){
+
             }
         }
     }
