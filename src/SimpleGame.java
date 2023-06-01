@@ -14,7 +14,7 @@ public class SimpleGame extends GameEngine {
     public static final int gameHeight = 700;
 
 
-    boolean isSinglePlayer;
+    public static boolean isSinglePlayer; // make it static
 
     boolean isLeftKeyPressed = false;
     boolean isRightKeyPressed = false;
@@ -26,7 +26,7 @@ public class SimpleGame extends GameEngine {
     boolean isSKeyPressed = false;
 
     private static Clip clip_background, clip_shoot;
-    private final PlayerPlane[] playerPlane = new PlayerPlane[2];
+    public static final PlayerPlane[] playerPlane = new PlayerPlane[2];
 
     private final boolean[] isNormal = new boolean[2];
     private final boolean[] isFire = new boolean[2];
@@ -50,11 +50,13 @@ public class SimpleGame extends GameEngine {
     private double commonEnemySpendTime = 0;
     private double specialEnemySpendTime = 0;
     private long startTime;
+
     //  Interval Counter
     private long intervalCounter = 0L;
     private ArrayList<Enemy> specialEnemyList;
     double specialEnemyWaitTime = 0;
     private boolean isSpecialEnemy = false;
+    private int randBoss;
 
     SimpleGame(boolean isSinglePlayer) {
         this.isSinglePlayer = isSinglePlayer;
@@ -107,6 +109,7 @@ public class SimpleGame extends GameEngine {
         itemList = new ArrayList<>(); // Store all items in the game
         enemyBulletList = new ArrayList<>(); // Store all enemy bullets in the game
         explodeList = new ArrayList<>(); // Store all explodes in the game
+        randBoss = 0; // init randBoss
 
     }
 
@@ -144,7 +147,7 @@ public class SimpleGame extends GameEngine {
         }
 
         //Update the location of special enemies
-        EnemyType.specialEnemyPositionController(dt, EnemyType.THREE_MEMBER_GROUP, specialEnemyList);
+        EnemyType.specialEnemyPositionController(dt, randBoss, specialEnemyList);
 
         //Update the location of the items
         for (Item item : itemList) {
@@ -190,7 +193,15 @@ public class SimpleGame extends GameEngine {
                 }
             }
         } else if (enemyList.size() == 0 && specialEnemyList.size() == 0) {
-            generateEnemies(EnemyType.THREE_MEMBER_GROUP); // Generate special enemies
+            randBoss = new Random().nextInt(1, 3);
+            randBoss = 2; //TODO: FOR TEST Boss TYPE 2 (IMPACT_BOSS)
+            if (randBoss == EnemyType.THREE_MEMBER_GROUP) {
+                generateEnemies(EnemyType.THREE_MEMBER_GROUP); // Generate special enemies
+            }
+            else if (randBoss == EnemyType.IMPACT_BOSS) {
+                generateEnemies(EnemyType.IMPACT_BOSS); // Generate special enemies
+                EnemyType.moveFrameCount = 0;
+            }
             isSpecialEnemy = true;
         }
 
@@ -411,6 +422,17 @@ public class SimpleGame extends GameEngine {
             Enemy groupEliteEnemyMiddle = new Enemy(enemyXM, enemyYMiddle, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
             Enemy groupEliteEnemyRight = new Enemy(enemyXR, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
             Collections.addAll(specialEnemyList, groupEliteEnemyLeft, groupEliteEnemyMiddle, groupEliteEnemyRight);
+        } else if (enemyType == EnemyType.IMPACT_BOSS) {
+            // Create impact boss
+            double enemyWidth = 171;  //TODO: TO BE CHANGED
+            double enemyHeight = 111;  //TODO: TO BE CHANGED
+            double enemyX = gameWidth / 2.0;  //TODO: TO BE CHANGED
+            double enemyY = -enemyHeight / 2;  //TODO: TO BE CHANGED
+            double enemyVx = 0;
+            double enemyVy = 100; //200
+            Image enemyImage = loadImage("src/resources/EE0.png"); //TODO: TO BE CHANGED
+            int enemyHp = 100;  //TODO: TO BE CHANGED
+            specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
         }
     }
 
@@ -419,7 +441,7 @@ public class SimpleGame extends GameEngine {
      */
     public void generateFriendlyBullets() {
         // Player 1
-        intervalCounter++;
+        intervalCounter++;  //千万别动！！
         if (isNormal[0]) {
             double bulletWidth = 14;
             double bulletHeight = 29;
@@ -429,7 +451,7 @@ public class SimpleGame extends GameEngine {
             double bulletVy = -1000;
             Image bulletImage = loadImage("src/resources/Bullet01.png");
             int bulletDamage = 5;
-            int bulletIntervalP1 = 5; // TODO: Shoot every 10 frames
+            int bulletIntervalP1 = 30; // TODO: Shoot every 10 frames
             if (intervalCounter % bulletIntervalP1 == 0) {
                 friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP1));
                 initialize_ShootSound();
@@ -512,7 +534,6 @@ public class SimpleGame extends GameEngine {
 
         for (Enemy enemy : specialEnemyList) {
             if (enemy.getEnemyType() == EnemyType.THREE_MEMBER_GROUP && EnemyType.timeToStop) {
-                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 double bulletWidth = 14;
                 double bulletHeight = 29;
                 double bulletX = enemy.getX();
@@ -632,6 +653,7 @@ public class SimpleGame extends GameEngine {
     }
 
     // Called whenever a key is pressed
+    @SuppressWarnings("Duplicates")
     public void keyPressed(KeyEvent e) {
         //-------------------------------------------------------
         // Player 1 Key Control
@@ -664,7 +686,7 @@ public class SimpleGame extends GameEngine {
                 playerPlane[0].setVy(playerPlane[0].getMovingSpeed());
             }
         }
-        if (e.getKeyCode() == 47) {
+        if (e.getKeyCode() == 47) { // Slash
             // Shot a missile
             if(isMissile[0]){
                 double bulletWidth = 38;
@@ -692,10 +714,10 @@ public class SimpleGame extends GameEngine {
                         missileTime[0]=0;
                         missileCount[0] = 0;
                         isMissile[0] = false;
-                    }}
-
+                    }
+                }
             }
-                missileTime[0] ++;
+            missileTime[0] ++;
         }
         //-------------------------------------------------------
         // Player 2 Key Control
