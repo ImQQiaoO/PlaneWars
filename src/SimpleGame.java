@@ -59,7 +59,7 @@ public class SimpleGame extends GameEngine {
     private int randBoss;
 
     SimpleGame(boolean isSinglePlayer) {
-        this.isSinglePlayer = isSinglePlayer;
+        SimpleGame.isSinglePlayer = isSinglePlayer;
         if (isSinglePlayer) {
             PlayerPlane.playerNumber = 1;
         } else {
@@ -283,7 +283,7 @@ public class SimpleGame extends GameEngine {
                                 //TODO: add score
                                 explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1));
                             }
-                            case EnemyType.THREE_MEMBER_GROUP -> {
+                            case EnemyType.THREE_MEMBER_GROUP, EnemyType.IMPACT_BOSS -> {
                                 //TODO: add score
                                 explodeList.add(new Explode(enemy.getX(), enemy.getY(), 2.5));
                             }
@@ -779,7 +779,8 @@ public class SimpleGame extends GameEngine {
                             missileTime[1]=0;
                             missileCount[1] = 0;
                             isMissile[1] = false;
-                        }}
+                        }
+                    }
                 }
                 missileTime[1] ++;
             }
