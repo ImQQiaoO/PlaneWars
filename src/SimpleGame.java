@@ -352,15 +352,42 @@ public class SimpleGame extends GameEngine {
     public void generateEnemies(int enemyType) {
         if (enemyType == EnemyType.NORMAL_ENEMY) {
             // Create normal enemy
-            double enemyWidth = 31;
-            double enemyHeight = 23;
-            double enemyX = new Random().nextDouble(enemyWidth / 2, gameWidth - enemyWidth / 2);
-            double enemyY = -enemyHeight / 2;
-            double enemyVx = 0;
-            double enemyVy = 200; //200
-            Image enemyImage = loadImage("src/resources/Enemy01.png");
-            int enemyHp = 5;
-            enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
+            // Create different kinds of enemy by random number
+            int i = rand(9);
+            if(i < 4){
+                double enemyWidth = 31;
+                double enemyHeight = 23;
+                double enemyX = new Random().nextDouble(enemyWidth / 2, gameWidth - enemyWidth / 2);
+                double enemyY = -enemyHeight / 2;
+                double enemyVx = 0;
+                double enemyVy = 200; //200
+                Image enemyImage = loadImage("src/resources/Enemy01.png");
+                int enemyHp = 5;
+                enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
+            }
+            else if(i < 7){
+                double enemyWidth = 44;
+                double enemyHeight = 67;
+                double enemyX = new Random().nextDouble(enemyWidth / 2, gameWidth - enemyWidth / 2);
+                double enemyY = -enemyHeight / 2;
+                double enemyVx = 0;
+                double enemyVy = 100; //200
+                Image enemyImage = loadImage("src/resources/Enemy02.png");
+                int enemyHp = 15;
+                enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
+            }
+            else{
+                double enemyWidth = 52;
+                double enemyHeight = 40;
+                double enemyX = new Random().nextDouble(enemyWidth / 2, gameWidth - enemyWidth / 2);
+                double enemyY = -enemyHeight / 2;
+                double enemyVx = 0;
+                double enemyVy = 150; //200
+                Image enemyImage = loadImage("src/resources/Enemy03.png");
+                int enemyHp = 10;
+                enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
+            }
+
         } else if (enemyType == EnemyType.THREE_MEMBER_GROUP) {
             // Create three-member group
             double enemyWidth = 171;
@@ -394,7 +421,7 @@ public class SimpleGame extends GameEngine {
             double bulletVx = 0;
             double bulletVy = -1000;
             Image bulletImage = loadImage("src/resources/Bullet01.png");
-            int bulletDamage = 1;
+            int bulletDamage = 5;
             int bulletIntervalP1 = 50; // TODO: Shoot every 10 frames
             intervalCounter++;
             if (intervalCounter % bulletIntervalP1 == 0) {
@@ -447,7 +474,7 @@ public class SimpleGame extends GameEngine {
                 double bulletVx = 0;
                 double bulletVy = -1000;
                 Image bulletImage = loadImage("src/resources/Bullet01.png");
-                int bulletDamage = 1;
+                int bulletDamage = 5;
                 int bulletIntervalP2 = 50; // TODO: Shoot every 10 frames
                 if (intervalCounter % bulletIntervalP2 == 0) {
                     friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP2));
