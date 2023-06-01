@@ -194,7 +194,7 @@ public class SimpleGame extends GameEngine {
             }
         } else if (enemyList.size() == 0 && specialEnemyList.size() == 0) {
             randBoss = new Random().nextInt(1, 3);
-            randBoss = 2; //TODO: FOR TEST Boss TYPE 2 (IMPACT_BOSS)
+//            randBoss = 2; //TODO: FOR TEST Boss TYPE 2 (IMPACT_BOSS)
             if (randBoss == EnemyType.THREE_MEMBER_GROUP) {
                 generateEnemies(EnemyType.THREE_MEMBER_GROUP); // Generate special enemies
             }
@@ -753,39 +753,36 @@ public class SimpleGame extends GameEngine {
             }
             if (e.getKeyCode() == KeyEvent.VK_Q) {
                 // Shot a missile
-                    if(isMissile[1]){
-                        double bulletWidth = 38;
-                        double bulletHeight = 26;
-                        double bulletX1 = playerPlane[1].getX()-playerPlane[1].getWidth()/4;
-                        double bulletY1 = playerPlane[1].getY() - playerPlane[1].getHeight()/4;
-                        double bulletVx = -500;
-                        double bulletVy = -865;
-                        Image bulletImage = loadImage("src/resources/BulletMissile.png");
-                        double bulletX12 = playerPlane[1].getX()+playerPlane[1].getWidth()/4;
-                        double bulletY12 = playerPlane[1].getY() - playerPlane[1].getHeight()/4;
-                        double bulletVx2 = 500;
-                        double bulletVy2 = -865;
-                        Image bulletImage2 = loadImage("src/resources/BulletMissile.png");
-                        int bulletDamage = 10;
-                        int bulletIntervalP2 = 6;
-                        if(missileTime[1] % bulletIntervalP2 == 0){
-                            if (missileCount[1] < 20){
-                                friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP2));
-                                friendlyBulletList.add(new Bullet(bulletX12, bulletY12, bulletVx2, bulletVy2, bulletWidth, bulletHeight, bulletImage2, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP2));
-                                initialize_ShootSound();
-                                clip_shoot.start();
-                                missileCount[1]++;
-                            }else {
-                                missileTime[1]=0;
-                                missileCount[1] = 0;
-                                isMissile[1] = false;
-                            }}
-
-                    }
-                    missileTime[1] ++;
-
+                if(isMissile[1]){
+                    double bulletWidth = 38;
+                    double bulletHeight = 26;
+                    double bulletX1 = playerPlane[1].getX()-playerPlane[1].getWidth()/4;
+                    double bulletY1 = playerPlane[1].getY() - playerPlane[1].getHeight()/4;
+                    double bulletVx = -500;
+                    double bulletVy = -865;
+                    Image bulletImage = loadImage("src/resources/BulletMissile.png");
+                    double bulletX12 = playerPlane[1].getX()+playerPlane[1].getWidth()/4;
+                    double bulletY12 = playerPlane[1].getY() - playerPlane[1].getHeight()/4;
+                    double bulletVx2 = 500;
+                    double bulletVy2 = -865;
+                    Image bulletImage2 = loadImage("src/resources/BulletMissile.png");
+                    int bulletDamage = 10;
+                    int bulletIntervalP2 = 6;
+                    if(missileTime[1] % bulletIntervalP2 == 0){
+                        if (missileCount[1] < 20){
+                            friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP2));
+                            friendlyBulletList.add(new Bullet(bulletX12, bulletY12, bulletVx2, bulletVy2, bulletWidth, bulletHeight, bulletImage2, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP2));
+                            initialize_ShootSound();
+                            clip_shoot.start();
+                            missileCount[1]++;
+                        }else {
+                            missileTime[1]=0;
+                            missileCount[1] = 0;
+                            isMissile[1] = false;
+                        }}
+                }
+                missileTime[1] ++;
             }
-
         }
     }
 
