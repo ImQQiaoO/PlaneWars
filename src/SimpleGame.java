@@ -35,6 +35,8 @@ public class SimpleGame extends GameEngine {
 
     private final boolean[] isLaser = new boolean[2];
 
+    private final boolean[] isTypeSlash = new boolean[2];
+
     private final int[] fireCount = new int[2];
 
     private final int[] missileCount = new int[2];
@@ -57,7 +59,6 @@ public class SimpleGame extends GameEngine {
     double specialEnemyWaitTime = 0;
     private boolean isSpecialEnemy = false;
     private int randBoss;
-    private boolean isTypeSlash;
 
     SimpleGame(boolean isSinglePlayer) {
         SimpleGame.isSinglePlayer = isSinglePlayer;
@@ -96,6 +97,7 @@ public class SimpleGame extends GameEngine {
             isFire[i] = false;
             isMissile[i] = false;
             isLaser[i] = false;
+            isTypeSlash[i] = false;
             fireCount[i] = 0;
             missileCount[i] = 0;
             missileTime[i] = 0;
@@ -111,7 +113,6 @@ public class SimpleGame extends GameEngine {
         enemyBulletList = new ArrayList<>(); // Store all enemy bullets in the game
         explodeList = new ArrayList<>(); // Store all explodes in the game
         randBoss = 0; // init randBoss
-        isTypeSlash = false; // init isTypeSlash
 
     }
 
@@ -248,7 +249,7 @@ public class SimpleGame extends GameEngine {
     }
 
     private void createMissile() {
-        if (isTypeSlash) {
+        if (isTypeSlash[0]) {
             if(isMissile[0]){
                 double bulletWidth = 38;
                 double bulletHeight = 26;
@@ -279,6 +280,40 @@ public class SimpleGame extends GameEngine {
                 }
             }
             missileTime[0] ++;
+        }
+        if(PlayerPlane.playerNumber == 2){
+            if (isTypeSlash[1]) {
+                if(isMissile[1]){
+                    double bulletWidth = 38;
+                    double bulletHeight = 26;
+                    double bulletX1 = playerPlane[1].getX()-playerPlane[1].getWidth()/4;
+                    double bulletY1 = playerPlane[1].getY() - playerPlane[1].getHeight()/4;
+                    double bulletVx = -500;
+                    double bulletVy = -865;
+                    Image bulletImage = loadImage("src/resources/BulletMissile.png");
+                    double bulletX12 = playerPlane[1].getX()+playerPlane[1].getWidth()/4;
+                    double bulletY12 = playerPlane[1].getY() - playerPlane[1].getHeight()/4;
+                    double bulletVx2 = 500;
+                    double bulletVy2 = -865;
+                    Image bulletImage2 = loadImage("src/resources/BulletMissile.png");
+                    int bulletDamage = 10;
+                    int bulletIntervalP2 = 6;
+                    if(missileTime[1] % bulletIntervalP2 == 0){
+                        if (missileCount[1] < 20){
+                            friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP2));
+                            friendlyBulletList.add(new Bullet(bulletX12, bulletY12, bulletVx2, bulletVy2, bulletWidth, bulletHeight, bulletImage2, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP2));
+                            initialize_ShootSound();
+                            clip_shoot.start();
+                            missileCount[1]++;
+                        }else {
+                            missileTime[1]=0;
+                            missileCount[1] = 0;
+                            isMissile[1] = false;
+                        }
+                    }
+                }
+                missileTime[1] ++;
+            }
         }
     }
 
@@ -744,7 +779,7 @@ public class SimpleGame extends GameEngine {
             }
         }
         if (e.getKeyCode() == 47) { // Slash
-            isTypeSlash = true;
+            isTypeSlash[0] = true;
             // Shot a missile
 
         }
@@ -781,37 +816,7 @@ public class SimpleGame extends GameEngine {
                 }
             }
             if (e.getKeyCode() == KeyEvent.VK_Q) {
-                // Shot a missile
-                if(isMissile[1]){
-                    double bulletWidth = 38;
-                    double bulletHeight = 26;
-                    double bulletX1 = playerPlane[1].getX()-playerPlane[1].getWidth()/4;
-                    double bulletY1 = playerPlane[1].getY() - playerPlane[1].getHeight()/4;
-                    double bulletVx = -500;
-                    double bulletVy = -865;
-                    Image bulletImage = loadImage("src/resources/BulletMissile.png");
-                    double bulletX12 = playerPlane[1].getX()+playerPlane[1].getWidth()/4;
-                    double bulletY12 = playerPlane[1].getY() - playerPlane[1].getHeight()/4;
-                    double bulletVx2 = 500;
-                    double bulletVy2 = -865;
-                    Image bulletImage2 = loadImage("src/resources/BulletMissile.png");
-                    int bulletDamage = 10;
-                    int bulletIntervalP2 = 6;
-                    if(missileTime[1] % bulletIntervalP2 == 0){
-                        if (missileCount[1] < 20){
-                            friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP2));
-                            friendlyBulletList.add(new Bullet(bulletX12, bulletY12, bulletVx2, bulletVy2, bulletWidth, bulletHeight, bulletImage2, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP2));
-                            initialize_ShootSound();
-                            clip_shoot.start();
-                            missileCount[1]++;
-                        }else {
-                            missileTime[1]=0;
-                            missileCount[1] = 0;
-                            isMissile[1] = false;
-                        }
-                    }
-                }
-                missileTime[1] ++;
+                isTypeSlash[1] = true;
             }
         }
     }
@@ -863,7 +868,7 @@ public class SimpleGame extends GameEngine {
         }
 
         if (e.getKeyCode() == 47) {
-            isTypeSlash = false;
+            isTypeSlash[0] = false;
             missileTime[0] = 0;
         }
         //-------------------------------------------------------
@@ -911,6 +916,7 @@ public class SimpleGame extends GameEngine {
                 }
             }
             if (e.getKeyCode() == KeyEvent.VK_Q){
+                isTypeSlash[1] = false;
                 missileTime[1] = 0;
             }
         }
