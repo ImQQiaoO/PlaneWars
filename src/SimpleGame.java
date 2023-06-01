@@ -57,6 +57,7 @@ public class SimpleGame extends GameEngine {
     double specialEnemyWaitTime = 0;
     private boolean isSpecialEnemy = false;
     private int randBoss;
+    private boolean isTypeSlash;
 
     SimpleGame(boolean isSinglePlayer) {
         SimpleGame.isSinglePlayer = isSinglePlayer;
@@ -110,6 +111,7 @@ public class SimpleGame extends GameEngine {
         enemyBulletList = new ArrayList<>(); // Store all enemy bullets in the game
         explodeList = new ArrayList<>(); // Store all explodes in the game
         randBoss = 0; // init randBoss
+        isTypeSlash = false; // init isTypeSlash
 
     }
 
@@ -214,6 +216,8 @@ public class SimpleGame extends GameEngine {
             itemList.add(new Item(50, 50, Item.itemImages[randItemNum], randItemNum));
         }
 
+        createMissile();
+
 
         // Generate friendly bullets
         generateFriendlyBullets();
@@ -241,6 +245,41 @@ public class SimpleGame extends GameEngine {
         itemList.removeIf(item -> (item.getY() > gameHeight + item.getHeight() / 2) || item.getY() < -item.getHeight() / 2
                 || item.getX() > gameWidth + item.getWidth() / 2 || item.getX() < -item.getWidth() / 2 || item.isCollected());
         explodeList.removeIf(explode -> explode.getExplosionIndex() == 0);
+    }
+
+    private void createMissile() {
+        if (isTypeSlash) {
+            if(isMissile[0]){
+                double bulletWidth = 38;
+                double bulletHeight = 26;
+                double bulletX1 = playerPlane[0].getX()-playerPlane[0].getWidth()/4;
+                double bulletY1 = playerPlane[0].getY() - playerPlane[0].getHeight()/4;
+                double bulletVx = -500;
+                double bulletVy = -865;
+                Image bulletImage = loadImage("src/resources/BulletMissile.png");
+                double bulletX12 = playerPlane[0].getX()+playerPlane[0].getWidth()/4;
+                double bulletY12 = playerPlane[0].getY() - playerPlane[0].getHeight()/4;
+                double bulletVx2 = 500;
+                double bulletVy2 = -865;
+                Image bulletImage2 = loadImage("src/resources/BulletMissile.png");
+                int bulletDamage = 10;
+                int bulletIntervalP1 = 6;
+                if(missileTime[0] % bulletIntervalP1 == 0){
+                    if (missileCount[0] < 20){
+                        friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP1));
+                        friendlyBulletList.add(new Bullet(bulletX12, bulletY12, bulletVx2, bulletVy2, bulletWidth, bulletHeight, bulletImage2, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP1));
+                        initialize_ShootSound();
+                        clip_shoot.start();
+                        missileCount[0]++;
+                    }else {
+                        missileTime[0]=0;
+                        missileCount[0] = 0;
+                        isMissile[0] = false;
+                    }
+                }
+            }
+            missileTime[0] ++;
+        }
     }
 
     /**
@@ -705,37 +744,9 @@ public class SimpleGame extends GameEngine {
             }
         }
         if (e.getKeyCode() == 47) { // Slash
+            isTypeSlash = true;
             // Shot a missile
-            if(isMissile[0]){
-                double bulletWidth = 38;
-                double bulletHeight = 26;
-                double bulletX1 = playerPlane[0].getX()-playerPlane[0].getWidth()/4;
-                double bulletY1 = playerPlane[0].getY() - playerPlane[0].getHeight()/4;
-                double bulletVx = -500;
-                double bulletVy = -865;
-                Image bulletImage = loadImage("src/resources/BulletMissile.png");
-                double bulletX12 = playerPlane[0].getX()+playerPlane[0].getWidth()/4;
-                double bulletY12 = playerPlane[0].getY() - playerPlane[0].getHeight()/4;
-                double bulletVx2 = 500;
-                double bulletVy2 = -865;
-                Image bulletImage2 = loadImage("src/resources/BulletMissile.png");
-                int bulletDamage = 10;
-                int bulletIntervalP1 = 6;
-                if(missileTime[0] % bulletIntervalP1 == 0){
-                    if (missileCount[0] < 20){
-                        friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP1));
-                        friendlyBulletList.add(new Bullet(bulletX12, bulletY12, bulletVx2, bulletVy2, bulletWidth, bulletHeight, bulletImage2, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP1));
-                        initialize_ShootSound();
-                        clip_shoot.start();
-                        missileCount[0]++;
-                    }else {
-                        missileTime[0]=0;
-                        missileCount[0] = 0;
-                        isMissile[0] = false;
-                    }
-                }
-            }
-            missileTime[0] ++;
+
         }
         //-------------------------------------------------------
         // Player 2 Key Control
@@ -852,6 +863,7 @@ public class SimpleGame extends GameEngine {
         }
 
         if (e.getKeyCode() == 47) {
+            isTypeSlash = false;
             missileTime[0] = 0;
         }
         //-------------------------------------------------------

@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 
 public class EnemyType {
+    /*
+        TODO: 修改敌人的图片！！！
+     */
 
     /**
      * Enumeration of enemy types.
@@ -110,6 +113,8 @@ public class EnemyType {
                     }
                 }
             }
+        } else if (1 > 0) {
+
         }
     }
 
