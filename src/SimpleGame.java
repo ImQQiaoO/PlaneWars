@@ -25,7 +25,7 @@ public class SimpleGame extends GameEngine {
     boolean isWKeyPressed = false;
     boolean isSKeyPressed = false;
 
-    private static Clip clip_background, clip_shoot, clip_explode;
+    private static Clip clip_background, clip_shoot, clip_explode, clip_missile;
     public static final PlayerPlane[] playerPlane = new PlayerPlane[2];
 
     private final boolean[] isNormal = new boolean[2];
@@ -281,6 +281,8 @@ public class SimpleGame extends GameEngine {
 //                System.out.println("missileCount[0] = " + missileCount[0]);
                 if(missileTime[0] % bulletIntervalP1 == 0){
                     if (missileCount[0] < 20){
+                        initialize_MissileSound();
+                        clip_missile.start();
                         System.out.println("fire missile");
                         friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP1));
                         friendlyBulletList.add(new Bullet(bulletX12, bulletY12, bulletVx2, bulletVy2, bulletWidth, bulletHeight, bulletImage2, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP1));
@@ -702,6 +704,16 @@ public class SimpleGame extends GameEngine {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/resources/explode.wav"));
             clip_explode = AudioSystem.getClip();
             clip_explode.open(audioInputStream);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+    //Add missile sound
+    private static void initialize_MissileSound() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/resources/missile.wav"));
+            clip_missile = AudioSystem.getClip();
+            clip_missile.open(audioInputStream);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
