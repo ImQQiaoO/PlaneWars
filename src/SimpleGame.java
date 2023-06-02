@@ -248,7 +248,8 @@ public class SimpleGame extends GameEngine {
 
         //Help Garbage Collection
         enemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
-        missileEnemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
+        missileEnemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getY() < -enemy.getHeight()
+                || enemy.getX() > gameWidth + enemy.getWidth() / 2 || enemy.getX() < -enemy.getWidth() / 2 || enemy.getEnemyHP() <= 0);
         friendlyBulletList.removeIf(bullet -> (bullet.getY() < -bullet.getHeight() / 2) || bullet.getY() > gameHeight + bullet.getHeight() / 2);
         specialEnemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
         enemyBulletList.removeIf(bullet -> (bullet.getY() < -bullet.getHeight() / 2) || bullet.getY() > gameHeight + bullet.getHeight() / 2);
@@ -862,9 +863,13 @@ public class SimpleGame extends GameEngine {
             // Rotate the image based on enemyAngle
             saveCurrentTransform();
             double enemyAngle = enemy.getEnemyAngle();
+            translate(enemy.getX(), enemy.getY());
             rotate(-enemyAngle);
-            drawImage(enemy.getImage(), enemy.getX(), enemy.getY(), enemy.getWidth(), enemy.getHeight());
-//            rotate(enemyAngle);
+            changeColor(pink);//TODO: for test
+            drawRectangle(- enemy.getWidth() / 2, - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
+            drawImage(enemy.getImage(), - enemy.getWidth() / 2, - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
+            translate(-enemy.getX(), -enemy.getY());
+            rotate(enemyAngle);
             restoreLastTransform();
         }
 
@@ -893,6 +898,9 @@ public class SimpleGame extends GameEngine {
 
         changeColor(red);//TODO: for testing only
         for (Enemy enemy : enemyList) {
+            drawRectangle(enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
+        }
+        for (Enemy enemy : missileEnemyList) {
             drawRectangle(enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
         }
 
