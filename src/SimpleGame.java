@@ -25,7 +25,7 @@ public class SimpleGame extends GameEngine {
     boolean isWKeyPressed = false;
     boolean isSKeyPressed = false;
 
-    private static Clip clip_background, clip_shoot;
+    private static Clip clip_background, clip_shoot, clip_explode;
     public static final PlayerPlane[] playerPlane = new PlayerPlane[2];
 
     private final boolean[] isNormal = new boolean[2];
@@ -46,7 +46,7 @@ public class SimpleGame extends GameEngine {
     private ArrayList<Enemy> missileEnemyList;
     private ArrayList<Bullet> friendlyBulletList;
 
-    private ArrayList<Bullet> enemyBulletList;
+    public static ArrayList<Bullet> enemyBulletList;
     private ArrayList<Item> itemList;
     private ArrayList<Explode> explodeList;
     private double waitTime = 0;
@@ -368,6 +368,8 @@ public class SimpleGame extends GameEngine {
                             case EnemyType.THREE_MEMBER_GROUP, EnemyType.IMPACT_BOSS -> {
                                 //TODO: add score
                                 explodeList.add(new Explode(enemy.getX(), enemy.getY(), 2.5));
+                                initialize_ExplodeSound();
+                                clip_explode.start();
                             }
                         }
                     }
@@ -650,133 +652,13 @@ public class SimpleGame extends GameEngine {
                 double bulletHeight_circle = 12;
                 double bulletX_circle = enemy.getX();
                 double bulletY_circle = enemy.getY();
-                double bulletVx_circle;
-                double bulletVy_circle;
                 Image bulletImage_circle = loadImage("src/resources/Bullet03.png");
                 int bulletDamage_circle = 5;
                 int bulletInterval_circle = 100;
                 if(intervalCounter % bulletInterval_circle == 0) {
+                    //修改发射散弹函数
                     int x = rand(8);
-                    if(x < 2){
-                        //第四象限
-                        for (int i = -100; i <= 100; i = i + 30) {
-                            bulletVx_circle = i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVy_circle = abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                        //第二象限
-                        for (int i = 0; i <= 100; i = i + 20) {
-                            bulletVy_circle = -i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = -abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                        //第三象限
-                        for (int i = 0; i <= 100; i = i + 20) {
-                            bulletVy_circle = i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = -abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                        //第一象限
-                        for (int i = 0; i <= 100; i = i + 20) {
-                            bulletVy_circle = -i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                    }
-                    else if(x < 4){
-                        //第四象限
-                        for (int i = -100; i <= 100; i = i + 20) {
-                            bulletVx_circle = i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVy_circle = abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                        //第二象限
-                        for (int i = 10; i <= 90; i = i + 15) {
-                            bulletVy_circle = -i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = -abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                        //第三象限
-                        for (int i = 10; i <= 90; i = i + 15) {
-                            bulletVy_circle = i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = -abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                        //第一象限
-                        for (int i = 10; i <= 90; i = i + 15) {
-                            bulletVy_circle = -i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                    }
-                    else if(x < 6){
-                        //第四象限
-                        for (int i = 10; i <= 100; i = i + 25) {
-                            bulletVy_circle = i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                        //第二象限
-                        for (int i = 10; i <= 100; i = i + 25) {
-                            bulletVy_circle = -i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = -abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                        //第三象限
-                        for (int i = 10; i <= 100; i = i + 25) {
-                            bulletVy_circle = i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = -abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                        //第一象限
-                        for (int i = 10; i <= 100; i = i + 25) {
-                            bulletVy_circle = -i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                    }
-                    else {
-                        //第四象限
-                        for (int i = 50; i <= 100; i = i + 5) {
-                            bulletVy_circle = i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                        //第二象限
-                        for (int i = 50; i <= 100; i = i + 5) {
-                            bulletVy_circle = -i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = -abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                        //第三象限
-                        for (int i = 50; i <= 100; i = i + 5) {
-                            bulletVy_circle = i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = -abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                        //第一象限
-                        for (int i = 50; i <= 100; i = i + 5) {
-                            bulletVy_circle = -i;
-                            double tep = sqrt(10000 - i * i);
-                            bulletVx_circle = abs(tep);
-                            enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
-                        }
-                    }
+                    EnemyType.BossBullet(x,bulletX_circle, bulletY_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, bulletDamage_circle, bulletInterval_circle);
                 }
             }
         }
@@ -788,6 +670,17 @@ public class SimpleGame extends GameEngine {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/resources/shoot.wav"));
             clip_shoot = AudioSystem.getClip();
             clip_shoot.open(audioInputStream);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Add explode sound
+    private static void initialize_ExplodeSound() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/resources/explode.wav"));
+            clip_explode = AudioSystem.getClip();
+            clip_explode.open(audioInputStream);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
