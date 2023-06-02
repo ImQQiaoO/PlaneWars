@@ -151,7 +151,9 @@ public class SimpleGame extends GameEngine {
             enemy.updateEnemy(dt);
         }
 
-
+        for(Enemy enemy : missileEnemyList){
+            enemy.updateEnemy(dt, playerPlane);
+        }
 
         //Update the location of special enemies
         EnemyType.specialEnemyPositionController(dt, randBoss, specialEnemyList);
@@ -204,9 +206,11 @@ public class SimpleGame extends GameEngine {
 //            randBoss = 2; //TODO: FOR TEST Boss TYPE 2 (IMPACT_BOSS)
             if (randBoss == EnemyType.THREE_MEMBER_GROUP) {
                 generateEnemies(EnemyType.THREE_MEMBER_GROUP); // Generate special enemies
+                generateEnemies(EnemyType.MISSILE); // Generate missile//TODO:DELETE
             }
             else if (randBoss == EnemyType.IMPACT_BOSS) {
                 generateEnemies(EnemyType.IMPACT_BOSS); // Generate special enemies
+                generateEnemies(EnemyType.MISSILE); // Generate missile//TODO:DELETE
                 EnemyType.moveFrameCount = 0;
             }
             isSpecialEnemy = true;
@@ -234,6 +238,7 @@ public class SimpleGame extends GameEngine {
         checkCollisionEnemies(enemyList);
         checkCollisionEnemies(specialEnemyList);
         checkCollisionEnemies(enemyBulletList);
+        checkCollisionEnemies(missileEnemyList);
 
         // Check collision between friendly bullets and enemies
         checkCollisionFriendlyBullets(friendlyBulletList);
@@ -243,6 +248,7 @@ public class SimpleGame extends GameEngine {
 
         //Help Garbage Collection
         enemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
+        missileEnemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
         friendlyBulletList.removeIf(bullet -> (bullet.getY() < -bullet.getHeight() / 2) || bullet.getY() > gameHeight + bullet.getHeight() / 2);
         specialEnemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
         enemyBulletList.removeIf(bullet -> (bullet.getY() < -bullet.getHeight() / 2) || bullet.getY() > gameHeight + bullet.getHeight() / 2);
@@ -352,6 +358,7 @@ public class SimpleGame extends GameEngine {
         ArrayList<Enemy> currEnemyList = new ArrayList<>();
         currEnemyList.addAll(enemyList);
         currEnemyList.addAll(specialEnemyList);
+        currEnemyList.addAll(missileEnemyList);
         for (Enemy enemy : currEnemyList) {
             Iterator<Bullet> bulletIterator = friendlyBulletList.iterator();
             while (bulletIterator.hasNext()) {
@@ -368,6 +375,9 @@ public class SimpleGame extends GameEngine {
                             case EnemyType.THREE_MEMBER_GROUP, EnemyType.IMPACT_BOSS -> {
                                 //TODO: add score
                                 explodeList.add(new Explode(enemy.getX(), enemy.getY(), 2.5));
+                            }
+                            case EnemyType.MISSILE -> {
+                                explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1.5));
                             }
                         }
                     }
@@ -431,6 +441,7 @@ public class SimpleGame extends GameEngine {
                             System.out.println("Collected: ITEM_TYPE_FIRE");    //TODO: add item effect
                             isFire[pi] = true;
                             isNormal[pi] = false;
+                            fireCount[pi] = 0;
                         }
                         case Item.ITEM_TYPE_LASER -> {
                             System.out.println("Collected: ITEM_TYPE_LASER");    //TODO: add item effect
@@ -438,6 +449,7 @@ public class SimpleGame extends GameEngine {
                         case Item.ITEM_TYPE_MISSILE -> {
                             System.out.println("Collected: ITEM_TYPE_MISSILE");    //TODO: add item effect
                             isMissile[pi] = true;
+                            missileCount[pi] = 0;
                         }
                     }
                 }
@@ -487,6 +499,8 @@ public class SimpleGame extends GameEngine {
                 enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
             }
 
+
+
         } else if (enemyType == EnemyType.THREE_MEMBER_GROUP) {
             // Create three-member group
             double enemyWidth = 171;
@@ -516,6 +530,12 @@ public class SimpleGame extends GameEngine {
             int enemyHp = 100;  //TODO: TO BE CHANGED
             specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
         }
+
+        if(enemyType == EnemyType.MISSILE){
+            //test to generate a missile
+            System.out.println("generate a missile");
+            missileEnemyList.add(new Enemy(100, 100, 0, 100, 50, 50, loadImage("src/resources/BulletAutoMissile.png"), 3, 10));
+        }
     }
 
     /**
@@ -533,7 +553,7 @@ public class SimpleGame extends GameEngine {
             double bulletVy = -1000;
             Image bulletImage = loadImage("src/resources/Bullet01.png");
             int bulletDamage = 5;
-            int bulletIntervalP1 = 30; // TODO: Shoot every 10 frames
+            int bulletIntervalP1 = 10; // TODO: Shoot every 10 frames
             if (intervalCounter % bulletIntervalP1 == 0) {
                 friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP1));
                 initialize_ShootSound();
@@ -576,7 +596,7 @@ public class SimpleGame extends GameEngine {
                 double bulletVy = -1000;
                 Image bulletImage = loadImage("src/resources/Bullet01.png");
                 int bulletDamage = 5;
-                int bulletIntervalP2 = 5; // TODO: Shoot every 10 frames
+                int bulletIntervalP2 = 10; // TODO: Shoot every 10 frames
                 if (intervalCounter % bulletIntervalP2 == 0) {
                     friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP2));
                     initialize_ShootSound();
@@ -824,7 +844,6 @@ public class SimpleGame extends GameEngine {
             if(explosionIndex > 0){
                 int explosionFrameIndex = floor(16 - explosionIndex);
                 drawImage(Explode.frames[explosionFrameIndex], playerPlane[pi].getX()-playerPlaneWidth/2, playerPlane[pi].getY()-playerPlaneHeight/2, playerPlaneWidth, playerPlaneHeight);
-                System.out.println("Explosion frame index: " + explosionFrameIndex);
             }
         }
 
@@ -836,6 +855,17 @@ public class SimpleGame extends GameEngine {
         //Draw three special enemy Group
         for (Enemy enemy : specialEnemyList) {
             drawImage(enemy.getImage(), enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
+        }
+
+        //Draw the missile
+        for (Enemy enemy : missileEnemyList) {
+            // Rotate the image based on enemyAngle
+            saveCurrentTransform();
+            double enemyAngle = enemy.getEnemyAngle();
+            rotate(-enemyAngle);
+            drawImage(enemy.getImage(), enemy.getX(), enemy.getY(), enemy.getWidth(), enemy.getHeight());
+//            rotate(enemyAngle);
+            restoreLastTransform();
         }
 
         // Draw the bullets
@@ -885,7 +915,6 @@ public class SimpleGame extends GameEngine {
     // Called whenever a key is pressed
     @SuppressWarnings("Duplicates")
     public void keyPressed(KeyEvent e) {
-        System.out.println("keycode:"+e.getKeyCode());
         //-------------------------------------------------------
         // Player 1 Key Control
         //-------------------------------------------------------
