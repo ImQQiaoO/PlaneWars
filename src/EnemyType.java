@@ -105,7 +105,7 @@ public class EnemyType {
                             // If the boss is out of the screen, reset the position of the boss.
                             if (enemy.getY() > SimpleGame.gameHeight) {
                                 enemy.setY(-enemy.getHeight());
-                                enemy.setX(SimpleGame.gameWidth / 2.0);
+//                                enemy.setX(SimpleGame.gameWidth / 2.0);
                                 moveFrameCount = 0;
                                 timeToStop = false;
                             }
