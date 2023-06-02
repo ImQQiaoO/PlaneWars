@@ -6,6 +6,8 @@ public class BulletType {
 
     public static final int LASER_BULLET = 4;
 
+    public static final int CIRCLE_BULLET = 5;
+
     private BulletType() {
 
     }
