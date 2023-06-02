@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class EnemyType {
     /*
@@ -96,11 +97,19 @@ public class EnemyType {
                             moveFrameCount++;
                             if (targetX > 0) {
                                 for (Enemy enemy : specialEnemyList) {
-                                    enemy.setVx(50);
+                                    double vx = targetX * targetX * 0.02;
+                                    if (vx > 100) {
+                                        vx = 100;
+                                    }
+                                    enemy.setVx(vx);
                                 }
                             } else if (targetX < 0) {
                                 for (Enemy enemy : specialEnemyList) {
-                                    enemy.setVx(-50);
+                                    double vx = -targetX * targetX * 0.02;
+                                    if (vx < -100) {
+                                        vx = -100;
+                                    }
+                                    enemy.setVx(vx);
                                 }
                             }
                         } else {
