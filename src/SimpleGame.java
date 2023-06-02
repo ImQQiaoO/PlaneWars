@@ -43,6 +43,7 @@ public class SimpleGame extends GameEngine {
 
     private final int[] missileTime = new int[2];
     private ArrayList<Enemy> enemyList;
+    private ArrayList<Enemy> missileEnemyList;
     private ArrayList<Bullet> friendlyBulletList;
 
     private ArrayList<Bullet> enemyBulletList;
@@ -104,6 +105,7 @@ public class SimpleGame extends GameEngine {
         }
         startTime = System.currentTimeMillis();// Get the start time of the game
         enemyList = new ArrayList<>(); // Store all enemies in the game
+        missileEnemyList = new ArrayList<>(); // Store all missile in the game
         friendlyBulletList = new ArrayList<>(); // Store all friendly bullets in the game
         specialEnemyList = new ArrayList<>();// Store all special enemies in the game
         specialEnemyWaitTime = new Random().nextDouble(24, 36) * 5; //2-3min
@@ -148,6 +150,8 @@ public class SimpleGame extends GameEngine {
         for (Enemy enemy : enemyList) {
             enemy.updateEnemy(dt);
         }
+
+
 
         //Update the location of special enemies
         EnemyType.specialEnemyPositionController(dt, randBoss, specialEnemyList);
@@ -265,8 +269,12 @@ public class SimpleGame extends GameEngine {
                 Image bulletImage2 = loadImage("src/resources/BulletMissile.png");
                 int bulletDamage = 10;
                 int bulletIntervalP1 = 6;
+//                System.out.println();
+//                System.out.println("missileTime[0] = " + missileTime[0]);
+//                System.out.println("missileCount[0] = " + missileCount[0]);
                 if(missileTime[0] % bulletIntervalP1 == 0){
                     if (missileCount[0] < 20){
+                        System.out.println("fire missile");
                         friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP1));
                         friendlyBulletList.add(new Bullet(bulletX12, bulletY12, bulletVx2, bulletVy2, bulletWidth, bulletHeight, bulletImage2, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP1));
                         initialize_ShootSound();
@@ -841,9 +849,7 @@ public class SimpleGame extends GameEngine {
         }
 
         // Draw the explosion
-        System.out.println("Explode list size: " + explodeList.size());
         for (Explode explode : explodeList) {
-            System.out.println("Explosion index: " + explode.getExplosionIndex());
             double explodeWidth = explode.getWidth();
             double explodeHeight = explode.getHeight();
             int explodeFrameIndex = floor(16 - explode.getExplosionIndex());
@@ -879,6 +885,7 @@ public class SimpleGame extends GameEngine {
     // Called whenever a key is pressed
     @SuppressWarnings("Duplicates")
     public void keyPressed(KeyEvent e) {
+        System.out.println("keycode:"+e.getKeyCode());
         //-------------------------------------------------------
         // Player 1 Key Control
         //-------------------------------------------------------
