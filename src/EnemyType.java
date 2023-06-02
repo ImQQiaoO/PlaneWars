@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
@@ -100,11 +101,19 @@ public class EnemyType {
                             moveFrameCount++;
                             if (targetX > 0) {
                                 for (Enemy enemy : specialEnemyList) {
-                                    enemy.setVx(50);
+                                    double vx = targetX * targetX * 0.02;
+                                    if (vx > 100) {
+                                        vx = 100;
+                                    }
+                                    enemy.setVx(vx);
                                 }
                             } else if (targetX < 0) {
                                 for (Enemy enemy : specialEnemyList) {
-                                    enemy.setVx(-50);
+                                    double vx = -targetX * targetX * 0.02;
+                                    if (vx < -100) {
+                                        vx = -100;
+                                    }
+                                    enemy.setVx(vx);
                                 }
                             }
                         } else {

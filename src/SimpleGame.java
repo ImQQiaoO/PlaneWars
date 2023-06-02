@@ -203,7 +203,7 @@ public class SimpleGame extends GameEngine {
             }
         } else if (enemyList.size() == 0 && specialEnemyList.size() == 0) {
             randBoss = new Random().nextInt(1, 3);
-//            randBoss = 2; //TODO: FOR TEST Boss TYPE 2 (IMPACT_BOSS)
+            randBoss = 2; //TODO: FOR TEST Boss TYPE 2 (IMPACT_BOSS)
             if (randBoss == EnemyType.THREE_MEMBER_GROUP) {
                 generateEnemies(EnemyType.THREE_MEMBER_GROUP); // Generate special enemies
                 generateEnemies(EnemyType.MISSILE); // Generate missile//TODO:DELETE
