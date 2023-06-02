@@ -4,6 +4,7 @@ public class Enemy extends GameObject {
 
     private int enemyType;
     private int enemyHP;
+    private double enemyAngle;
 
 
     /**
@@ -30,7 +31,68 @@ public class Enemy extends GameObject {
         updateLocation(dt);
     }
 
+    public void updateEnemy(double dt, PlayerPlane[] playerPlane) {
+        updateLocation(dt, playerPlane);
+    }
+
     public void updateLocation(double dt) {
+        setX(getX() + getVx() * dt);
+        setY(getY() + getVy() * dt);
+    }
+
+    public void updateLocation(double dt, PlayerPlane[] playerPlane) {
+        // Recalculate position based on movement speed
+
+        //Distance between item & player
+        double[] dist = new double[2];
+        double minDist = 1000000000;
+        int minIndex = 0;
+        for(int i = 0; i < PlayerPlane.playerNumber; i++) {
+            dist[i] = GameEngine.distance(this.getX(), this.getY(), playerPlane[i].getX(), playerPlane[i].getY());
+            if(dist[i] < minDist) {
+                // Find the player that is closest to the item
+                minDist = dist[i];
+                minIndex = i;
+            }
+        }
+
+
+//         //the enemy will automatically move towards the player
+//            //Direction from enemy-->player
+//            //playerPos - enemyPos  enemy-->player
+//            double dirX = playerPlane[minIndex].getX() - this.getX();
+//            double dirY = playerPlane[minIndex].getY() - this.getY();
+//
+//            //Normalized vector of direction
+//            setVx(dirX / minDist);
+//            setVy(dirY / minDist);
+/*        //Assign the direction for item
+        setX(getX() + getVx() * 50 * dt);
+        setY(getY() + getVy() * 50 * dt);*/
+
+        //Direction from item-->player
+        //playerPos - itemPos  item-->player
+        double dirX = playerPlane[minIndex].getX() - this.getX();
+        double dirY = playerPlane[minIndex].getY() - this.getY();
+
+        //Normalized vector of direction
+        double normalizedDirX = dirX / minDist;
+        double normalizedDirY = dirY / minDist;
+
+        //Calculate the angle between current velocity and desired velocity
+        double angle = GameEngine.atan2(normalizedDirY * getVx() - normalizedDirX * getVy(),
+                normalizedDirX * getVx() + normalizedDirY * getVy());
+
+        //Rotate the velocity vector towards the desired direction
+        double rotateAngle = Math.min(dt * Math.PI, GameEngine.abs(angle));
+        double newVx = getVx() * Math.cos(rotateAngle) + normalizedDirX * 50 * Math.sin(rotateAngle);
+        double newVy = getVy() * Math.cos(rotateAngle) + normalizedDirY * 50 * Math.sin(rotateAngle);
+        setVx(newVx);
+        setVy(newVy);
+        //Calculate the angle between current velocity and Y-axis forward direction
+        enemyAngle = GameEngine.atan2(getVx(), getVy());
+        System.out.println(enemyAngle);
+        //Assign the direction for item
         setX(getX() + getVx() * dt);
         setY(getY() + getVy() * dt);
     }
@@ -73,5 +135,9 @@ public class Enemy extends GameObject {
 
     public String toString() {
         return "Enemy{enemyType = " + enemyType + ", enemyHP = " + enemyHP + "}";
+    }
+
+    public double getEnemyAngle() {
+        return enemyAngle;
     }
 }
