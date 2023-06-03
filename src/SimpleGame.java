@@ -303,9 +303,9 @@ public class SimpleGame extends GameEngine {
                     bulletIterator.remove();
                 }
                 if(PlayerPlane.playerNumber == 2){
-                if(bullet.getBulletType()==BulletType.LASER_BULLET &&(((laserCount[1] == 0)||bullet.getRestInterval()==0)&&((LaserBullet) bullet).getLaserNumber()==2)){
-                    bulletIterator.remove();
-                }}
+                    if(bullet.getBulletType()==BulletType.LASER_BULLET &&(((laserCount[1] == 0)||bullet.getRestInterval()==0)&&((LaserBullet) bullet).getLaserNumber()==2)){
+                        bulletIterator.remove();
+                    }}
             }
             if ((bullet.getY() < -bullet.getHeight() / 2 || bullet.getY() > gameHeight + bullet.getHeight() / 2)&&bullet.getBulletType()!=BulletType.LASER_BULLET) {
                 bulletIterator.remove();
@@ -431,7 +431,8 @@ public class SimpleGame extends GameEngine {
                     System.out.println("Hit!!"); //TODO: only for test
                     enemy.setEnemyHP(enemy.getEnemyHP() - bullet.getDamage());
                     checkEnemyHP(enemy);
-                    bulletIterator.remove();
+                    if(bullet.getBulletType() != BulletType.LASER_BULLET){
+                    bulletIterator.remove();}
                 }
             }
         }
@@ -678,7 +679,7 @@ public class SimpleGame extends GameEngine {
             for(Bullet bullet : friendlyBulletList){
                 if(bullet instanceof LaserBullet laserBullet){
                     if(bullet.getBulletType() == BulletType.LASER_BULLET && laserBullet.getLaserNumber()==1){
-                    bullet.setRestInterval(bullet.getRestInterval()-1);
+                        bullet.setRestInterval(bullet.getRestInterval()-1);
                     }
                 }
             }
@@ -780,11 +781,11 @@ public class SimpleGame extends GameEngine {
                 if(intervalCounter % bulletInterval_simple == 0){
                     int x = rand(10);
                     if(x < 3)
-                    enemyBulletList.add(new Bullet(bulletX_simple_left, bulletY_simple_left, bulletVx_simpe, bulletVy_simple_side, bulletWidth_simple, bulletHeight_simple, bulletImage_simple_side, BulletType.NORMAL_BULLET_SIDE, bulletDamage_simple_side, bulletInterval_simple));
+                        enemyBulletList.add(new Bullet(bulletX_simple_left, bulletY_simple_left, bulletVx_simpe, bulletVy_simple_side, bulletWidth_simple, bulletHeight_simple, bulletImage_simple_side, BulletType.NORMAL_BULLET_SIDE, bulletDamage_simple_side, bulletInterval_simple));
                     else if(x < 6)
-                    enemyBulletList.add(new Bullet(bulletX_simple_right, bulletY_simple_right, bulletVx_simpe, bulletVy_simple_side, bulletWidth_simple, bulletHeight_simple, bulletImage_simple_side, BulletType.NORMAL_BULLET_SIDE, bulletDamage_simple_side, bulletInterval_simple));
+                        enemyBulletList.add(new Bullet(bulletX_simple_right, bulletY_simple_right, bulletVx_simpe, bulletVy_simple_side, bulletWidth_simple, bulletHeight_simple, bulletImage_simple_side, BulletType.NORMAL_BULLET_SIDE, bulletDamage_simple_side, bulletInterval_simple));
                     else
-                    enemyBulletList.add(new Bullet(bulletX_simple, bulletY_simple, bulletVx_simpe, bulletVy_simple, bulletWidth_simple, bulletHeight_simple, bulletImage_simple, BulletType.NORMAL_BULLET, bulletDamage_simple, bulletInterval_simple));
+                        enemyBulletList.add(new Bullet(bulletX_simple, bulletY_simple, bulletVx_simpe, bulletVy_simple, bulletWidth_simple, bulletHeight_simple, bulletImage_simple, BulletType.NORMAL_BULLET, bulletDamage_simple, bulletInterval_simple));
                 }
             }
             else if(enemy.getEnemyType() == EnemyType.IMPACT_BOSS){
