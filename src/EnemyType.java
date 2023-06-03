@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
@@ -17,7 +16,8 @@ public class EnemyType {
     public static final int NORMAL_ENEMY = 0;
     public static final int THREE_MEMBER_GROUP = 1;
     public static final int IMPACT_BOSS = 2;
-    public static final int MISSILE = 3;
+    public static final int MISSILE_ENEMY = 3;
+    public static final int MISSILE = 4;
 
     /**
      * Boss AI related variables.
@@ -25,6 +25,7 @@ public class EnemyType {
     public static boolean timeToStop = false;
     private static boolean goLeft = true;
     public static int moveFrameCount = 0;
+    private static int missileCnt = 0;
 
     /**
      * This class is not allowed to be instantiated.
@@ -41,7 +42,7 @@ public class EnemyType {
      * @param specialEnemyList The list of special enemies.
      */
     public static void specialEnemyPositionController(double dt, int enemyType, ArrayList<Enemy> specialEnemyList) {
-        switch (enemyType){
+        switch (enemyType) {
             case NORMAL_ENEMY:
                 for (Enemy enemy : specialEnemyList) {
                     enemy.updateEnemy(dt);
@@ -121,11 +122,47 @@ public class EnemyType {
                     }
                 }
                 break;
-                case MISSILE:
-//                    for (Enemy enemy : specialEnemyList) {
-//                        enemy.updateEnemy(dt);
-//                    }
-                    break;
+            case MISSILE_ENEMY:
+                for (Enemy enemy : specialEnemyList) {
+                    enemy.updateEnemy(dt);
+                    if ((enemy == specialEnemyList.get(specialEnemyList.size() - 1)) && (enemy.getY() > 200)) {
+                        // If the position of last enemy in the list is larger than 100,
+                        // clear the velocity of all enemies in the list.
+                        clearVelocity(specialEnemyList);
+                    }
+                }
+                if (timeToStop) {
+                    if (specialEnemyList.isEmpty()) {
+                        timeToStop = false;
+                        return;
+                    }
+                    if (goLeft && specialEnemyList.get(0).getX() - specialEnemyList.get(0).getWidth() / 2 > 0) {
+                        for (Enemy enemy : specialEnemyList) {
+                            enemy.setVx(-50);
+                        }
+                    } else if (!goLeft && specialEnemyList.get(specialEnemyList.size() - 1).getX() + specialEnemyList.get(specialEnemyList.size() - 1).getWidth() / 2 < SimpleGame.gameWidth) {
+                        for (Enemy enemy : specialEnemyList) {
+                            enemy.setVx(50);
+                        }
+                    }
+
+                    if (specialEnemyList.get(0).getX() - 200 <= 0) {
+                        goLeft = false;
+                    } else if (specialEnemyList.get(specialEnemyList.size() - 1).getX() + 200 >= SimpleGame.gameWidth) {
+                        goLeft = true;
+                    }
+                    if (moveFrameCount % 200 == 0) {
+                        missileCnt++;
+                        SimpleGame.missileEnemyList.add(new Enemy(specialEnemyList.get(0).getX(), specialEnemyList.get(0).getY() + specialEnemyList.get(0).getHeight() / 2, 0, 100, 50, 50, GameEngine.loadImage("src/resources/BulletAutoMissile.png"), 3, 100));
+                        moveFrameCount = moveFrameCount - 20;
+                        if (missileCnt == 3) {
+                            missileCnt = 0;
+                            moveFrameCount = 0;
+                        }
+                    }
+                    moveFrameCount++;
+                }
+                break;
         }
     }
 
@@ -149,6 +186,7 @@ public class EnemyType {
             }
         }
     }
+
     private static void sprintToTarget(ArrayList<Enemy> specialEnemyList) {
         for (Enemy enemy : specialEnemyList) {
             enemy.setVx(0);
@@ -167,7 +205,6 @@ public class EnemyType {
     }
 
 
-
     public static void clearVelocity(ArrayList<Enemy> specialEnemyList) {
         for (Enemy enemy : specialEnemyList) {
             enemy.setVx(0);
@@ -177,10 +214,10 @@ public class EnemyType {
 
     }
 
-    public static void BossBullet(int x, double bulletX_circle, double bulletY_circle, double bulletWidth_circle, double bulletHeight_circle, Image bulletImage_circle, int bulletDamage_circle, int bulletInterval_circle){
+    public static void BossBullet(int x, double bulletX_circle, double bulletY_circle, double bulletWidth_circle, double bulletHeight_circle, Image bulletImage_circle, int bulletDamage_circle, int bulletInterval_circle) {
         double bulletVx_circle;
         double bulletVy_circle;
-        if(x < 2){
+        if (x < 2) {
             //第四象限
             for (int i = -100; i <= 100; i = i + 30) {
                 bulletVx_circle = i;
@@ -209,8 +246,7 @@ public class EnemyType {
                 bulletVx_circle = abs(tep);
                 SimpleGame.enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
             }
-        }
-        else if(x < 4){
+        } else if (x < 4) {
             //第四象限
             for (int i = -100; i <= 100; i = i + 20) {
                 bulletVx_circle = i;
@@ -239,8 +275,7 @@ public class EnemyType {
                 bulletVx_circle = abs(tep);
                 SimpleGame.enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
             }
-        }
-        else if(x < 6){
+        } else if (x < 6) {
             //第四象限
             for (int i = 10; i <= 100; i = i + 25) {
                 bulletVy_circle = i;
@@ -269,8 +304,7 @@ public class EnemyType {
                 bulletVx_circle = abs(tep);
                 SimpleGame.enemyBulletList.add(new Bullet(bulletX_circle, bulletY_circle, bulletVx_circle, bulletVy_circle, bulletWidth_circle, bulletHeight_circle, bulletImage_circle, BulletType.CIRCLE_BULLET, bulletDamage_circle, bulletInterval_circle));
             }
-        }
-        else {
+        } else {
             //第四象限
             for (int i = 50; i <= 100; i = i + 5) {
                 bulletVy_circle = i;
@@ -301,8 +335,6 @@ public class EnemyType {
             }
         }
     }
-
-
 
 
 }

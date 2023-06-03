@@ -52,7 +52,7 @@ public class SimpleGame extends GameEngine {
 
     private final int[] laserCount = new int[2];
     private ArrayList<Enemy> enemyList;
-    private ArrayList<Enemy> missileEnemyList;
+    public static ArrayList<Enemy> missileEnemyList;
     private ArrayList<Bullet> friendlyBulletList;
 
     public static ArrayList<Bullet> enemyBulletList;
@@ -245,8 +245,8 @@ public class SimpleGame extends GameEngine {
                 }
             }
         } else if (enemyList.size() == 0 && specialEnemyList.size() == 0) {
-            randBoss = new Random().nextInt(1, 3);
-//            randBoss = 2; //TODO: FOR TEST Boss TYPE 2 (IMPACT_BOSS)
+            randBoss = new Random().nextInt(1, 4);
+//            randBoss = 3; //TODO: FOR TEST Boss TYPE 2 (IMPACT_BOSS)
             if (randBoss == EnemyType.THREE_MEMBER_GROUP) {
                 generateEnemies(EnemyType.THREE_MEMBER_GROUP); // Generate special enemies
                 generateEnemies(EnemyType.MISSILE); // Generate missile//TODO:DELETE
@@ -254,6 +254,9 @@ public class SimpleGame extends GameEngine {
             else if (randBoss == EnemyType.IMPACT_BOSS) {
                 generateEnemies(EnemyType.IMPACT_BOSS); // Generate special enemies
                 generateEnemies(EnemyType.MISSILE); // Generate missile//TODO:DELETE
+                EnemyType.moveFrameCount = 0;
+            } else if (randBoss == EnemyType.MISSILE_ENEMY) {
+                generateEnemies(EnemyType.MISSILE_ENEMY); // Generate special enemies
                 EnemyType.moveFrameCount = 0;
             }
             isSpecialEnemy = true;
@@ -293,7 +296,6 @@ public class SimpleGame extends GameEngine {
         enemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
         missileEnemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getY() < -enemy.getHeight()
                 || enemy.getX() > gameWidth + enemy.getWidth() / 2 || enemy.getX() < -enemy.getWidth() / 2 || enemy.getEnemyHP() <= 0);
-//        friendlyBulletList.removeIf(bullet -> (((bullet.getY() < -bullet.getHeight() / 2) || bullet.getY() > gameHeight + bullet.getHeight() / 2)&&bullet.getBulletType()!=BulletType.LASER_BULLET)||(bullet.getBulletType()==BulletType.LASER_BULLET && (((laserCount[0] == 0)||bullet.getRestInterval()==0)&&bullet.get)));
 
         Iterator<Bullet> bulletIterator = friendlyBulletList.iterator();
         while (bulletIterator.hasNext()) {
@@ -600,8 +602,19 @@ public class SimpleGame extends GameEngine {
             double enemyY = -enemyHeight / 2;  //TODO: TO BE CHANGED
             double enemyVx = 0;
             double enemyVy = 100; //200
+            Image enemyImage = loadImage("src/resources/specialEnemy2.jpg"); //TODO: TO BE CHANGED
+            int enemyHp = 3000;  //TODO: TO BE CHANGED
+            specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
+        } else if (enemyType == EnemyType.MISSILE_ENEMY) {
+            // Create impact boss
+            double enemyWidth = 171;  //TODO: TO BE CHANGED
+            double enemyHeight = 111;  //TODO: TO BE CHANGED
+            double enemyX = gameWidth / 2.0;  //TODO: TO BE CHANGED
+            double enemyY = -enemyHeight / 2;  //TODO: TO BE CHANGED
+            double enemyVx = 0;
+            double enemyVy = 100; //200
             Image enemyImage = loadImage("src/resources/EE0.png"); //TODO: TO BE CHANGED
-            int enemyHp = 6000;  //TODO: TO BE CHANGED
+            int enemyHp = 1000;  //TODO: TO BE CHANGED
             specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
         }
 
