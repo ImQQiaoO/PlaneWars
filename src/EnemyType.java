@@ -26,6 +26,8 @@ public class EnemyType {
     private static boolean goLeft = true;
     public static int moveFrameCount = 0;
     private static int missileCnt = 0;
+    public static double restHP = 0;
+    public static double fullHp = 0;
 
     /**
      * This class is not allowed to be instantiated.
@@ -43,12 +45,12 @@ public class EnemyType {
      */
     public static void specialEnemyPositionController(double dt, int enemyType, ArrayList<Enemy> specialEnemyList) {
         switch (enemyType) {
-            case NORMAL_ENEMY:
+            case NORMAL_ENEMY -> {
                 for (Enemy enemy : specialEnemyList) {
                     enemy.updateEnemy(dt);
                 }
-                break;
-            case THREE_MEMBER_GROUP:
+            }
+            case THREE_MEMBER_GROUP -> {
                 for (Enemy enemy : specialEnemyList) {
                     enemy.updateEnemy(dt);
                     if ((enemy == specialEnemyList.get(specialEnemyList.size() - 1)) && (enemy.getY() > 200)) {
@@ -78,9 +80,8 @@ public class EnemyType {
                         goLeft = true;
                     }
                 }
-                break;
-            case IMPACT_BOSS:
-                // 这个boss在就位后会锁定玩家位置，然后向玩家位置冲刺
+            }
+            case IMPACT_BOSS -> {
                 for (Enemy enemy : specialEnemyList) {
                     enemy.updateEnemy(dt);
                     if (enemy.getY() > 150 && moveFrameCount <= 500) {
@@ -121,8 +122,8 @@ public class EnemyType {
                         }
                     }
                 }
-                break;
-            case MISSILE_ENEMY:
+            }
+            case MISSILE_ENEMY -> {
                 for (Enemy enemy : specialEnemyList) {
                     enemy.updateEnemy(dt);
                     if ((enemy == specialEnemyList.get(specialEnemyList.size() - 1)) && (enemy.getY() > 200)) {
@@ -162,8 +163,13 @@ public class EnemyType {
                     }
                     moveFrameCount++;
                 }
-                break;
+            }
         }
+        restHP = 0;
+        for (Enemy enemy : specialEnemyList) {
+            restHP += enemy.getEnemyHP();
+        }
+        System.out.println("restHP/fullHP " + restHP + "/" + fullHp);
     }
 
     private static void moveToTarget(ArrayList<Enemy> specialEnemyList, double targetX) {

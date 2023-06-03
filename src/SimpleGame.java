@@ -590,6 +590,7 @@ public class SimpleGame extends GameEngine {
             double enemyVy = 200; //200
             Image enemyImage = loadImage("src/resources/EE0.png");
             int enemyHp = 2000;
+            EnemyType.fullHp = 2000 * 3;
             Enemy groupEliteEnemyLeft = new Enemy(enemyXL, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
             Enemy groupEliteEnemyMiddle = new Enemy(enemyXM, enemyYMiddle, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
             Enemy groupEliteEnemyRight = new Enemy(enemyXR, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
@@ -604,6 +605,7 @@ public class SimpleGame extends GameEngine {
             double enemyVy = 100; //200
             Image enemyImage = loadImage("src/resources/specialEnemy2.jpg"); //TODO: TO BE CHANGED
             int enemyHp = 3000;  //TODO: TO BE CHANGED
+            EnemyType.fullHp = 3000;
             specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
         } else if (enemyType == EnemyType.MISSILE_ENEMY) {
             // Create impact boss
@@ -614,7 +616,8 @@ public class SimpleGame extends GameEngine {
             double enemyVx = 0;
             double enemyVy = 100; //200
             Image enemyImage = loadImage("src/resources/EE0.png"); //TODO: TO BE CHANGED
-            int enemyHp = 1000;  //TODO: TO BE CHANGED
+            int enemyHp = 4000;  //TODO: TO BE CHANGED
+            EnemyType.fullHp = 4000;
             specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
         }
 
@@ -917,6 +920,12 @@ public class SimpleGame extends GameEngine {
             changeColor(Color.white);
             drawRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
             drawText(160, 320, "Game Paused", "Arial", 40);
+        }
+        if (EnemyType.restHP != 0) {
+            changeColor(new Color(152, 140, 84));
+            drawSolidRectangle(25,50,550,20);
+            changeColor(new Color(243, 0, 0));
+            drawSolidRectangle(25,50,EnemyType.restHP*550 / EnemyType.fullHp,20);
         }
     }
 
