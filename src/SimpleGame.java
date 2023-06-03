@@ -660,13 +660,13 @@ public class SimpleGame extends GameEngine {
 
             }
             if(isLaser[pi]){
-                double bulletWidth = 80;
+                double bulletWidth = 40;
                 double bulletHeight = 1000;
                 double bulletX1 = playerPlane[pi].getX();
                 double bulletY1 = playerPlane[pi].getY() - playerPlane[pi].getHeight()*7.7;
                 double bulletVx = playerPlane[pi].getVx();
                 double bulletVy = playerPlane[pi].getVy();
-                Image bulletImage = loadImage("src/resources/Laser02.png");
+                Image bulletImage = loadImage("src/resources/BulletLaser.png");
                 int bulletDamage = 20;
                 if (laserCount[pi] < 300) {
                     laserCount[pi]++;
@@ -800,14 +800,27 @@ public class SimpleGame extends GameEngine {
 
         // Draw the bullets
         for (Bullet bullet : friendlyBulletList) {
-            if(bullet.getBulletType() == BulletType.MISSILE_BULLET){
-                saveCurrentTransform();
-                translate(bullet.getX(), bullet.getY());
-                rotate(-bullet.getBulletAngle());
-                drawImage(bullet.getImage(), - bullet.getWidth() / 2, - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
-                restoreLastTransform();
-            } else {
-                drawImage(bullet.getImage(), bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
+            switch (bullet.getBulletType()){
+                case BulletType.MISSILE_BULLET -> {
+                    saveCurrentTransform();
+                    translate(bullet.getX(), bullet.getY());
+                    rotate(-bullet.getBulletAngle());
+                    drawImage(bullet.getImage(), - bullet.getWidth() / 2, - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
+                    restoreLastTransform();
+                }
+                case BulletType.LASER_BULLET -> {
+                    LaserBullet laserBullet = (LaserBullet) bullet;
+                    int laserNumber = laserBullet.getLaserNumber();
+                    int alpha;
+                    int count = laserCount[laserNumber-1];
+                    if(count > 300-25){
+                        alpha = 255-(count - (300-25)) * 10;
+                    } else {
+                        alpha = 255;
+                    }
+                    drawImage(bullet.getImage(), bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight(), alpha);
+                }
+                default -> drawImage(bullet.getImage(), bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
             }
         }
 
