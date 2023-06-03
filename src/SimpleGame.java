@@ -343,12 +343,13 @@ public class SimpleGame extends GameEngine {
         System.out.println(isFail);
         if(PlayerPlane.playerNumber == 1){
             if (playerPlane[0].getHp() <= 0){
-                System.out.println(playerPlane[0].getHp());
+                playerPlane[0].setPlaneHP(0);
                 explodeList.add(new Explode(playerPlane[0].getX(), playerPlane[0].getY(), 2));
                 isFail = true;}
         }else {
             for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
                 if (playerPlane[pi].getHp() <= 0){
+                    playerPlane[0].setPlaneHP(0);
                     isFail = true;
                 }
             }
@@ -420,8 +421,10 @@ public class SimpleGame extends GameEngine {
                                 playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - 400);
                             } else if (((Enemy) object).getEnemyType() == EnemyType.IMPACT_BOSS) {
                                 playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - 1000);
-                            } else if (((Enemy) object).getEnemyType() == EnemyType.MISSILE) {
-                                playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - 400);
+//                            } else if (((Enemy) object).getEnemyType() == EnemyType.MISSILE) {
+//                                playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - 400);
+                            } else if(((Enemy) object).getEnemyType() == EnemyType.MISSILE_ENEMY){
+                                playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - 600);
                             }
                             System.out.println("Collision!"); //TODO: only for test
                             playerPlane[pi].decreaseHp();
