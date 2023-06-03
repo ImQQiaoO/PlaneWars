@@ -94,7 +94,7 @@ public class PlayerPlane extends GameObject{
     }
 
     public void increaseHp() {
-        if(this.hp <= max_hp - 50) {
+        if(this.hp <= max_hp - 500) {
             this.hp = this.hp + 500;
         }
         else if(this.hp < max_hp){
