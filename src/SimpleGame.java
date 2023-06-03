@@ -431,8 +431,8 @@ public class SimpleGame extends GameEngine {
                     System.out.println("Hit!!"); //TODO: only for test
                     enemy.setEnemyHP(enemy.getEnemyHP() - bullet.getDamage());
                     checkEnemyHP(enemy);
-                    if(bullet.getBulletType() != BulletType.LASER_BULLET)
-                    bulletIterator.remove();
+                    if(bullet.getBulletType() != BulletType.LASER_BULLET) {
+                    bulletIterator.remove();}
                 }
             }
         }
