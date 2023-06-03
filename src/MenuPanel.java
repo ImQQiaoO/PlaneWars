@@ -45,14 +45,15 @@ public class MenuPanel extends JPanel {
         });
         this.add(doublePlayerButton);
 
-        JButton statsButton = GameUtil.createMenuButton("Stats",100,560,180,100,Color.orange);
-        statsButton.addActionListener(e -> {
+        JButton scoreButton = GameUtil.createMenuButton("Score",100,560,180,100,Color.orange);
+        scoreButton.addActionListener(e -> {
             //TODO: Add stats page
             initialize_ChooseSound();
             chooseClip.start();
             frame.setVisible(false);
+            GameEngine.createGame(new ScorePanel(), 60);
         });
-        this.add(statsButton);
+        this.add(scoreButton);
 
         JButton helpButton = GameUtil.createMenuButton("Help",310,560,180,100,Color.cyan);
         helpButton.addActionListener(e -> {
@@ -60,6 +61,7 @@ public class MenuPanel extends JPanel {
             initialize_ChooseSound();
             chooseClip.start();
             frame.setVisible(false);
+            GameEngine.createGame(new HelpPanel(), 60);
         });
         this.add(helpButton);
 
@@ -95,7 +97,7 @@ public class MenuPanel extends JPanel {
         g.drawImage(Launcher.logoIcon.getImage(), 150, 20, 500, 250, null);
     }
 
-    private static void initialize_ChooseSound() {
+    protected static void initialize_ChooseSound() {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/resources/choose.wav"));
             chooseClip = AudioSystem.getClip();

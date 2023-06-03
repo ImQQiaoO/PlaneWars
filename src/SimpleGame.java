@@ -650,7 +650,7 @@ public class SimpleGame extends GameEngine {
             double enemyY = -enemyHeight / 2;  //TODO: TO BE CHANGED
             double enemyVx = 0;
             double enemyVy = 100; //200
-            Image enemyImage = loadImage("src/resources/EE0.png"); //TODO: TO BE CHANGED
+            Image enemyImage = loadImage("src/resources/specialEnemy3.jpg"); //TODO: TO BE CHANGED
             int enemyHp = 4000;  //TODO: TO BE CHANGED
             EnemyType.fullHp = 4000;
             specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
