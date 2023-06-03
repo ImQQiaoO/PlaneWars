@@ -587,7 +587,7 @@ public class SimpleGame extends GameEngine {
             double enemyVx = 0;
             double enemyVy = 200; //200
             Image enemyImage = loadImage("src/resources/EE0.png");
-            int enemyHp = 1000;
+            int enemyHp = 2000;
             Enemy groupEliteEnemyLeft = new Enemy(enemyXL, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
             Enemy groupEliteEnemyMiddle = new Enemy(enemyXM, enemyYMiddle, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
             Enemy groupEliteEnemyRight = new Enemy(enemyXR, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
@@ -601,14 +601,14 @@ public class SimpleGame extends GameEngine {
             double enemyVx = 0;
             double enemyVy = 100; //200
             Image enemyImage = loadImage("src/resources/EE0.png"); //TODO: TO BE CHANGED
-            int enemyHp = 3000;  //TODO: TO BE CHANGED
+            int enemyHp = 6000;  //TODO: TO BE CHANGED
             specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
         }
 
         if(enemyType == EnemyType.MISSILE){
             //test to generate a missile
             System.out.println("generate a missile");
-            missileEnemyList.add(new Enemy(100, 100, 0, 100, 50, 50, loadImage("src/resources/BulletAutoMissile.png"), 3, 10));
+            missileEnemyList.add(new Enemy(100, 100, 0, 100, 50, 50, loadImage("src/resources/BulletAutoMissile.png"), 3, 100));
         }
     }
 
@@ -667,7 +667,7 @@ public class SimpleGame extends GameEngine {
                 double bulletVx = playerPlane[pi].getVx();
                 double bulletVy = playerPlane[pi].getVy();
                 Image bulletImage = loadImage("src/resources/Laser02.png");
-                int bulletDamage = 20;
+                int bulletDamage = 10;
                 if (laserCount[pi] < 300) {
                     laserCount[pi]++;
                 }else{
