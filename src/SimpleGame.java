@@ -42,11 +42,15 @@ public class SimpleGame extends GameEngine {
 
     private final boolean[] isTypeSlash = new boolean[2];
 
+//    private final boolean[] isCreateLaser = new boolean[2];
+
     private final int[] fireCount = new int[2];
 
     private final int[] missileCount = new int[2];
 
     private final int[] missileTime = new int[2];
+
+    private final int[] laserCount = new int[2];
     private ArrayList<Enemy> enemyList;
     private ArrayList<Enemy> missileEnemyList;
     private ArrayList<Bullet> friendlyBulletList;
@@ -104,9 +108,12 @@ public class SimpleGame extends GameEngine {
             isMissile[i] = false;
             isLaser[i] = false;
             isTypeSlash[i] = false;
+//            isCreateLaser[i] = false;
             fireCount[i] = 0;
             missileCount[i] = 0;
             missileTime[i] = 0;
+            laserCount[i] = 0;
+
         }
         startTime = System.currentTimeMillis();// Get the start time of the game
         enemyList = new ArrayList<>(); // Store all enemies in the game
@@ -286,9 +293,28 @@ public class SimpleGame extends GameEngine {
         enemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
         missileEnemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getY() < -enemy.getHeight()
                 || enemy.getX() > gameWidth + enemy.getWidth() / 2 || enemy.getX() < -enemy.getWidth() / 2 || enemy.getEnemyHP() <= 0);
-        friendlyBulletList.removeIf(bullet -> (bullet.getY() < -bullet.getHeight() / 2) || bullet.getY() > gameHeight + bullet.getHeight() / 2);
+//        friendlyBulletList.removeIf(bullet -> (((bullet.getY() < -bullet.getHeight() / 2) || bullet.getY() > gameHeight + bullet.getHeight() / 2)&&bullet.getBulletType()!=BulletType.LASER_BULLET)||(bullet.getBulletType()==BulletType.LASER_BULLET && (((laserCount[0] == 0)||bullet.getRestInterval()==0)&&bullet.get)));
+
+        Iterator<Bullet> bulletIterator = friendlyBulletList.iterator();
+        while (bulletIterator.hasNext()) {
+            Bullet bullet = bulletIterator.next();
+            if (bullet instanceof LaserBullet) {
+                if(bullet.getBulletType()==BulletType.LASER_BULLET &&(((laserCount[0] == 0)||bullet.getRestInterval()==0)&&((LaserBullet) bullet).getLaserNumber()==1)){
+                    bulletIterator.remove();
+                }
+                if(PlayerPlane.playerNumber == 2){
+                if(bullet.getBulletType()==BulletType.LASER_BULLET &&(((laserCount[1] == 0)||bullet.getRestInterval()==0)&&((LaserBullet) bullet).getLaserNumber()==2)){
+                    bulletIterator.remove();
+                }}
+            }
+            if ((bullet.getY() < -bullet.getHeight() / 2 || bullet.getY() > gameHeight + bullet.getHeight() / 2)&&bullet.getBulletType()!=BulletType.LASER_BULLET) {
+                bulletIterator.remove();
+            }
+        }
+
+
         specialEnemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
-        enemyBulletList.removeIf(bullet -> (bullet.getY() < -bullet.getHeight() / 2) || bullet.getY() > gameHeight + bullet.getHeight() / 2);
+        enemyBulletList.removeIf(bullet -> (bullet.getY() < -bullet.getHeight() / 2) || (bullet.getY() > gameHeight + bullet.getHeight() / 2));
 
         itemList.removeIf(item -> (item.getY() > gameHeight + item.getHeight() / 2) || item.getY() < -item.getHeight() / 2
                 || item.getX() > gameWidth + item.getWidth() / 2 || item.getX() < -item.getWidth() / 2 || item.isCollected());
@@ -489,6 +515,9 @@ public class SimpleGame extends GameEngine {
                         }
                         case Item.ITEM_TYPE_LASER -> {
                             System.out.println("Collected: ITEM_TYPE_LASER");    //TODO: add item effect
+//                            isCreateLaser[pi] = true;
+                            isLaser[pi] =true;
+                            laserCount[pi] = 0;
                         }
                         case Item.ITEM_TYPE_MISSILE -> {
                             System.out.println("Collected: ITEM_TYPE_MISSILE");    //TODO: add item effect
@@ -628,7 +657,32 @@ public class SimpleGame extends GameEngine {
             }
 
         }
+        if(isLaser[0]){
+            double bulletWidth = 80;
+            double bulletHeight = 1000;
+            double bulletX1 = playerPlane[0].getX();
+            double bulletY1 = playerPlane[0].getY() - playerPlane[0].getHeight()*7.7;
+            double bulletVx = playerPlane[0].getVx();
+            double bulletVy = playerPlane[0].getVy();
+            Image bulletImage = loadImage("src/resources/Laser02.png");
+            int bulletDamage = 20;
+            if (laserCount[0] < 300) {
+                laserCount[0]++;
+            }else{
+                laserCount[0] = 0;
+                isLaser[0] = false;
+//                isCreateLaser[0] = false;
+            }
 
+            friendlyBulletList.add(new LaserBullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.LASER_BULLET, bulletDamage, 1,1));
+            for(Bullet bullet : friendlyBulletList){
+                if(bullet instanceof LaserBullet laserBullet){
+                    if(bullet.getBulletType() == BulletType.LASER_BULLET && laserBullet.getLaserNumber()==1){
+                    bullet.setRestInterval(bullet.getRestInterval()-1);
+                    }
+                }
+            }
+        }
         // Player 2
         if (PlayerPlane.playerNumber == 2) {
             if (isNormal[1]) {
@@ -667,6 +721,32 @@ public class SimpleGame extends GameEngine {
                         fireCount[1] = 0;
                         isFire[1] = false;
                         isNormal[1] = true;
+                    }
+                }
+            }
+            if(isLaser[1]){
+                double bulletWidth = 80;
+                double bulletHeight = 1000;
+                double bulletX1 = playerPlane[1].getX();
+                double bulletY1 = playerPlane[1].getY() - playerPlane[1].getHeight()*7.7;
+                double bulletVx = playerPlane[1].getVx();
+                double bulletVy = playerPlane[1].getVy();
+                Image bulletImage = loadImage("src/resources/Laser02.png");
+                int bulletDamage = 20;
+                if (laserCount[1] < 300) {
+                    laserCount[1]++;
+                }else{
+                    laserCount[1] = 0;
+                    isLaser[1] = false;
+//                isCreateLaser[0] = false;
+                }
+
+                friendlyBulletList.add(new LaserBullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.LASER_BULLET, bulletDamage, 1,2));
+                for(Bullet bullet : friendlyBulletList){
+                    if(bullet instanceof LaserBullet laserBullet){
+                        if(bullet.getBulletType() == BulletType.LASER_BULLET && laserBullet.getLaserNumber()==2){
+                            bullet.setRestInterval(bullet.getRestInterval()-1);
+                        }
                     }
                 }
             }

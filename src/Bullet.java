@@ -10,6 +10,17 @@ public class Bullet extends GameObject{
      * shootInterval: The interval between two shots of the same type of bullet(Frames).
      */
     private int shootInterval;
+    private int restInterval;
+
+    public int getRestInterval() {
+        return restInterval;
+    }
+
+    public void setRestInterval(int restInterval) {
+        this.restInterval = restInterval;
+    }
+
+
 
     /**
      * Constructor of Bullet
@@ -28,7 +39,9 @@ public class Bullet extends GameObject{
         this.bulletType = bulletType;
         this.damage = damage;
         this.shootInterval = shootInterval;
+        this.restInterval = 2;
     }
+
 
     public void updateBullet(double dt) {
         updateLocation(dt);
