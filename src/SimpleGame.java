@@ -16,6 +16,7 @@ public class SimpleGame extends GameEngine {
     private final int bulletDamage_simple = 100;
     private final int bulletDamage_simple_side = 200;
     private final int bulletDamage_circle = 200;
+    private int score;
 
     public static boolean isSinglePlayer; // make it static
 
@@ -29,6 +30,7 @@ public class SimpleGame extends GameEngine {
     boolean isSKeyPressed = false;
     boolean hasAddButtons = false;
     boolean isPaused = false;
+    boolean isFail = false;
 
     private static Clip clip_background, clip_shoot, clip_explode, clip_missile;
     public static final PlayerPlane[] playerPlane = new PlayerPlane[2];
@@ -158,6 +160,22 @@ public class SimpleGame extends GameEngine {
         }
     }
 
+    private void addFailButtons() {
+        if(!hasAddButtons){
+            hasAddButtons = true;
+//            JButton continueButton = GameUtil.createNormalButton("Continue", 150, 360, 130, 50, Color.GREEN);
+            JButton quitButton = GameUtil.createNormalButton("Quit", 225, 400, 130, 50, Color.RED);
+            this.mPanel.add(quitButton);
+            quitButton.addActionListener(e -> {
+                clip_background.stop();
+                this.mFrame.dispose();
+                MenuPanel.replayBackgroundClip();
+                MenuPanel.frame.setVisible(true);
+            });
+            this.mPanel.setLayout(null);
+        }
+    }
+
     private void checkCollision() {
         // Check collision between player plane and walls
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
@@ -182,7 +200,7 @@ public class SimpleGame extends GameEngine {
 
     @Override
     public void update(double dt) {
-        if(isPaused){
+        if(isPaused || isFail){
             return;
         }
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
@@ -321,6 +339,20 @@ public class SimpleGame extends GameEngine {
         itemList.removeIf(item -> (item.getY() > gameHeight + item.getHeight() / 2) || item.getY() < -item.getHeight() / 2
                 || item.getX() > gameWidth + item.getWidth() / 2 || item.getX() < -item.getWidth() / 2 || item.isCollected());
         explodeList.removeIf(explode -> explode.getExplosionIndex() == 0);
+
+        System.out.println(isFail);
+        if(PlayerPlane.playerNumber == 1){
+            if (playerPlane[0].getHp() <= 0){
+                System.out.println(playerPlane[0].getHp());
+                explodeList.add(new Explode(playerPlane[0].getX(), playerPlane[0].getY(), 2));
+                isFail = true;}
+        }else {
+            for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
+                if (playerPlane[pi].getHp() <= 0){
+                    isFail = true;
+                }
+            }
+        }
     }
 
     private void createMissile() {
@@ -335,10 +367,10 @@ public class SimpleGame extends GameEngine {
                     double bulletVx;
                     double bulletVy;
                     Image bulletImage = loadImage("src/resources/BulletMissile.png");
-                    int bulletDamage = 200;
+                    int bulletDamage = 150;
                     int bulletIntervalP1 = 6;
                     if(missileTime[pi] % bulletIntervalP1 == 0){
-                        if (missileCount[pi] < 20){
+                        if (missileCount[pi] < 10){
                             initialize_MissileSound();
                             clip_missile.start();
                             System.out.println("fire missile");
@@ -444,16 +476,17 @@ public class SimpleGame extends GameEngine {
         if(enemy.getEnemyHP() <= 0) {
             switch (enemy.getEnemyType()){
                 case EnemyType.NORMAL_ENEMY -> {
-                    //TODO: add score
+                    score += 10;
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1));
                 }
                 case EnemyType.THREE_MEMBER_GROUP, EnemyType.IMPACT_BOSS, EnemyType.MISSILE_ENEMY -> {
-                    //TODO: add score
+                    score += 2000;
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 2.5));
                     initialize_ExplodeSound();
                     clip_explode.start();
                 }
                 case EnemyType.MISSILE -> {
+                    score += 2000;
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1.5));
                     initialize_ExplodeSound();
                     clip_explode.start();
@@ -922,6 +955,16 @@ public class SimpleGame extends GameEngine {
             changeColor(Color.white);
             drawRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
             drawText(160, 320, "Game Paused", "Arial", 40);
+        }
+        if(isFail){
+            //Game over
+            changeColor(new Color(255, 255, 255, 50));
+            drawSolidRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
+            addFailButtons();
+            changeColor(Color.white);
+            drawRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
+            drawText(200, 300, "Game over", "Arial", 40);
+            drawText(150, 360, "You final score is: " + score, "Arial", 30);
         }
         if (EnemyType.restHP != 0) {
             changeColor(new Color(152, 140, 84));
