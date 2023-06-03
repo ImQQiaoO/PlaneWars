@@ -343,16 +343,21 @@ public class SimpleGame extends GameEngine {
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
             for (GameObject object : hostileList) {
                 if (isCollision(playerPlane[pi], object)) {
-                    if (object instanceof Enemy) {
+                    if (object instanceof Enemy enemy) {
                         System.out.println("isEnemy");
                         System.out.println("Enemy Type is" + ((Enemy) object).getEnemyType());
+                        if(playerPlane[pi].getProtectTime() <= 0){
+                            int playerDamage = 20;
+                            enemy.setEnemyHP(enemy.getEnemyHP() - playerDamage);
+                            checkEnemyHP(enemy);
+                        }
                     } else if (object instanceof Bullet) {
                         System.out.println("isBullet");
                         System.out.println("Bullet Type is " + ((Bullet) object).getBulletType());
                     }
                     System.out.println("Collision!"); //TODO: only for test
+                    playerPlane[pi].decreaseLife();
                 }
-                playerPlane[pi].decreaseLife();
             }
         }
     }
@@ -376,24 +381,28 @@ public class SimpleGame extends GameEngine {
                 if (isCollision(enemy, bullet)) {
                     System.out.println("Hit!!"); //TODO: only for test
                     enemy.setEnemyHP(enemy.getEnemyHP() - bullet.getDamage());
-                    if(enemy.getEnemyHP() <= 0) {
-                        switch (enemy.getEnemyType()){
-                            case EnemyType.NORMAL_ENEMY -> {
-                                //TODO: add score
-                                explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1));
-                            }
-                            case EnemyType.THREE_MEMBER_GROUP, EnemyType.IMPACT_BOSS -> {
-                                //TODO: add score
-                                explodeList.add(new Explode(enemy.getX(), enemy.getY(), 2.5));
-                                initialize_ExplodeSound();
-                                clip_explode.start();
-                            }
-                            case EnemyType.MISSILE -> {
-                                explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1.5));
-                            }
-                        }
-                    }
+                    checkEnemyHP(enemy);
                     bulletIterator.remove();
+                }
+            }
+        }
+    }
+
+    public void checkEnemyHP(Enemy enemy){
+        if(enemy.getEnemyHP() <= 0) {
+            switch (enemy.getEnemyType()){
+                case EnemyType.NORMAL_ENEMY -> {
+                    //TODO: add score
+                    explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1));
+                }
+                case EnemyType.THREE_MEMBER_GROUP, EnemyType.IMPACT_BOSS -> {
+                    //TODO: add score
+                    explodeList.add(new Explode(enemy.getX(), enemy.getY(), 2.5));
+                    initialize_ExplodeSound();
+                    clip_explode.start();
+                }
+                case EnemyType.MISSILE -> {
+                    explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1.5));
                 }
             }
         }
