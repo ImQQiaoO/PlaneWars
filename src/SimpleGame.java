@@ -431,6 +431,7 @@ public class SimpleGame extends GameEngine {
                     System.out.println("Hit!!"); //TODO: only for test
                     enemy.setEnemyHP(enemy.getEnemyHP() - bullet.getDamage());
                     checkEnemyHP(enemy);
+                    if(bullet.getBulletType() != BulletType.LASER_BULLET)
                     bulletIterator.remove();
                 }
             }
@@ -617,134 +618,66 @@ public class SimpleGame extends GameEngine {
     public void generateFriendlyBullets() {
         // Player 1
         intervalCounter++;  //千万别动！！
-        if (isNormal[0]) {
-            double bulletWidth = 14;
-            double bulletHeight = 29;
-            double bulletX1 = playerPlane[0].getX();
-            double bulletY1 = playerPlane[0].getY() - playerPlane[0].getHeight() / 2;
-            double bulletVx = 0;
-            double bulletVy = -1000;
-            Image bulletImage = loadImage("src/resources/Bullet01.png");
-            int bulletDamage = 50;
-            int bulletIntervalP1 = 10; // TODO: Shoot every 10 frames
-            if (intervalCounter % bulletIntervalP1 == 0) {
-                friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP1));
-                initialize_ShootSound();
-                clip_shoot.start();
-            }
-        }
-        if (isFire[0]) {
-            double bulletWidth = 32;
-            double bulletHeight = 64;
-            double bulletX1 = playerPlane[0].getX();
-            double bulletY1 = playerPlane[0].getY() - playerPlane[0].getHeight() / 2;
-            double bulletVx = 0;
-            double bulletVy = -500;
-            Image bulletImage = loadImage("src/resources/Bullet02.png");
-            int bulletDamage = 100;
-            int bulletIntervalP1 = 8; // TODO: Shoot every 10 frames
-            if (intervalCounter % bulletIntervalP1 == 0) {
-                if (fireCount[0] < 30) {
-                    friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.FIRE_BULLET, bulletDamage, bulletIntervalP1));
-                    initialize_ShootSound();
-                    clip_shoot.start();
-                    fireCount[0]++;
-                } else {
-                    fireCount[0] = 0;
-                    isFire[0] = false;
-                    isNormal[0] = true;
-                }
-            }
-
-        }
-        if(isLaser[0]){
-            double bulletWidth = 80;
-            double bulletHeight = 1000;
-            double bulletX1 = playerPlane[0].getX();
-            double bulletY1 = playerPlane[0].getY() - playerPlane[0].getHeight()*7.7;
-            double bulletVx = playerPlane[0].getVx();
-            double bulletVy = playerPlane[0].getVy();
-            Image bulletImage = loadImage("src/resources/Laser02.png");
-            int bulletDamage = 20;
-            if (laserCount[0] < 300) {
-                laserCount[0]++;
-            }else{
-                laserCount[0] = 0;
-                isLaser[0] = false;
-//                isCreateLaser[0] = false;
-            }
-
-            friendlyBulletList.add(new LaserBullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.LASER_BULLET, bulletDamage, 1,1));
-            for(Bullet bullet : friendlyBulletList){
-                if(bullet instanceof LaserBullet laserBullet){
-                    if(bullet.getBulletType() == BulletType.LASER_BULLET && laserBullet.getLaserNumber()==1){
-                    bullet.setRestInterval(bullet.getRestInterval()-1);
-                    }
-                }
-            }
-        }
-        // Player 2
-        if (PlayerPlane.playerNumber == 2) {
-            if (isNormal[1]) {
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
+            if (isNormal[pi]) {
                 double bulletWidth = 14;
                 double bulletHeight = 29;
-                double bulletX2 = playerPlane[1].getX();
-                double bulletY2 = playerPlane[1].getY() - playerPlane[1].getHeight() / 2;
+                double bulletX1 = playerPlane[pi].getX();
+                double bulletY1 = playerPlane[pi].getY() - playerPlane[pi].getHeight() / 2;
                 double bulletVx = 0;
                 double bulletVy = -1000;
                 Image bulletImage = loadImage("src/resources/Bullet01.png");
                 int bulletDamage = 50;
-                int bulletIntervalP2 = 10; // TODO: Shoot every 10 frames
-                if (intervalCounter % bulletIntervalP2 == 0) {
-                    friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP2));
+                int bulletIntervalP1 = 10; // TODO: Shoot every 10 frames
+                if (intervalCounter % bulletIntervalP1 == 0) {
+                    friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP1));
                     initialize_ShootSound();
                     clip_shoot.start();
                 }
             }
-            if (isFire[1]) {
+            if (isFire[pi]) {
                 double bulletWidth = 32;
                 double bulletHeight = 64;
-                double bulletX1 = playerPlane[1].getX();
-                double bulletY1 = playerPlane[1].getY() - playerPlane[0].getHeight() / 2;
+                double bulletX1 = playerPlane[pi].getX();
+                double bulletY1 = playerPlane[pi].getY() - playerPlane[pi].getHeight() / 2;
                 double bulletVx = 0;
                 double bulletVy = -500;
                 Image bulletImage = loadImage("src/resources/Bullet02.png");
                 int bulletDamage = 100;
-                int bulletIntervalP2 = 8; // TODO: Shoot every 10 frames
-                if (intervalCounter % bulletIntervalP2 == 0) {
-                    if (fireCount[1] < 30) {
-                        friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.FIRE_BULLET, bulletDamage, bulletIntervalP2));
+                int bulletIntervalP1 = 8; // TODO: Shoot every 10 frames
+                if (intervalCounter % bulletIntervalP1 == 0) {
+                    if (fireCount[pi] < 30) {
+                        friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.FIRE_BULLET, bulletDamage, bulletIntervalP1));
                         initialize_ShootSound();
                         clip_shoot.start();
-                        fireCount[1]++;
+                        fireCount[pi]++;
                     } else {
-                        fireCount[1] = 0;
-                        isFire[1] = false;
-                        isNormal[1] = true;
+                        fireCount[pi] = 0;
+                        isFire[pi] = false;
+                        isNormal[pi] = true;
                     }
                 }
+
             }
-            if(isLaser[1]){
+            if(isLaser[pi]){
                 double bulletWidth = 80;
                 double bulletHeight = 1000;
-                double bulletX1 = playerPlane[1].getX();
-                double bulletY1 = playerPlane[1].getY() - playerPlane[1].getHeight()*7.7;
-                double bulletVx = playerPlane[1].getVx();
-                double bulletVy = playerPlane[1].getVy();
+                double bulletX1 = playerPlane[pi].getX();
+                double bulletY1 = playerPlane[pi].getY() - playerPlane[pi].getHeight()*7.7;
+                double bulletVx = playerPlane[pi].getVx();
+                double bulletVy = playerPlane[pi].getVy();
                 Image bulletImage = loadImage("src/resources/Laser02.png");
                 int bulletDamage = 20;
-                if (laserCount[1] < 300) {
-                    laserCount[1]++;
+                if (laserCount[pi] < 300) {
+                    laserCount[pi]++;
                 }else{
-                    laserCount[1] = 0;
-                    isLaser[1] = false;
-//                isCreateLaser[0] = false;
+                    laserCount[pi] = 0;
+                    isLaser[pi] = false;
                 }
-
-                friendlyBulletList.add(new LaserBullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.LASER_BULLET, bulletDamage, 1,2));
+                friendlyBulletList.add(new LaserBullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.LASER_BULLET, bulletDamage, 1,1));
                 for(Bullet bullet : friendlyBulletList){
                     if(bullet instanceof LaserBullet laserBullet){
-                        if(bullet.getBulletType() == BulletType.LASER_BULLET && laserBullet.getLaserNumber()==2){
+                        if(bullet.getBulletType() == BulletType.LASER_BULLET && laserBullet.getLaserNumber()==1){
                             bullet.setRestInterval(bullet.getRestInterval()-1);
                         }
                     }
