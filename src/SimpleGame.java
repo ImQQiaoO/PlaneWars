@@ -343,9 +343,16 @@ public class SimpleGame extends GameEngine {
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
             for (GameObject object : hostileList) {
                 if (isCollision(playerPlane[pi], object)) {
+                    if (object instanceof Enemy) {
+                        System.out.println("isEnemy");
+                        System.out.println("Enemy Type is" + ((Enemy) object).getEnemyType());
+                    } else if (object instanceof Bullet) {
+                        System.out.println("isBullet");
+                        System.out.println("Bullet Type is " + ((Bullet) object).getBulletType());
+                    }
                     System.out.println("Collision!"); //TODO: only for test
-                    playerPlane[pi].decreaseLife();
                 }
+                playerPlane[pi].decreaseLife();
             }
         }
     }

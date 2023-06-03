@@ -133,8 +133,6 @@ public class EnemyType {
                             }
                         }
                     }
-                    //发射子弹
-
                 }
                 break;
                 case MISSILE:
