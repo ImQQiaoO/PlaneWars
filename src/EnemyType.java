@@ -98,39 +98,25 @@ public class EnemyType {
                             // If the game is single player mode, the boss will move to the player's position, only X axis.
                             double playerX = SimpleGame.playerPlane[0].getX();
                             double targetX = playerX - specialEnemyList.get(0).getX();
-                            moveFrameCount++;
-                            if (targetX > 0) {
-                                for (Enemy enemy : specialEnemyList) {
-                                    double vx = targetX * targetX * 0.02;
-                                    if (vx > 100) {
-                                        vx = 100;
-                                    }
-                                    enemy.setVx(vx);
-                                }
-                            } else if (targetX < 0) {
-                                for (Enemy enemy : specialEnemyList) {
-                                    double vx = -targetX * targetX * 0.02;
-                                    if (vx < -100) {
-                                        vx = -100;
-                                    }
-                                    enemy.setVx(vx);
-                                }
-                            }
+                            moveToTarget(specialEnemyList, targetX);
                         } else {
-                            for (Enemy enemy : specialEnemyList) {
-                                enemy.setVx(0);
+                            sprintToTarget(specialEnemyList);
+                        }
+                    } else {
+                        if (moveFrameCount <= 500) {
+                            double playerX1 = SimpleGame.playerPlane[0].getX();
+                            double playerX2 = SimpleGame.playerPlane[1].getX();
+                            double distanceToPlayer1 = Math.abs(playerX1 - specialEnemyList.get(0).getX());
+                            double distanceToPlayer2 = Math.abs(playerX2 - specialEnemyList.get(0).getX());
+                            double targetX;
+                            if (distanceToPlayer1 < distanceToPlayer2) {
+                                targetX = playerX1 - specialEnemyList.get(0).getX();
+                            } else {
+                                targetX = playerX2 - specialEnemyList.get(0).getX();
                             }
-                            //At the same time, the boss sprint to the player's position.
-                            for (Enemy enemy : specialEnemyList) {
-                                enemy.setVy(900);
-                                // If the boss is out of the screen, reset the position of the boss.
-                                if (enemy.getY() > SimpleGame.gameHeight) {
-                                    enemy.setY(-enemy.getHeight());
-//                                enemy.setX(SimpleGame.gameWidth / 2.0);
-                                    moveFrameCount = 0;
-                                    timeToStop = false;
-                                }
-                            }
+                            moveToTarget(specialEnemyList, targetX);
+                        } else {
+                            sprintToTarget(specialEnemyList);
                         }
                     }
                 }
@@ -142,6 +128,45 @@ public class EnemyType {
                     break;
         }
     }
+
+    private static void moveToTarget(ArrayList<Enemy> specialEnemyList, double targetX) {
+        moveFrameCount++;
+        if (targetX > 0) {
+            for (Enemy enemy : specialEnemyList) {
+                double vx = targetX * targetX * 0.02;
+                if (vx > 100) {
+                    vx = 100;
+                }
+                enemy.setVx(vx);
+            }
+        } else if (targetX < 0) {
+            for (Enemy enemy : specialEnemyList) {
+                double vx = -targetX * targetX * 0.02;
+                if (vx < -100) {
+                    vx = -100;
+                }
+                enemy.setVx(vx);
+            }
+        }
+    }
+    private static void sprintToTarget(ArrayList<Enemy> specialEnemyList) {
+        for (Enemy enemy : specialEnemyList) {
+            enemy.setVx(0);
+        }
+        //At the same time, the boss sprint to the player's position.
+        for (Enemy enemy : specialEnemyList) {
+            enemy.setVy(900);
+            // If the boss is out of the screen, reset the position of the boss.
+            if (enemy.getY() > SimpleGame.gameHeight) {
+                enemy.setY(-enemy.getHeight());
+//                                enemy.setX(SimpleGame.gameWidth / 2.0);
+                moveFrameCount = 0;
+                timeToStop = false;
+            }
+        }
+    }
+
+
 
     public static void clearVelocity(ArrayList<Enemy> specialEnemyList) {
         for (Enemy enemy : specialEnemyList) {
