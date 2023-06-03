@@ -447,7 +447,7 @@ public class SimpleGame extends GameEngine {
                     //TODO: add score
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1));
                 }
-                case EnemyType.THREE_MEMBER_GROUP, EnemyType.IMPACT_BOSS -> {
+                case EnemyType.THREE_MEMBER_GROUP, EnemyType.IMPACT_BOSS, EnemyType.MISSILE_ENEMY -> {
                     //TODO: add score
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 2.5));
                     initialize_ExplodeSound();
@@ -455,6 +455,8 @@ public class SimpleGame extends GameEngine {
                 }
                 case EnemyType.MISSILE -> {
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1.5));
+                    initialize_ExplodeSound();
+                    clip_explode.start();
                 }
             }
         }
@@ -614,7 +616,7 @@ public class SimpleGame extends GameEngine {
             double enemyVx = 0;
             double enemyVy = 100; //200
             Image enemyImage = loadImage("src/resources/EE0.png"); //TODO: TO BE CHANGED
-            int enemyHp = 1000;  //TODO: TO BE CHANGED
+            int enemyHp = 3000;  //TODO: TO BE CHANGED
             specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
         }
 
