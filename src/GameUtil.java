@@ -4,8 +4,27 @@
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class GameUtil {
+
+    //Function to create the window and display it
+    public static void setupWindows(JFrame frame, JPanel jPanel, String title) {
+        frame.setLayout(new BorderLayout());
+        frame.setSize(Launcher.WindowWidth, Launcher.WindowHeight);
+        frame.setLocation(Launcher.WindowX,Launcher.WindowY);
+        frame.setTitle(title);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.add(jPanel);
+        frame.setVisible(true);
+        frame.setResizable(false);
+
+        //Resize the window (insets are just the boards that the Operating System puts on the board)
+        Insets insets = frame.getInsets();
+        frame.setSize(Launcher.WindowWidth + insets.left + insets.right,
+                Launcher.WindowHeight + insets.top + insets.bottom);
+    }
 
     public static JButton createMenuButton(String text, int x, int y, int width, int height, Color color) {
         JButton button = new JButton(text);
@@ -48,5 +67,16 @@ public class GameUtil {
         FontMetrics fm = g.getFontMetrics();
         int textHeight = fm.getHeight();
         return (panelHeight - textHeight) / 2 + fm.getAscent();
+    }
+
+    public static Long getTimeStamp() {
+        Date date = new Date();
+        return date.getTime();
+    }
+
+    public static String getDate(Long time) {
+        Date date = new Date(time);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(date);
     }
 }
