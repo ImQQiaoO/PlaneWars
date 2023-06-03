@@ -6,7 +6,7 @@ public class PlayerPlane extends GameObject{
     private double movingSpeed;
     private final int playerID; // 1 for player 1, 2 for player 2
     private int score = 0;
-    private int life = 3;
+    private int hp = 5000;
     private double protectTime = 0;
     private double explosionIndex = 0;
     private Image normalImage;
@@ -64,6 +64,14 @@ public class PlayerPlane extends GameObject{
         }
     }
 
+    public int getPlaneHP() {
+        return hp;
+    }
+
+    public void setPlaneHP(int hp) {
+        this.hp = hp;
+    }
+
     public double getMovingSpeed() {
         return movingSpeed;
     }
@@ -80,19 +88,15 @@ public class PlayerPlane extends GameObject{
         this.score += score;
     }
 
-    public int getLife() {
-        return life;
+    public int getHp() {
+        return hp;
     }
 
-    public void increaseLife() {
-        this.life++;
+    public void increaseHp() {
+        this.hp = this.hp + 500;
     }
 
-    public void decreaseLife() {
-        if(protectTime > 0) {
-            return;
-        }
-        this.life--;
+    public void decreaseHp() {
         protectTime = 3.0;
         setExplosionIndex();
     }

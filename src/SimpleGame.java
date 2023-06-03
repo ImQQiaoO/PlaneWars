@@ -12,7 +12,9 @@ public class SimpleGame extends GameEngine {
 
     public static final int gameWidth = 600;
     public static final int gameHeight = 700;
-
+    private final int bulletDamage_simple = 100;
+    private final int bulletDamage_simple_side = 200;
+    private final int bulletDamage_circle = 200;
 
     public static boolean isSinglePlayer; // make it static
 
@@ -271,7 +273,7 @@ public class SimpleGame extends GameEngine {
                     double bulletVx;
                     double bulletVy;
                     Image bulletImage = loadImage("src/resources/BulletMissile.png");
-                    int bulletDamage = 10;
+                    int bulletDamage = 200;
                     int bulletIntervalP1 = 6;
                     if(missileTime[pi] % bulletIntervalP1 == 0){
                         if (missileCount[pi] < 20){
@@ -314,17 +316,36 @@ public class SimpleGame extends GameEngine {
                     if (object instanceof Enemy enemy) {
                         System.out.println("isEnemy");
                         System.out.println("Enemy Type is" + ((Enemy) object).getEnemyType());
-                        if(playerPlane[pi].getProtectTime() <= 0){
-                            int playerDamage = 20;
+                        if (playerPlane[pi].getProtectTime() <= 0) {
+                            int playerDamage = 200;
                             enemy.setEnemyHP(enemy.getEnemyHP() - playerDamage);
                             checkEnemyHP(enemy);
+                            if (((Enemy) object).getEnemyType() == EnemyType.NORMAL_ENEMY) {
+                                playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - 200);
+                            } else if (((Enemy) object).getEnemyType() == EnemyType.THREE_MEMBER_GROUP) {
+                                playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - 400);
+                            } else if (((Enemy) object).getEnemyType() == EnemyType.IMPACT_BOSS) {
+                                playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - 1000);
+                            } else if (((Enemy) object).getEnemyType() == EnemyType.MISSILE) {
+                                playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - 400);
+                            }
+                            System.out.println("Collision!"); //TODO: only for test
+                            playerPlane[pi].decreaseHp();
                         }
                     } else if (object instanceof Bullet) {
                         System.out.println("isBullet");
                         System.out.println("Bullet Type is " + ((Bullet) object).getBulletType());
+                        if (playerPlane[pi].getProtectTime() <= 0) {
+                            if (((Bullet) object).getBulletType() == BulletType.NORMAL_BULLET) {
+                                playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - bulletDamage_simple);
+                            } else if (((Bullet) object).getBulletType() == BulletType.NORMAL_BULLET_SIDE) {
+                                playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - bulletDamage_simple_side);
+                            } else if (((Bullet) object).getBulletType() == BulletType.CIRCLE_BULLET) {
+                                playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - bulletDamage_circle);
+                            }//TODO: only for test
+                            playerPlane[pi].decreaseHp();
+                        }
                     }
-                    System.out.println("Collision!"); //TODO: only for test
-                    playerPlane[pi].decreaseLife();
                 }
             }
         }
@@ -423,7 +444,7 @@ public class SimpleGame extends GameEngine {
                     // Set item effect
                     switch (item.getItemType()) {
                         case Item.ITEM_TYPE_LIFE -> {
-                            playerPlane[pi].increaseLife();
+                            playerPlane[pi].increaseHp();
                             System.out.println("Collected: ITEM_TYPE_LIFE");
                         }
                         case Item.ITEM_TYPE_FIRE -> {
@@ -462,7 +483,7 @@ public class SimpleGame extends GameEngine {
                 double enemyVx = 0;
                 double enemyVy = 200; //200
                 Image enemyImage = loadImage("src/resources/Enemy01.png");
-                int enemyHp = 5;
+                int enemyHp = 50;
                 enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
             }
             else if(i < 7){
@@ -473,7 +494,7 @@ public class SimpleGame extends GameEngine {
                 double enemyVx = 0;
                 double enemyVy = 100; //100
                 Image enemyImage = loadImage("src/resources/Enemy02.png");
-                int enemyHp = 15;
+                int enemyHp = 100;
                 enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
             }
             else{
@@ -484,7 +505,7 @@ public class SimpleGame extends GameEngine {
                 double enemyVx = 0;
                 double enemyVy = 150; //200
                 Image enemyImage = loadImage("src/resources/Enemy03.png");
-                int enemyHp = 10;
+                int enemyHp = 200;
                 enemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
             }
 
@@ -502,7 +523,7 @@ public class SimpleGame extends GameEngine {
             double enemyVx = 0;
             double enemyVy = 200; //200
             Image enemyImage = loadImage("src/resources/EE0.png");
-            int enemyHp = 100;
+            int enemyHp = 1000;
             Enemy groupEliteEnemyLeft = new Enemy(enemyXL, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
             Enemy groupEliteEnemyMiddle = new Enemy(enemyXM, enemyYMiddle, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
             Enemy groupEliteEnemyRight = new Enemy(enemyXR, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
@@ -516,7 +537,7 @@ public class SimpleGame extends GameEngine {
             double enemyVx = 0;
             double enemyVy = 100; //200
             Image enemyImage = loadImage("src/resources/EE0.png"); //TODO: TO BE CHANGED
-            int enemyHp = 100;  //TODO: TO BE CHANGED
+            int enemyHp = 3000;  //TODO: TO BE CHANGED
             specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
         }
 
@@ -541,7 +562,7 @@ public class SimpleGame extends GameEngine {
             double bulletVx = 0;
             double bulletVy = -1000;
             Image bulletImage = loadImage("src/resources/Bullet01.png");
-            int bulletDamage = 5;
+            int bulletDamage = 50;
             int bulletIntervalP1 = 10; // TODO: Shoot every 10 frames
             if (intervalCounter % bulletIntervalP1 == 0) {
                 friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP1));
@@ -557,7 +578,7 @@ public class SimpleGame extends GameEngine {
             double bulletVx = 0;
             double bulletVy = -500;
             Image bulletImage = loadImage("src/resources/Bullet02.png");
-            int bulletDamage = 5;
+            int bulletDamage = 100;
             int bulletIntervalP1 = 8; // TODO: Shoot every 10 frames
             if (intervalCounter % bulletIntervalP1 == 0) {
                 if (fireCount[0] < 30) {
@@ -584,7 +605,7 @@ public class SimpleGame extends GameEngine {
                 double bulletVx = 0;
                 double bulletVy = -1000;
                 Image bulletImage = loadImage("src/resources/Bullet01.png");
-                int bulletDamage = 5;
+                int bulletDamage = 50;
                 int bulletIntervalP2 = 10; // TODO: Shoot every 10 frames
                 if (intervalCounter % bulletIntervalP2 == 0) {
                     friendlyBulletList.add(new Bullet(bulletX2, bulletY2, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP2));
@@ -600,7 +621,7 @@ public class SimpleGame extends GameEngine {
                 double bulletVx = 0;
                 double bulletVy = -500;
                 Image bulletImage = loadImage("src/resources/Bullet02.png");
-                int bulletDamage = 5;
+                int bulletDamage = 100;
                 int bulletIntervalP2 = 8; // TODO: Shoot every 10 frames
                 if (intervalCounter % bulletIntervalP2 == 0) {
                     if (fireCount[1] < 30) {
@@ -638,17 +659,16 @@ public class SimpleGame extends GameEngine {
                 double bulletVy_simple_side = 200;
                 Image bulletImage_simple = loadImage("src/resources/Bullet01.png");
                 Image bulletImage_simple_side = loadImage("src/resources/Bullet04.png");
-                int bulletDamage_simple = 1;
-                int bulletDamage_simple_side = 2;
+
                 int bulletInterval_simple = 30;// TODO: Shoot every 30 frames
 
                 //Randomly fire the center and side rounds
                 if(intervalCounter % bulletInterval_simple == 0){
                     int x = rand(10);
                     if(x < 3)
-                    enemyBulletList.add(new Bullet(bulletX_simple_left, bulletY_simple_left, bulletVx_simpe, bulletVy_simple_side, bulletWidth_simple, bulletHeight_simple, bulletImage_simple_side, BulletType.NORMAL_BULLET, bulletDamage_simple_side, bulletInterval_simple));
+                    enemyBulletList.add(new Bullet(bulletX_simple_left, bulletY_simple_left, bulletVx_simpe, bulletVy_simple_side, bulletWidth_simple, bulletHeight_simple, bulletImage_simple_side, BulletType.NORMAL_BULLET_SIDE, bulletDamage_simple_side, bulletInterval_simple));
                     else if(x < 6)
-                    enemyBulletList.add(new Bullet(bulletX_simple_right, bulletY_simple_right, bulletVx_simpe, bulletVy_simple_side, bulletWidth_simple, bulletHeight_simple, bulletImage_simple_side, BulletType.NORMAL_BULLET, bulletDamage_simple_side, bulletInterval_simple));
+                    enemyBulletList.add(new Bullet(bulletX_simple_right, bulletY_simple_right, bulletVx_simpe, bulletVy_simple_side, bulletWidth_simple, bulletHeight_simple, bulletImage_simple_side, BulletType.NORMAL_BULLET_SIDE, bulletDamage_simple_side, bulletInterval_simple));
                     else
                     enemyBulletList.add(new Bullet(bulletX_simple, bulletY_simple, bulletVx_simpe, bulletVy_simple, bulletWidth_simple, bulletHeight_simple, bulletImage_simple, BulletType.NORMAL_BULLET, bulletDamage_simple, bulletInterval_simple));
                 }
@@ -660,7 +680,6 @@ public class SimpleGame extends GameEngine {
                 double bulletX_circle = enemy.getX();
                 double bulletY_circle = enemy.getY();
                 Image bulletImage_circle = loadImage("src/resources/Bullet03.png");
-                int bulletDamage_circle = 5;
                 int bulletInterval_circle = 100;
                 if(intervalCounter % bulletInterval_circle == 0) {
                     //修改发射散弹函数
@@ -805,7 +824,7 @@ public class SimpleGame extends GameEngine {
 
         changeColor(white);//TODO: for testing only
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
-            drawText(20 + 300 * pi, 50, "Player " + (pi + 1) + " Life: " + playerPlane[pi].getLife());
+            drawText(20 + 300 * pi, 50, "Player " + (pi + 1) + " HP: " + playerPlane[pi].getHp());
         }
 
         // Draw the item
