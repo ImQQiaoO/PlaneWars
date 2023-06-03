@@ -1,4 +1,5 @@
 import javax.sound.sampled.*;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -26,6 +27,8 @@ public class SimpleGame extends GameEngine {
     boolean isDKeyPressed = false;
     boolean isWKeyPressed = false;
     boolean isSKeyPressed = false;
+    boolean hasAddButtons = false;
+    boolean isPaused = false;
 
     private static Clip clip_background, clip_shoot, clip_explode, clip_missile;
     public static final PlayerPlane[] playerPlane = new PlayerPlane[2];
@@ -120,6 +123,34 @@ public class SimpleGame extends GameEngine {
 
     }
 
+    private void addPauseButtons() {
+        if(!hasAddButtons){
+            hasAddButtons = true;
+            JButton continueButton = GameUtil.createNormalButton("Continue", 150, 360, 130, 50, Color.GREEN);
+            JButton quitButton = GameUtil.createNormalButton("Quit", 320, 360, 130, 50, Color.RED);
+            this.mPanel.add(continueButton);
+            this.mPanel.add(quitButton);
+            continueButton.addActionListener(e -> {
+                hasAddButtons = false;
+                isPaused = false;
+                this.mPanel.requestFocus();
+                this.mPanel.remove(continueButton);
+                this.mPanel.remove(quitButton);
+            });
+            quitButton.addActionListener(e -> {
+                clip_background.stop();
+//                hasAddButtons = false;
+//                this.mPanel.requestFocus();
+//                this.mPanel.remove(continueButton);
+//                this.mPanel.remove(quitButton);
+                this.mFrame.dispose();
+                MenuPanel.replayBackgroundClip();
+                MenuPanel.frame.setVisible(true);
+            });
+            this.mPanel.setLayout(null);
+        }
+    }
+
     private void checkCollision() {
         // Check collision between player plane and walls
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
@@ -144,6 +175,9 @@ public class SimpleGame extends GameEngine {
 
     @Override
     public void update(double dt) {
+        if(isPaused){
+            return;
+        }
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
             playerPlane[pi].updatePlane(dt);
         }
@@ -831,11 +865,28 @@ public class SimpleGame extends GameEngine {
         for (Item item : itemList) {
             drawImage(item.getImage(), item.getX() - item.getWidth() / 2, item.getY() - item.getHeight() / 2, item.getWidth(), item.getHeight());
         }
+
+        // Draw the pause notice
+        if (isPaused) {
+            //Game Pause
+            changeColor(new Color(255, 255, 255, 50));
+            drawSolidRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
+            addPauseButtons();
+            changeColor(Color.white);
+            drawRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
+            drawText(160, 320, "Game Paused", "Arial", 40);
+        }
     }
 
     // Called whenever a key is pressed
     @SuppressWarnings("Duplicates")
     public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_P) {
+            // Pause the game
+            if(!isPaused){
+                isPaused = true;
+            }
+        }
         //-------------------------------------------------------
         // Player 1 Key Control
         //-------------------------------------------------------

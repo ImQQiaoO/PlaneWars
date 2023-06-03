@@ -9,18 +9,18 @@ import java.io.IOException;
 //-------------------------------------------------------
 public class MenuPanel extends JPanel {
     public static JFrame frame = new JFrame();
-    private static Clip clip, clip2;
+    public static Clip backgroundClip, chooseClip;
     public MenuPanel() {
         setupWindow(Launcher.WindowWidth,Launcher.WindowHeight);
         setupButtons();
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File("src/resources/background.wav"));
-            clip = AudioSystem.getClip();
-            clip.open(audioIn);
+            backgroundClip = AudioSystem.getClip();
+            backgroundClip.open(audioIn);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
+        backgroundClip.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
     //Create the buttons in Menu
@@ -28,8 +28,8 @@ public class MenuPanel extends JPanel {
         JButton singlePlayerButton = GameUtil.createMenuButton("Single Player",GameUtil.centerComponentsX(500,0,Launcher.WindowWidth),300,500,100,Color.green);
         singlePlayerButton.addActionListener(e -> {
             initialize_ChooseSound();
-            clip2.start();
-            clip.stop();
+            chooseClip.start();
+            backgroundClip.stop();
             GameEngine.createGame(new SimpleGame(true), 60);
             frame.setVisible(false);
         });
@@ -38,8 +38,8 @@ public class MenuPanel extends JPanel {
         JButton doublePlayerButton = GameUtil.createMenuButton("Double Player",GameUtil.centerComponentsX(500,0,Launcher.WindowWidth),430,500,100,Color.blue);
         doublePlayerButton.addActionListener(e -> {
             initialize_ChooseSound();
-            clip2.start();
-            clip.stop();
+            chooseClip.start();
+            backgroundClip.stop();
             GameEngine.createGame(new SimpleGame(false), 60);
             frame.setVisible(false);
         });
@@ -49,7 +49,7 @@ public class MenuPanel extends JPanel {
         statsButton.addActionListener(e -> {
             //TODO: Add stats page
             initialize_ChooseSound();
-            clip2.start();
+            chooseClip.start();
             frame.setVisible(false);
         });
         this.add(statsButton);
@@ -58,7 +58,7 @@ public class MenuPanel extends JPanel {
         helpButton.addActionListener(e -> {
             //TODO: Add help page
             initialize_ChooseSound();
-            clip2.start();
+            chooseClip.start();
             frame.setVisible(false);
         });
         this.add(helpButton);
@@ -98,10 +98,15 @@ public class MenuPanel extends JPanel {
     private static void initialize_ChooseSound() {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/resources/choose.wav"));
-            clip2 = AudioSystem.getClip();
-            clip2.open(audioInputStream);
+            chooseClip = AudioSystem.getClip();
+            chooseClip.open(audioInputStream);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void replayBackgroundClip(){
+        backgroundClip.setFramePosition(0);
+        backgroundClip.start();
     }
 }

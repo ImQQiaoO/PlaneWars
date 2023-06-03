@@ -18,6 +18,17 @@ public class GameUtil {
         return button;
     }
 
+    public static JButton createNormalButton(String text, int x, int y, int width, int height, Color color) {
+        JButton button = new JButton(text);
+        button.setBounds(x,y,width,height);
+        button.setFont(new Font("Arial",Font.BOLD,20));
+        button.setForeground(Color.white);
+        button.setBackground(color);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        return button;
+    }
+
     //-------------------------------------------------------
     // Functions to center text and components
     //-------------------------------------------------------
