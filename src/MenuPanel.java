@@ -61,6 +61,7 @@ public class MenuPanel extends JPanel {
             initialize_ChooseSound();
             chooseClip.start();
             frame.setVisible(false);
+            GameEngine.createGame(new HelpPanel(), 60);
         });
         this.add(helpButton);
 

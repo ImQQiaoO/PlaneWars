@@ -49,8 +49,9 @@ public class ScorePanel extends GameEngine {
     public void paintComponent() {
         changeBackgroundColor(black);
         clearBackground(Launcher.WindowWidth, Launcher.WindowHeight);
+        changeColor(orange);
+        drawBoldText(270, 70, "Score List", "Arial", 50);
         changeColor(white);
-        drawText(300, 70, "Score List", "Arial", 50);
         drawText(100, 120, "Rank", "Arial", 30);
         drawText(210, 120, "GameMode", "Arial", 30);
         drawText(410, 120, "Score", "Arial", 30);
