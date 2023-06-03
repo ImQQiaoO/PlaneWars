@@ -6,6 +6,7 @@ public class PlayerPlane extends GameObject{
     private double movingSpeed;
     private final int playerID; // 1 for player 1, 2 for player 2
     private int score = 0;
+    private int max_hp = 5000;
     private int hp = 5000;
     private double protectTime = 0;
     private double explosionIndex = 0;
@@ -93,11 +94,16 @@ public class PlayerPlane extends GameObject{
     }
 
     public void increaseHp() {
-        this.hp = this.hp + 500;
+        if(this.hp <= max_hp - 500) {
+            this.hp = this.hp + 500;
+        }
+        else if(this.hp < max_hp){
+            this.hp = max_hp;
+        }
     }
 
     public void decreaseHp() {
-        protectTime = 3.0;
+        protectTime = 1.0;
         setExplosionIndex();
     }
 
