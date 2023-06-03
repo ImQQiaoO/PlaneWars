@@ -432,7 +432,7 @@ public class SimpleGame extends GameEngine {
                     enemy.setEnemyHP(enemy.getEnemyHP() - bullet.getDamage());
                     checkEnemyHP(enemy);
                     if(bullet.getBulletType() != BulletType.LASER_BULLET)
-                    bulletIterator.remove();
+                        bulletIterator.remove();
                 }
             }
         }
@@ -674,10 +674,10 @@ public class SimpleGame extends GameEngine {
                     laserCount[pi] = 0;
                     isLaser[pi] = false;
                 }
-                friendlyBulletList.add(new LaserBullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.LASER_BULLET, bulletDamage, 1,1));
+                friendlyBulletList.add(new LaserBullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.LASER_BULLET, bulletDamage, 1,pi+1));
                 for(Bullet bullet : friendlyBulletList){
                     if(bullet instanceof LaserBullet laserBullet){
-                        if(bullet.getBulletType() == BulletType.LASER_BULLET && laserBullet.getLaserNumber()==1){
+                        if(bullet.getBulletType() == BulletType.LASER_BULLET && laserBullet.getLaserNumber()==pi+1){
                             bullet.setRestInterval(bullet.getRestInterval()-1);
                         }
                     }
@@ -775,34 +775,6 @@ public class SimpleGame extends GameEngine {
         changeBackgroundColor(black);
         clearBackground(gameWidth, gameHeight);
 
-        // Draw the plane
-        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
-            // Draw the player plane
-            int alpha = 255;
-            if (playerPlane[pi].getProtectTime() > 0) {
-                alpha = 150;
-            }
-            double playerPlaneWidth = playerPlane[pi].getWidth();
-            double playerPlaneHeight = playerPlane[pi].getHeight();
-            drawImage(playerPlane[pi].getImage(), playerPlane[pi].getX() - playerPlaneWidth / 2, playerPlane[pi].getY() - playerPlaneHeight / 2, playerPlaneWidth, playerPlaneHeight, alpha);
-            // Draw the tail fire
-            double tailFireWidth = PlayerPlane.normalTailFireImage.getWidth(null);
-            double tailFireHeight = PlayerPlane.normalTailFireImage.getHeight(null);
-            if (playerPlane[pi].getVy() < 0) {
-                tailFireHeight = tailFireHeight * 2;    // If the plane is moving up, the tail fire is longer
-            } else if (playerPlane[pi].getVy() > 0) {
-                tailFireHeight = tailFireHeight / 2;    // If the plane is moving down, the tail fire is shorter
-            }
-            drawImage(PlayerPlane.normalTailFireImage, playerPlane[pi].getX() - tailFireWidth / 2.0, playerPlane[pi].getY() + playerPlaneHeight / 2, tailFireWidth, tailFireHeight, alpha);
-            drawImage(PlayerPlane.normalTailFireImage, playerPlane[pi].getX()-tailFireWidth/2.0, playerPlane[pi].getY()+playerPlaneHeight/2, tailFireWidth, tailFireHeight, alpha);
-            // Draw the plane explosion
-            double explosionIndex = playerPlane[pi].getExplosionIndex();
-            if(explosionIndex > 0){
-                int explosionFrameIndex = floor(16 - explosionIndex);
-                drawImage(Explode.frames[explosionFrameIndex], playerPlane[pi].getX()-playerPlaneWidth/2, playerPlane[pi].getY()-playerPlaneHeight/2, playerPlaneWidth, playerPlaneHeight);
-            }
-        }
-
         // Draw the enemies
         for (Enemy enemy : enemyList) {
             drawImage(enemy.getImage(), enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
@@ -812,6 +784,7 @@ public class SimpleGame extends GameEngine {
         for (Enemy enemy : specialEnemyList) {
             drawImage(enemy.getImage(), enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
         }
+
 
         //Draw the missile
         for (Enemy enemy : missileEnemyList) {
@@ -838,6 +811,34 @@ public class SimpleGame extends GameEngine {
             }
         }
 
+        // Draw the plane
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
+            // Draw the player plane
+            int alpha = 255;
+            if (playerPlane[pi].getProtectTime() > 0) {
+                alpha = 150;
+            }
+            double playerPlaneWidth = playerPlane[pi].getWidth();
+            double playerPlaneHeight = playerPlane[pi].getHeight();
+            drawImage(playerPlane[pi].getImage(), playerPlane[pi].getX() - playerPlaneWidth / 2, playerPlane[pi].getY() - playerPlaneHeight / 2, playerPlaneWidth, playerPlaneHeight, alpha);
+            // Draw the tail fire
+            double tailFireWidth = PlayerPlane.normalTailFireImage.getWidth(null);
+            double tailFireHeight = PlayerPlane.normalTailFireImage.getHeight(null);
+            if (playerPlane[pi].getVy() < 0 && !isPaused) {
+                tailFireHeight = tailFireHeight * 2;    // If the plane is moving up, the tail fire is longer
+            } else if (playerPlane[pi].getVy() > 0 && !isPaused) {
+                tailFireHeight = tailFireHeight / 2;    // If the plane is moving down, the tail fire is shorter
+            }
+            drawImage(PlayerPlane.normalTailFireImage, playerPlane[pi].getX() - tailFireWidth / 2.0, playerPlane[pi].getY() + playerPlaneHeight / 2, tailFireWidth, tailFireHeight, alpha);
+            drawImage(PlayerPlane.normalTailFireImage, playerPlane[pi].getX()-tailFireWidth/2.0, playerPlane[pi].getY()+playerPlaneHeight/2, tailFireWidth, tailFireHeight, alpha);
+            // Draw the plane explosion
+            double explosionIndex = playerPlane[pi].getExplosionIndex();
+            if(explosionIndex > 0){
+                int explosionFrameIndex = floor(16 - explosionIndex);
+                drawImage(Explode.frames[explosionFrameIndex], playerPlane[pi].getX()-playerPlaneWidth/2, playerPlane[pi].getY()-playerPlaneHeight/2, playerPlaneWidth, playerPlaneHeight);
+            }
+        }
+
         // Draw the enemy bullets
         for (Bullet bullet : enemyBulletList) {
             drawImage(bullet.getImage(), bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
@@ -849,6 +850,11 @@ public class SimpleGame extends GameEngine {
             double explodeHeight = explode.getHeight();
             int explodeFrameIndex = floor(16 - explode.getExplosionIndex());
             drawImage(Explode.frames[explodeFrameIndex], explode.getX() - explodeWidth / 2, explode.getY() - explodeHeight / 2, explodeWidth, explodeHeight);
+        }
+
+        // Draw the item
+        for (Item item : itemList) {
+            drawImage(item.getImage(), item.getX() - item.getWidth() / 2, item.getY() - item.getHeight() / 2, item.getWidth(), item.getHeight());
         }
 
         changeColor(green);//TODO: for testing only
@@ -874,10 +880,6 @@ public class SimpleGame extends GameEngine {
             drawText(20 + 300 * pi, 50, "Player " + (pi + 1) + " HP: " + playerPlane[pi].getHp());
         }
 
-        // Draw the item
-        for (Item item : itemList) {
-            drawImage(item.getImage(), item.getX() - item.getWidth() / 2, item.getY() - item.getHeight() / 2, item.getWidth(), item.getHeight());
-        }
 
         // Draw the pause notice
         if (isPaused) {
