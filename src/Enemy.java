@@ -43,35 +43,21 @@ public class Enemy extends GameObject {
     public void updateLocation(double dt, PlayerPlane[] playerPlane) {
         // Recalculate position based on movement speed
 
-        //Distance between item & player
+        //Distance between enemy & player
         double[] dist = new double[2];
         double minDist = 1000000000;
         int minIndex = 0;
         for(int i = 0; i < PlayerPlane.playerNumber; i++) {
             dist[i] = GameEngine.distance(this.getX(), this.getY(), playerPlane[i].getX(), playerPlane[i].getY());
             if(dist[i] < minDist) {
-                // Find the player that is closest to the item
+                // Find the player that is closest to the enemy
                 minDist = dist[i];
                 minIndex = i;
             }
         }
 
-
-//         //the enemy will automatically move towards the player
-//            //Direction from enemy-->player
-//            //playerPos - enemyPos  enemy-->player
-//            double dirX = playerPlane[minIndex].getX() - this.getX();
-//            double dirY = playerPlane[minIndex].getY() - this.getY();
-//
-//            //Normalized vector of direction
-//            setVx(dirX / minDist);
-//            setVy(dirY / minDist);
-/*        //Assign the direction for item
-        setX(getX() + getVx() * 50 * dt);
-        setY(getY() + getVy() * 50 * dt);*/
-
-        //Direction from item-->player
-        //playerPos - itemPos  item-->player
+        //Direction from enemy-->player
+        //playerPos - enemyPos  enemy-->player
         double dirX = playerPlane[minIndex].getX() - this.getX();
         double dirY = playerPlane[minIndex].getY() - this.getY();
 
@@ -91,8 +77,8 @@ public class Enemy extends GameObject {
         setVy(newVy);
         //Calculate the angle between current velocity and Y-axis forward direction
         enemyAngle = GameEngine.atan2(getVx(), getVy());
-        System.out.println(enemyAngle);
-        //Assign the direction for item
+//        System.out.println(enemyAngle);
+        //Assign the direction for enemy
         setX(getX() + getVx() * dt);
         setY(getY() + getVy() * dt);
     }

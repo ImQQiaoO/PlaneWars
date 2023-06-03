@@ -4,6 +4,7 @@ public class Bullet extends GameObject{
 
     private int bulletType;
     private int damage;
+    private double bulletAngle;
 
     /**
      * shootInterval: The interval between two shots of the same type of bullet(Frames).
@@ -29,9 +30,18 @@ public class Bullet extends GameObject{
         this.shootInterval = shootInterval;
     }
 
+    public void updateBullet(double dt) {
+        updateLocation(dt);
+        updateAngle();
+    }
+
     public void updateLocation(double dt) {
         setX(getX() + getVx()*dt);
         setY(getY() + getVy()*dt);
+    }
+
+    public void updateAngle() {
+        setBulletAngle(GameEngine.atan2(getVx(), getVy()));
     }
 
 
@@ -85,5 +95,13 @@ public class Bullet extends GameObject{
 
     public String toString() {
         return "Bullet{bulletType = " + bulletType + "}";
+    }
+
+    public double getBulletAngle() {
+        return bulletAngle;
+    }
+
+    public void setBulletAngle(double bulletAngle) {
+        this.bulletAngle = bulletAngle;
     }
 }

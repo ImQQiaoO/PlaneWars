@@ -170,12 +170,12 @@ public class SimpleGame extends GameEngine {
 
         //Update the location of the bullets
         for (Bullet bullet : friendlyBulletList) {
-            bullet.updateLocation(dt);
+            bullet.updateBullet(dt);
         }
 
         //Update the location of the enemy bullets
         for (Bullet bullet : enemyBulletList) {
-            bullet.updateLocation(dt);
+            bullet.updateBullet(dt);
         }
 
         checkCollision();
@@ -767,20 +767,25 @@ public class SimpleGame extends GameEngine {
         for (Enemy enemy : missileEnemyList) {
             // Rotate the image based on enemyAngle
             saveCurrentTransform();
-            double enemyAngle = enemy.getEnemyAngle();
             translate(enemy.getX(), enemy.getY());
-            rotate(-enemyAngle);
+            rotate(-enemy.getEnemyAngle());
             changeColor(pink);//TODO: for test
             drawRectangle(- enemy.getWidth() / 2, - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
             drawImage(enemy.getImage(), - enemy.getWidth() / 2, - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
-            translate(-enemy.getX(), -enemy.getY());
-            rotate(enemyAngle);
             restoreLastTransform();
         }
 
         // Draw the bullets
         for (Bullet bullet : friendlyBulletList) {
-            drawImage(bullet.getImage(), bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
+            if(bullet.getBulletType() == BulletType.MISSILE_BULLET){
+                saveCurrentTransform();
+                translate(bullet.getX(), bullet.getY());
+                rotate(-bullet.getBulletAngle());
+                drawImage(bullet.getImage(), - bullet.getWidth() / 2, - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
+                restoreLastTransform();
+            } else {
+                drawImage(bullet.getImage(), bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
+            }
         }
 
         // Draw the enemy bullets
