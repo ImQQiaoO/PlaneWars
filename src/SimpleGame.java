@@ -785,9 +785,10 @@ public class SimpleGame extends GameEngine {
     @Override
     public void paintComponent() {
         // Clear the background to black
-        changeBackgroundColor(black);
+        Image BackgroundImage = loadImage("src/resources/background.png");
+//        changeBackgroundColor(black);
         clearBackground(gameWidth, gameHeight);
-
+        drawImage(BackgroundImage,0,0,600,700);
         // Draw the enemies
         for (Enemy enemy : enemyList) {
             drawImage(enemy.getImage(), enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
