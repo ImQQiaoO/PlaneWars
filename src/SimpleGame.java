@@ -447,7 +447,7 @@ public class SimpleGame extends GameEngine {
                     //TODO: add score
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1));
                 }
-                case EnemyType.THREE_MEMBER_GROUP, EnemyType.IMPACT_BOSS -> {
+                case EnemyType.THREE_MEMBER_GROUP, EnemyType.IMPACT_BOSS, EnemyType.MISSILE_ENEMY -> {
                     //TODO: add score
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 2.5));
                     initialize_ExplodeSound();
@@ -455,6 +455,8 @@ public class SimpleGame extends GameEngine {
                 }
                 case EnemyType.MISSILE -> {
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1.5));
+                    initialize_ExplodeSound();
+                    clip_explode.start();
                 }
             }
         }
