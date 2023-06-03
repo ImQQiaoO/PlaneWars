@@ -260,76 +260,44 @@ public class SimpleGame extends GameEngine {
     }
 
     private void createMissile() {
-        if (isTypeSlash[0]) {
-            if(isMissile[0]){
-                double bulletWidth = 38;
-                double bulletHeight = 26;
-                double bulletX1 = playerPlane[0].getX()-playerPlane[0].getWidth()/4;
-                double bulletY1 = playerPlane[0].getY() - playerPlane[0].getHeight()/4;
-                double bulletVx = -500;
-                double bulletVy = -865;
-                Image bulletImage = loadImage("src/resources/BulletMissile.png");
-                double bulletX12 = playerPlane[0].getX()+playerPlane[0].getWidth()/4;
-                double bulletY12 = playerPlane[0].getY() - playerPlane[0].getHeight()/4;
-                double bulletVx2 = 500;
-                double bulletVy2 = -865;
-                Image bulletImage2 = loadImage("src/resources/BulletMissile.png");
-                int bulletDamage = 10;
-                int bulletIntervalP1 = 6;
-//                System.out.println();
-//                System.out.println("missileTime[0] = " + missileTime[0]);
-//                System.out.println("missileCount[0] = " + missileCount[0]);
-                if(missileTime[0] % bulletIntervalP1 == 0){
-                    if (missileCount[0] < 20){
-                        initialize_MissileSound();
-                        clip_missile.start();
-                        System.out.println("fire missile");
-                        friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP1));
-                        friendlyBulletList.add(new Bullet(bulletX12, bulletY12, bulletVx2, bulletVy2, bulletWidth, bulletHeight, bulletImage2, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP1));
-                        initialize_ShootSound();
-                        clip_shoot.start();
-                        missileCount[0]++;
-                    }else {
-                        missileTime[0]=0;
-                        missileCount[0] = 0;
-                        isMissile[0] = false;
-                    }
-                }
-            }
-            missileTime[0] ++;
-        }
-        if(PlayerPlane.playerNumber == 2){
-            if (isTypeSlash[1]) {
-                if(isMissile[1]){
+        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
+            if (isTypeSlash[pi]){
+                if(isMissile[pi]){
                     double bulletWidth = 38;
                     double bulletHeight = 26;
-                    double bulletX1 = playerPlane[1].getX()-playerPlane[1].getWidth()/4;
-                    double bulletY1 = playerPlane[1].getY() - playerPlane[1].getHeight()/4;
-                    double bulletVx = -500;
-                    double bulletVy = -865;
+                    double bulletLeftX = playerPlane[pi].getX()-playerPlane[pi].getWidth()/4;
+                    double bulletRightX = playerPlane[pi].getX()+playerPlane[pi].getWidth()/4;
+                    double bulletY = playerPlane[pi].getY() - playerPlane[pi].getHeight()/4;
+                    double bulletVx;
+                    double bulletVy;
                     Image bulletImage = loadImage("src/resources/BulletMissile.png");
-                    double bulletX12 = playerPlane[1].getX()+playerPlane[1].getWidth()/4;
-                    double bulletY12 = playerPlane[1].getY() - playerPlane[1].getHeight()/4;
-                    double bulletVx2 = 500;
-                    double bulletVy2 = -865;
-                    Image bulletImage2 = loadImage("src/resources/BulletMissile.png");
                     int bulletDamage = 10;
-                    int bulletIntervalP2 = 6;
-                    if(missileTime[1] % bulletIntervalP2 == 0){
-                        if (missileCount[1] < 20){
-                            friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP2));
-                            friendlyBulletList.add(new Bullet(bulletX12, bulletY12, bulletVx2, bulletVy2, bulletWidth, bulletHeight, bulletImage2, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP2));
+                    int bulletIntervalP1 = 6;
+                    if(missileTime[pi] % bulletIntervalP1 == 0){
+                        if (missileCount[pi] < 20){
+                            initialize_MissileSound();
+                            clip_missile.start();
+                            System.out.println("fire missile");
+                            if (missileCount[pi] % 2 == 0){
+                                bulletVx = -500;
+                                bulletVy = -800;
+                            } else {
+                                bulletVx = -300;
+                                bulletVy = -900;
+                            }
+                            friendlyBulletList.add(new Bullet(bulletLeftX, bulletY, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP1));
+                            friendlyBulletList.add(new Bullet(bulletRightX, bulletY, -bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.MISSILE_BULLET, bulletDamage, bulletIntervalP1));
                             initialize_ShootSound();
                             clip_shoot.start();
-                            missileCount[1]++;
+                            missileCount[pi]++;
                         }else {
-                            missileTime[1]=0;
-                            missileCount[1] = 0;
-                            isMissile[1] = false;
+                            missileTime[pi]=0;
+                            missileCount[pi] = 0;
+                            isMissile[pi] = false;
                         }
                     }
                 }
-                missileTime[1] ++;
+                missileTime[pi] ++;
             }
         }
     }
