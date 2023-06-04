@@ -23,7 +23,7 @@ public class ScorePanel extends GameEngine {
         public static String fileName = "src/resources/scoreList.txt";
 
     public ScorePanel() {
-//        GameUtil.setupWindows(frame, this.mPanel, "Score");
+        super("Score");
         init();
     }
 

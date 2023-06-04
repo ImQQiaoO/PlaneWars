@@ -65,7 +65,7 @@ public abstract class GameEngine implements KeyListener, MouseListener, MouseMot
     // Functions for setting up the window
     //-------------------------------------------------------
     // Function to create the window and display it
-    public void setupWindow(int width, int height) {
+    public void setupWindow(int width, int height, String title) {
         mFrame = new JFrame();
         mPanel = new GamePanel();
 
@@ -74,7 +74,7 @@ public abstract class GameEngine implements KeyListener, MouseListener, MouseMot
 
         mFrame.setSize(width, height);
         mFrame.setLocation(Launcher.WindowX, Launcher.WindowY);
-        mFrame.setTitle("Window");
+        mFrame.setTitle(title);
         mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mFrame.add(mPanel);
         mFrame.setVisible(true);
@@ -148,7 +148,22 @@ public abstract class GameEngine implements KeyListener, MouseListener, MouseMot
             @Override
             public void run() {
                 // Create the window
-                setupWindow(500,500);
+                setupWindow(500,500, "Plane Wars");
+            }
+        });
+    }
+
+    // GameEngine Constructor
+    public GameEngine(String title) {
+        // Create graphics transform stack
+        mTransforms = new Stack<AffineTransform>();
+
+        // Create window
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                // Create the window
+                setupWindow(500,500, title);
             }
         });
     }
