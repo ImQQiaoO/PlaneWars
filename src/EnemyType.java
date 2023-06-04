@@ -169,7 +169,6 @@ public class EnemyType {
         for (Enemy enemy : specialEnemyList) {
             restHP += enemy.getEnemyHP();
         }
-        System.out.println("restHP/fullHP " + restHP + "/" + fullHp);
     }
 
     private static void moveToTarget(ArrayList<Enemy> specialEnemyList, double targetX) {

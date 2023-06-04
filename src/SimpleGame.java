@@ -319,10 +319,8 @@ public class SimpleGame extends GameEngine {
             Enemy enemy = specialEnemyIterator.next();
             if (enemy.getEnemyHP() <= 0 && specialEnemyList.size() <= 1) {
                 specialEnemyIterator.remove();
-                int numItem = new Random().nextInt(4, 8);
-                for (int i = 0; i < numItem; i++) {
-                    generateItems(enemy.getX(), enemy.getY(), numItem);
-                }
+                int numItem = new Random().nextInt(2, 4);
+                generateItems(enemy.getX(), enemy.getY(), numItem);
             }
         }
 
