@@ -281,13 +281,6 @@ public class SimpleGame extends GameEngine {
         }
 
 
-        // Generate items
-        //TODO: edit generate rule
-        int randNum = rand(100);
-        int randItemNum = rand(4);
-        if (randNum == 0) {
-            itemList.add(new Item(50, 50, Item.itemImages[randItemNum], randItemNum));
-        }
 
         createMissile();
 
@@ -311,7 +304,29 @@ public class SimpleGame extends GameEngine {
         checkCollisionItems(itemList);
 
         //Help Garbage Collection
-        enemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
+        enemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2));
+
+        Iterator<Enemy> enemyIterator = enemyList.iterator();
+        while (enemyIterator.hasNext()) {
+            Enemy enemy = enemyIterator.next();
+            if (enemy.getEnemyHP() <= 0) {
+                enemyIterator.remove();
+                generateItems(20, enemy.getX(), enemy.getY());
+            }
+        }
+
+        Iterator<Enemy> specialEnemyIterator = specialEnemyList.iterator();
+        while (specialEnemyIterator.hasNext()) {
+            Enemy enemy = specialEnemyIterator.next();
+            if (enemy.getEnemyHP() <= 0 && specialEnemyList.size() <= 1) {
+                specialEnemyIterator.remove();
+                int numItem = new Random().nextInt(4, 8);
+                for (int i = 0; i < numItem; i++) {
+                    generateItems(enemy.getX(), enemy.getY(), numItem);
+                }
+            }
+        }
+
         missileEnemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getY() < -enemy.getHeight()
                 || enemy.getX() > gameWidth + enemy.getWidth() / 2 || enemy.getX() < -enemy.getWidth() / 2 || enemy.getEnemyHP() <= 0);
 
@@ -332,7 +347,6 @@ public class SimpleGame extends GameEngine {
             }
         }
 
-
         specialEnemyList.removeIf(enemy -> (enemy.getY() > gameHeight + enemy.getHeight() / 2) || enemy.getEnemyHP() <= 0);
         enemyBulletList.removeIf(bullet -> (bullet.getY() < -bullet.getHeight() / 2) || (bullet.getY() > gameHeight + bullet.getHeight() / 2));
 
@@ -340,7 +354,6 @@ public class SimpleGame extends GameEngine {
                 || item.getX() > gameWidth + item.getWidth() / 2 || item.getX() < -item.getWidth() / 2 || item.isCollected());
         explodeList.removeIf(explode -> explode.getExplosionIndex() == 0);
 
-        System.out.println(isFail);
         if(PlayerPlane.playerNumber == 1){
             if (playerPlane[0].getHp() <= 0){
                 playerPlane[0].setPlaneHP(0);
@@ -353,6 +366,24 @@ public class SimpleGame extends GameEngine {
                     isFail = true;
                 }
             }
+        }
+    }
+
+    /**
+     * Generate Item
+     * @param probability probability of generating item
+     */
+    public void generateItems(int probability, double x, double y) {
+        int randNum = rand(100);
+        int randItemNum = rand(4);
+        if (randNum <= probability) {
+            itemList.add(new Item(x, y, Item.itemImages[randItemNum], randItemNum));
+        }
+    }
+    public void generateItems(double x, double y, int num) {
+        for (int i = 0; i < num; i++) {
+            int randItemNum = rand(4);
+            itemList.add(new Item(x + 35 * i, y, Item.itemImages[randItemNum], randItemNum));
         }
     }
 
@@ -971,9 +1002,9 @@ public class SimpleGame extends GameEngine {
         }
         if (EnemyType.restHP != 0) {
             changeColor(new Color(152, 140, 84));
-            drawSolidRectangle(25,50,550,20);
+            drawSolidRectangle(25,55,550,20);
             changeColor(new Color(243, 0, 0));
-            drawSolidRectangle(25,50,EnemyType.restHP*550 / EnemyType.fullHp,20);
+            drawSolidRectangle(25,55,EnemyType.restHP*550 / EnemyType.fullHp,20);
         }
     }
 

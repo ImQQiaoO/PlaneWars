@@ -84,7 +84,7 @@ public class EnemyType {
             case IMPACT_BOSS -> {
                 for (Enemy enemy : specialEnemyList) {
                     enemy.updateEnemy(dt);
-                    if (enemy.getY() > 150 && moveFrameCount <= 500) {
+                    if (enemy.getY() > 150 && moveFrameCount <= 300) {
                         // If the position of last enemy in the list is larger than 150,
                         // clear the velocity of all enemies in the list.
                         clearVelocity(specialEnemyList);
@@ -96,7 +96,7 @@ public class EnemyType {
                         return;
                     }
                     if (SimpleGame.isSinglePlayer) {
-                        if (moveFrameCount <= 500) {
+                        if (moveFrameCount <= 300) {
                             // If the game is single player mode, the boss will move to the player's position, only X axis.
                             double playerX = SimpleGame.playerPlane[0].getX();
                             double targetX = playerX - specialEnemyList.get(0).getX();
@@ -105,7 +105,7 @@ public class EnemyType {
                             sprintToTarget(specialEnemyList);
                         }
                     } else {
-                        if (moveFrameCount <= 500) {
+                        if (moveFrameCount <= 300) {
                             double playerX1 = SimpleGame.playerPlane[0].getX();
                             double playerX2 = SimpleGame.playerPlane[1].getX();
                             double distanceToPlayer1 = Math.abs(playerX1 - specialEnemyList.get(0).getX());
