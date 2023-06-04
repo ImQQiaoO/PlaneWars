@@ -33,7 +33,7 @@ public class SimpleGame extends GameEngine {
     boolean isFail = false;
     boolean hasCalculateScore = false;
 
-    private static Clip clip_background, clip_shoot, clip_explode, clip_missile;
+    private static Clip clip_background, clip_shoot, clip_explode, clip_missile, clip_laser;
     public static final PlayerPlane[] playerPlane = new PlayerPlane[2];
 
     private final boolean[] isNormal = new boolean[2];
@@ -593,7 +593,9 @@ public class SimpleGame extends GameEngine {
                             fireCount[pi] = 0;
                         }
                         case Item.ITEM_TYPE_LASER -> {
-                            System.out.println("Collected: ITEM_TYPE_LASER");    //TODO: add item effect
+                            System.out.println("Collected: ITEM_TYPE_LASER");
+                            initialize_LaserSound();
+                            clip_laser.start();//TODO: add item effect
 //                            isCreateLaser[pi] = true;
                             isLaser[pi] =true;
                             laserCount[pi] = 0;
@@ -760,7 +762,7 @@ public class SimpleGame extends GameEngine {
                 double bulletVy = playerPlane[pi].getVy();
                 Image bulletImage = loadImage("src/resources/BulletLaser.png");
                 int bulletDamage = 10;
-                if (laserCount[pi] < 300) {
+                if (laserCount[pi] < 200) {
                     laserCount[pi]++;
                 }else{
                     laserCount[pi] = 0;
@@ -867,6 +869,16 @@ public class SimpleGame extends GameEngine {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/resources/missile.wav"));
             clip_missile = AudioSystem.getClip();
             clip_missile.open(audioInputStream);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+    //Add laser sound
+    private static void initialize_LaserSound() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/resources/laser.wav"));
+            clip_laser = AudioSystem.getClip();
+            clip_laser.open(audioInputStream);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
