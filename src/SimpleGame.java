@@ -164,7 +164,7 @@ public class SimpleGame extends GameEngine {
         if(!hasAddButtons){
             hasAddButtons = true;
 //            JButton continueButton = GameUtil.createNormalButton("Continue", 150, 360, 130, 50, Color.GREEN);
-            JButton quitButton = GameUtil.createNormalButton("Quit", 225, 400, 130, 50, Color.RED);
+            JButton quitButton = GameUtil.createNormalButton("Quit", 235, 400, 130, 50, Color.RED);
             this.mPanel.add(quitButton);
             quitButton.addActionListener(e -> {
                 clip_background.stop();
@@ -415,6 +415,8 @@ public class SimpleGame extends GameEngine {
                             int playerDamage = 200;
                             enemy.setEnemyHP(enemy.getEnemyHP() - playerDamage);
                             checkEnemyHP(enemy);
+                            initialize_ExplodeSound();
+                            clip_explode.start();
                             if (((Enemy) object).getEnemyType() == EnemyType.NORMAL_ENEMY) {
                                 playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - 200);
                             } else if (((Enemy) object).getEnemyType() == EnemyType.THREE_MEMBER_GROUP) {
@@ -431,15 +433,17 @@ public class SimpleGame extends GameEngine {
                         }
                     } else if (object instanceof Bullet) {
                         System.out.println("isBullet");
-                        System.out.println("Bullet Type is " + ((Bullet) object).getBulletType());
+                        System.out.println("Bullet Type is " + ((Bullet) object).getBulletType());//TODO: only for test
                         if (playerPlane[pi].getProtectTime() <= 0) {
+                            initialize_ExplodeSound();
+                            clip_explode.start();
                             if (((Bullet) object).getBulletType() == BulletType.NORMAL_BULLET) {
                                 playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - bulletDamage_simple);
                             } else if (((Bullet) object).getBulletType() == BulletType.NORMAL_BULLET_SIDE) {
                                 playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - bulletDamage_simple_side);
                             } else if (((Bullet) object).getBulletType() == BulletType.CIRCLE_BULLET) {
                                 playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - bulletDamage_circle);
-                            }//TODO: only for test
+                            }
                             playerPlane[pi].decreaseHp();
                         }
                     }
@@ -479,17 +483,17 @@ public class SimpleGame extends GameEngine {
         if(enemy.getEnemyHP() <= 0) {
             switch (enemy.getEnemyType()){
                 case EnemyType.NORMAL_ENEMY -> {
-                    score += 10;
+                    score += 1;
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1));
                 }
                 case EnemyType.THREE_MEMBER_GROUP, EnemyType.IMPACT_BOSS, EnemyType.MISSILE_ENEMY -> {
-                    score += 2000;
+                    score += 30;
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 2.5));
                     initialize_ExplodeSound();
                     clip_explode.start();
                 }
                 case EnemyType.MISSILE -> {
-                    score += 2000;
+                    score += 30;
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1.5));
                     initialize_ExplodeSound();
                     clip_explode.start();
@@ -945,7 +949,7 @@ public class SimpleGame extends GameEngine {
 
         changeColor(white);//TODO: for testing only
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
-            drawText(20 + 300 * pi, 50, "Player " + (pi + 1) + " HP: " + playerPlane[pi].getHp());
+            drawText(20 + 300 * pi, 50, "Player " + (pi + 1) + " HP: " + playerPlane[pi].getHp(), "Arial", 30);
         }
 
 
