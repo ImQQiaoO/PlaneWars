@@ -1054,7 +1054,7 @@ public class SimpleGame extends GameEngine {
                     playerPlane[1].setVy(playerPlane[1].getMovingSpeed());
                 }
             }
-            if (e.getKeyCode() == KeyEvent.VK_Q) {
+            if (e.getKeyCode() == KeyEvent.VK_R) {
                 isTypeSlash[1] = true;
             }
         }
@@ -1154,7 +1154,7 @@ public class SimpleGame extends GameEngine {
                     playerPlane[1].setVy(-playerPlane[1].getMovingSpeed());
                 }
             }
-            if (e.getKeyCode() == KeyEvent.VK_Q){
+            if (e.getKeyCode() == KeyEvent.VK_R){
                 isTypeSlash[1] = false;
                 missileTime[1] = 0;
             }

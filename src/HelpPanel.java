@@ -22,7 +22,7 @@ public class HelpPanel extends GameEngine {
         changeBackgroundColor(black);
         clearBackground(Launcher.WindowWidth, Launcher.WindowHeight);
         changeColor(white);
-        drawBoldText(330, 60, "Help", "Arial", 50);
+        drawBoldText(350, 60, "Help", "Arial", 50);
 
         paintPlayer();
         paintBasicRules();
@@ -50,56 +50,49 @@ public class HelpPanel extends GameEngine {
 
     private void paintPlayer() {
         changeColor(white);
-        drawRectangle(140, 100, 250, 300);
-        drawBoldText(200, 140, "Player One", "Arial", 25);
+        //Draw Player One
+        drawRectangle(140, 100, 250, 310);
+        drawBoldText(185, 140, "Player One", "Arial", 30);
         Image playerOnePlane = loadImage("src/resources/PlayerPlane01.png");
         drawImage(playerOnePlane, 240, 160, 50, 50);
-//        drawText(330, 190, "Use Keys to Move", "Arial", 25);
+        drawSolidRectangle(180, 220, 50, 50);   //Shoot Key
         drawSolidRectangle(240, 220, 50, 50);   //Up Key
         drawSolidRectangle(240, 280, 50, 50);   //Down Key
         drawSolidRectangle(180, 280, 50, 50);   //Left Key
         drawSolidRectangle(300, 280, 50, 50);   //Right Key
         changeColor(blue);
-        drawText(GameUtil.centerComponentsX(1, 240, 50), 250, "↑", "Arial", 25);
-
-//        g.setFont(new Font("Arial", Font.BOLD, 25));
-//        //Draw Player One
-//        g.setColor(Color.WHITE);
-//        g.drawRect(180, 100, 250, 280);
-//        g.drawString("Player One", GameUtil.centerTextX(g,"Player One", 180, 250), 140);
-////        Launcher.headIcon.paintIcon(this, g, 275, 160);
-////        Launcher.dotIcon[0].paintIcon(this, g, 295, 160);
-////        Launcher.dotIcon[0].paintIcon(this, g, 315, 160);
-//        g.drawString("Use Keys to Move", GameUtil.centerTextX(g,"Use Keys to Move", 180, 250), 350);
-//        g.fillRect(280, 200, 50, 50);   //Up Key
-//        g.fillRect(280, 260, 50, 50);   //Down Key
-//        g.fillRect(220, 260, 50, 50);   //Left Key
-//        g.fillRect(340, 260, 50, 50);   //Right Key
-//        g.setColor(new Color(0, 211, 0));
-//        g.drawString("↑", GameUtil.centerTextX(g,"↑", 280, 50), 230);   //Up Key
-//        g.drawString("↓", GameUtil.centerTextX(g,"↓", 280, 50), 290);   //Down Key
-//        g.drawString("←", GameUtil.centerTextX(g,"←", 220, 50), 290);   //Left Key
-//        g.drawString("→", GameUtil.centerTextX(g,"→", 340, 50), 290);   //Right Key
-//        //Draw Player Two
-//        g.setColor(Color.WHITE);
-//        g.drawRect(470, 100, 250, 280);
-//        g.drawString("Player Two", GameUtil.centerTextX(g,"Player Two", 470, 250), 140);
-////        Launcher.headIcon.paintIcon(this, g, 565, 160);
-////        Launcher.dotIcon[1].paintIcon(this, g, 585, 160);
-////        Launcher.dotIcon[1].paintIcon(this, g, 605, 160);
-//        g.drawString("Use Keys to Move", GameUtil.centerTextX(g,"Use Keys to Move", 470, 250), 350);
-//        g.fillRect(570, 200, 50, 50);   //Up Key
-//        g.fillRect(570, 260, 50, 50);   //Down Key
-//        g.fillRect(510, 260, 50, 50);   //Left Key
-//        g.fillRect(630, 260, 50, 50);   //Right Key
-//        g.setColor(new Color(0, 123, 211));
-//        g.drawString("W", GameUtil.centerTextX(g,"W", 570, 50), 235);   //Up Key
-//        g.drawString("S", GameUtil.centerTextX(g,"S", 570, 50), 295);   //Down Key
-//        g.drawString("A", GameUtil.centerTextX(g,"A", 510, 50), 295);   //Left Key
-//        g.drawString("D", GameUtil.centerTextX(g,"D", 630, 50), 295);   //Right Key
+        drawText(GameUtil.centerTextX(mGraphics, "/", 180,50), 255, "/", "Arial", 25);   //Shoot Key
+        drawText(GameUtil.centerTextX(mGraphics, "↑", 240,50), 250, "↑", "Arial", 25);   //Up Key
+        drawText(GameUtil.centerTextX(mGraphics, "↓", 240,50), 310, "↓", "Arial", 25);   //Down Key
+        drawText(GameUtil.centerTextX(mGraphics, "←", 180,50), 310, "←", "Arial", 25);   //Left Key
+        drawText(GameUtil.centerTextX(mGraphics, "→", 300,50), 310, "→", "Arial", 25);   //Right Key
+        changeColor(white);
+        drawText(GameUtil.centerTextX(mGraphics, "Use Keys to Move", 140,250), 360, "Use Keys to Move", "Arial", 25);
+        drawText(GameUtil.centerTextX(mGraphics, "and Shoot Missiles", 140,250), 390, "and Shoot Missiles", "Arial", 25);
+        //Draw Player Two
+        drawRectangle(420, 100, 250, 310);
+        drawBoldText(465, 140, "Player Two", "Arial", 30);
+        Image playerTwoPlane = loadImage("src/resources/PlayerPlane02.png");
+        drawImage(playerTwoPlane, 520, 160, 50, 50);
+        drawSolidRectangle(580, 220, 50, 50);   //Shoot Key
+        drawSolidRectangle(520, 220, 50, 50);   //Up Key
+        drawSolidRectangle(520, 280, 50, 50);   //Down Key
+        drawSolidRectangle(460, 280, 50, 50);   //Left Key
+        drawSolidRectangle(580, 280, 50, 50);   //Right Key
+        changeColor(red);
+        drawText(GameUtil.centerTextX(mGraphics, "R", 580,50), 255, "R", "Arial", 25);   //Shoot Key
+        drawText(GameUtil.centerTextX(mGraphics, "W", 520,50), 255, "W", "Arial", 25);   //Up Key
+        drawText(GameUtil.centerTextX(mGraphics, "S", 520,50), 315, "S", "Arial", 25);   //Down Key
+        drawText(GameUtil.centerTextX(mGraphics, "A", 460,50), 315, "A", "Arial", 25);   //Left Key
+        drawText(GameUtil.centerTextX(mGraphics, "D", 580,50), 315, "D", "Arial", 25);   //Right Key
+        changeColor(white);
+        drawText(GameUtil.centerTextX(mGraphics, "Use Keys to Move", 420,250), 360, "Use Keys to Move", "Arial", 25);
+        drawText(GameUtil.centerTextX(mGraphics, "and Shoot Missiles", 420,250), 390, "and Shoot Missiles", "Arial", 25);
     }
 
     private void paintBasicRules() {
+        changeColor(white);
+        drawRectangle(50, 430, 340, 250);
 //        g.setColor(Color.WHITE);
 //        g.setFont(new Font("Arial", Font.BOLD, 25));
 //        g.drawRect(50, 400, 250, 300);
