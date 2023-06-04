@@ -31,6 +31,7 @@ public class SimpleGame extends GameEngine {
     boolean hasAddButtons = false;
     boolean isPaused = false;
     boolean isFail = false;
+    boolean hasCalculateScore = false;
 
     private static Clip clip_background, clip_shoot, clip_explode, clip_missile;
     public static final PlayerPlane[] playerPlane = new PlayerPlane[2];
@@ -267,11 +268,9 @@ public class SimpleGame extends GameEngine {
 //            randBoss = 3; //TODO: FOR TEST Boss TYPE 2 (IMPACT_BOSS)
             if (randBoss == EnemyType.THREE_MEMBER_GROUP) {
                 generateEnemies(EnemyType.THREE_MEMBER_GROUP); // Generate special enemies
-                generateEnemies(EnemyType.MISSILE); // Generate missile//TODO:DELETE
             }
             else if (randBoss == EnemyType.IMPACT_BOSS) {
                 generateEnemies(EnemyType.IMPACT_BOSS); // Generate special enemies
-                generateEnemies(EnemyType.MISSILE); // Generate missile//TODO:DELETE
                 EnemyType.moveFrameCount = 0;
             } else if (randBoss == EnemyType.MISSILE_ENEMY) {
                 generateEnemies(EnemyType.MISSILE_ENEMY); // Generate special enemies
@@ -349,10 +348,14 @@ public class SimpleGame extends GameEngine {
         }else {
             for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
                 if (playerPlane[pi].getHp() <= 0){
-                    playerPlane[0].setPlaneHP(0);
+                    playerPlane[pi].setPlaneHP(0);
                     isFail = true;
                 }
             }
+        }
+
+        if(isFail && !hasCalculateScore){
+            recordScore();
         }
     }
 
@@ -795,6 +798,17 @@ public class SimpleGame extends GameEngine {
         }
     }
 
+    private void recordScore() {
+        hasCalculateScore = true;
+        String gameMode;
+        if(isSinglePlayer){
+            gameMode = "SinglePlayer";
+        } else{
+            gameMode = "DoublePlayer";
+        }
+        ScorePanel.checkHighestScore(gameMode, score);
+    }
+
     //Add bullet firing sound
     private static void initialize_ShootSound() {
         try {
@@ -831,7 +845,6 @@ public class SimpleGame extends GameEngine {
     public void paintComponent() {
         // Clear the background to black
         Image BackgroundImage = loadImage("src/resources/background.png");
-//        changeBackgroundColor(black);
         clearBackground(gameWidth, gameHeight);
         drawImage(BackgroundImage,0,0,600,700);
         // Draw the enemies
@@ -951,27 +964,25 @@ public class SimpleGame extends GameEngine {
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
             drawText(20 + 300 * pi, 50, "Player " + (pi + 1) + " HP: " + playerPlane[pi].getHp(), "Arial", 30);
         }
-
-
-        // Draw the pause notice
-        if (isPaused) {
-            //Game Pause
-            changeColor(new Color(255, 255, 255, 50));
-            drawSolidRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
-            addPauseButtons();
-            changeColor(Color.white);
-            drawRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
-            drawText(160, 320, "Game Paused", "Arial", 40);
-        }
         if(isFail){
             //Game over
-            changeColor(new Color(255, 255, 255, 50));
+            changeColor(new Color(255, 0, 0, 50));
             drawSolidRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
             addFailButtons();
-            changeColor(Color.white);
+            changeColor(Color.red);
             drawRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
             drawText(200, 300, "Game over", "Arial", 40);
             drawText(150, 360, "You final score is: " + score, "Arial", 30);
+        } else {
+            if (isPaused) {
+                //Game Pause
+                changeColor(new Color(255, 255, 255, 50));
+                drawSolidRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
+                addPauseButtons();
+                changeColor(Color.white);
+                drawRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
+                drawText(160, 320, "Game Paused", "Arial", 40);
+            }
         }
         if (EnemyType.restHP != 0) {
             changeColor(new Color(152, 140, 84));
