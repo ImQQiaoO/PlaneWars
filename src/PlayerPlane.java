@@ -5,7 +5,6 @@ public class PlayerPlane extends GameObject{
     public static int playerNumber = 0;
     private double movingSpeed;
     private final int playerID; // 1 for player 1, 2 for player 2
-    private static int score = 0;
     private int max_hp = 5000;
     private int hp = 5000;
     private double protectTime = 0;
@@ -19,7 +18,6 @@ public class PlayerPlane extends GameObject{
     public PlayerPlane(double x, double y,int playerID) {
         super(x, y, 0, 0, 61, 63, GameEngine.loadImage("src/resources/PlayerPlane0"+ playerID +".png"));
         this.playerID = playerID;
-        score = 0;
         movingSpeed = 200;
         loadImage();
     }
@@ -80,14 +78,6 @@ public class PlayerPlane extends GameObject{
 
     public void setMovingSpeed(double movingSpeed) {
         this.movingSpeed = movingSpeed;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void addScore(int score) {
-        PlayerPlane.score += score;
     }
 
     public int getHp() {

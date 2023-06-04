@@ -152,7 +152,7 @@ public class EnemyType {
                     } else if (specialEnemyList.get(specialEnemyList.size() - 1).getX() + 200 >= SimpleGame.gameWidth) {
                         goLeft = true;
                     }
-                    if (moveFrameCount % 200 == 0) {
+                    if (moveFrameCount % 100 == 0) {
                         missileCnt++;
                         SimpleGame.missileEnemyList.add(new Enemy(specialEnemyList.get(0).getX(), specialEnemyList.get(0).getY() + specialEnemyList.get(0).getHeight() / 2, 0, 100, 50, 50, GameEngine.loadImage("src/resources/BulletAutoMissile.png"), 3, 100));
                         moveFrameCount = moveFrameCount - 20;

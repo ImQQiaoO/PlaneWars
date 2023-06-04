@@ -31,6 +31,7 @@ public class SimpleGame extends GameEngine {
     boolean hasAddButtons = false;
     boolean isPaused = false;
     boolean isFail = false;
+    boolean hasCalculateScore = false;
 
     private static Clip clip_background, clip_shoot, clip_explode, clip_missile;
     public static final PlayerPlane[] playerPlane = new PlayerPlane[2];
@@ -164,7 +165,7 @@ public class SimpleGame extends GameEngine {
         if(!hasAddButtons){
             hasAddButtons = true;
 //            JButton continueButton = GameUtil.createNormalButton("Continue", 150, 360, 130, 50, Color.GREEN);
-            JButton quitButton = GameUtil.createNormalButton("Quit", 225, 400, 130, 50, Color.RED);
+            JButton quitButton = GameUtil.createNormalButton("Quit", 235, 400, 130, 50, Color.RED);
             this.mPanel.add(quitButton);
             quitButton.addActionListener(e -> {
                 clip_background.stop();
@@ -267,11 +268,9 @@ public class SimpleGame extends GameEngine {
 //            randBoss = 3; //TODO: FOR TEST Boss TYPE 2 (IMPACT_BOSS)
             if (randBoss == EnemyType.THREE_MEMBER_GROUP) {
                 generateEnemies(EnemyType.THREE_MEMBER_GROUP); // Generate special enemies
-                generateEnemies(EnemyType.MISSILE); // Generate missile//TODO:DELETE
             }
             else if (randBoss == EnemyType.IMPACT_BOSS) {
                 generateEnemies(EnemyType.IMPACT_BOSS); // Generate special enemies
-                generateEnemies(EnemyType.MISSILE); // Generate missile//TODO:DELETE
                 EnemyType.moveFrameCount = 0;
             } else if (randBoss == EnemyType.MISSILE_ENEMY) {
                 generateEnemies(EnemyType.MISSILE_ENEMY); // Generate special enemies
@@ -362,10 +361,14 @@ public class SimpleGame extends GameEngine {
         }else {
             for (int pi = 0; pi < PlayerPlane.playerNumber; pi++){
                 if (playerPlane[pi].getHp() <= 0){
-                    playerPlane[0].setPlaneHP(0);
+                    playerPlane[pi].setPlaneHP(0);
                     isFail = true;
                 }
             }
+        }
+
+        if(isFail && !hasCalculateScore){
+            recordScore();
         }
     }
 
@@ -446,6 +449,8 @@ public class SimpleGame extends GameEngine {
                             int playerDamage = 200;
                             enemy.setEnemyHP(enemy.getEnemyHP() - playerDamage);
                             checkEnemyHP(enemy);
+                            initialize_ExplodeSound();
+                            clip_explode.start();
                             if (((Enemy) object).getEnemyType() == EnemyType.NORMAL_ENEMY) {
                                 playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - 200);
                             } else if (((Enemy) object).getEnemyType() == EnemyType.THREE_MEMBER_GROUP) {
@@ -462,15 +467,17 @@ public class SimpleGame extends GameEngine {
                         }
                     } else if (object instanceof Bullet) {
                         System.out.println("isBullet");
-                        System.out.println("Bullet Type is " + ((Bullet) object).getBulletType());
+                        System.out.println("Bullet Type is " + ((Bullet) object).getBulletType());//TODO: only for test
                         if (playerPlane[pi].getProtectTime() <= 0) {
+                            initialize_ExplodeSound();
+                            clip_explode.start();
                             if (((Bullet) object).getBulletType() == BulletType.NORMAL_BULLET) {
                                 playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - bulletDamage_simple);
                             } else if (((Bullet) object).getBulletType() == BulletType.NORMAL_BULLET_SIDE) {
                                 playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - bulletDamage_simple_side);
                             } else if (((Bullet) object).getBulletType() == BulletType.CIRCLE_BULLET) {
                                 playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - bulletDamage_circle);
-                            }//TODO: only for test
+                            }
                             playerPlane[pi].decreaseHp();
                         }
                     }
@@ -510,17 +517,17 @@ public class SimpleGame extends GameEngine {
         if(enemy.getEnemyHP() <= 0) {
             switch (enemy.getEnemyType()){
                 case EnemyType.NORMAL_ENEMY -> {
-                    score += 10;
+                    score += 1;
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1));
                 }
                 case EnemyType.THREE_MEMBER_GROUP, EnemyType.IMPACT_BOSS, EnemyType.MISSILE_ENEMY -> {
-                    score += 2000;
+                    score += 30;
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 2.5));
                     initialize_ExplodeSound();
                     clip_explode.start();
                 }
                 case EnemyType.MISSILE -> {
-                    score += 2000;
+                    score += 30;
                     explodeList.add(new Explode(enemy.getX(), enemy.getY(), 1.5));
                     initialize_ExplodeSound();
                     clip_explode.start();
@@ -822,6 +829,17 @@ public class SimpleGame extends GameEngine {
         }
     }
 
+    private void recordScore() {
+        hasCalculateScore = true;
+        String gameMode;
+        if(isSinglePlayer){
+            gameMode = "SinglePlayer";
+        } else{
+            gameMode = "DoublePlayer";
+        }
+        ScorePanel.checkHighestScore(gameMode, score);
+    }
+
     //Add bullet firing sound
     private static void initialize_ShootSound() {
         try {
@@ -858,7 +876,6 @@ public class SimpleGame extends GameEngine {
     public void paintComponent() {
         // Clear the background to black
         Image BackgroundImage = loadImage("src/resources/background.png");
-//        changeBackgroundColor(black);
         clearBackground(gameWidth, gameHeight);
         drawImage(BackgroundImage,0,0,600,700);
         // Draw the enemies
@@ -976,29 +993,27 @@ public class SimpleGame extends GameEngine {
 
         changeColor(white);//TODO: for testing only
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
-            drawText(20 + 300 * pi, 50, "Player " + (pi + 1) + " HP: " + playerPlane[pi].getHp());
-        }
-
-
-        // Draw the pause notice
-        if (isPaused) {
-            //Game Pause
-            changeColor(new Color(255, 255, 255, 50));
-            drawSolidRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
-            addPauseButtons();
-            changeColor(Color.white);
-            drawRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
-            drawText(160, 320, "Game Paused", "Arial", 40);
+            drawText(20 + 300 * pi, 50, "Player " + (pi + 1) + " HP: " + playerPlane[pi].getHp(), "Arial", 30);
         }
         if(isFail){
             //Game over
-            changeColor(new Color(255, 255, 255, 50));
+            changeColor(new Color(255, 0, 0, 50));
             drawSolidRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
             addFailButtons();
-            changeColor(Color.white);
+            changeColor(Color.red);
             drawRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
             drawText(200, 300, "Game over", "Arial", 40);
             drawText(150, 360, "You final score is: " + score, "Arial", 30);
+        } else {
+            if (isPaused) {
+                //Game Pause
+                changeColor(new Color(255, 255, 255, 50));
+                drawSolidRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
+                addPauseButtons();
+                changeColor(Color.white);
+                drawRectangle(gameWidth/6.0, gameHeight/3.0, gameWidth-gameWidth/3.0, gameHeight-gameHeight/1.5);
+                drawText(160, 320, "Game Paused", "Arial", 40);
+            }
         }
         if (EnemyType.restHP != 0) {
             changeColor(new Color(152, 140, 84));
