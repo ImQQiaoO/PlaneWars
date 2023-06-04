@@ -32,10 +32,7 @@ public class ScorePanel extends GameEngine {
     }
 
     public void init() {
-//        setupWindow(500,500);
         setWindowSize(Launcher.WindowWidth,Launcher.WindowHeight);
-
-//        this.mPanel.setFocusable(true);
         readScore();
 
     }
@@ -138,7 +135,6 @@ public class ScorePanel extends GameEngine {
     }
 
     private void addFunButtons() {
-        System.out.println("addFunButtons");
         JButton resetButton = GameUtil.createNormalButton("Reset", 150, 600, 220, 70, Color.RED);
         JButton backButton = GameUtil.createNormalButton("Back", 450, 600, 220, 70, Color.BLUE);
         this.mPanel.add(resetButton);

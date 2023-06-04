@@ -113,7 +113,7 @@ public class HelpPanel extends GameEngine {
         drawImage(itemFire, 450, 560, 35, 35);  //ItemFire
         drawImage(itemLaser, 450, 600, 35, 35); //ItemLaser
         drawImage(itemMissile, 450, 640, 35, 35);   //ItemMissile
-        drawText(500, 543, "Add 500 HP.", "Arial", 20);
+        drawText(500, 543, "Add 200 HP.", "Arial", 20);
         drawText(500, 583, "Launch 30 dual fire bullets.", "Arial", 20);
         drawText(500, 623, "Launch laser beam.", "Arial", 20);
         drawText(500, 663, "Store 10 missiles to shoot.", "Arial", 20);

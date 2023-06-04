@@ -111,7 +111,6 @@ public class SimpleGame extends GameEngine {
             isMissile[i] = false;
             isLaser[i] = false;
             isTypeSlash[i] = false;
-//            isCreateLaser[i] = false;
             fireCount[i] = 0;
             missileCount[i] = 0;
             missileTime[i] = 0;
@@ -149,10 +148,6 @@ public class SimpleGame extends GameEngine {
             });
             quitButton.addActionListener(e -> {
                 clip_background.stop();
-//                hasAddButtons = false;
-//                this.mPanel.requestFocus();
-//                this.mPanel.remove(continueButton);
-//                this.mPanel.remove(quitButton);
                 this.mFrame.dispose();
                 MenuPanel.replayBackgroundClip();
                 MenuPanel.frame.setVisible(true);
@@ -208,9 +203,6 @@ public class SimpleGame extends GameEngine {
             playerPlane[pi].updatePlane(dt);
         }
 
-        //todo:delete
-        System.out.println("ITEMSIZE:"+itemList.size());
-
         //Update the location of the enemies
         for (Enemy enemy : enemyList) {
             enemy.updateEnemy(dt);
@@ -250,7 +242,6 @@ public class SimpleGame extends GameEngine {
             specialEnemyWaitTime = new Random().nextDouble(24, 36) * 5; //2-3min
             specialEnemyWaitTime = 5; //TODO: FOR TEST
             specialEnemySpendTime = 0;
-            System.out.println("reset special enemy wait time");
             isSpecialEnemy = false;
         }
 
@@ -409,7 +400,6 @@ public class SimpleGame extends GameEngine {
                         if (missileCount[pi] < 10){
                             initialize_MissileSound();
                             clip_missile.start();
-                            System.out.println("fire missile");
                             if (missileCount[pi] % 2 == 0){
                                 bulletVx = -500;
                                 bulletVy = -800;
@@ -444,8 +434,6 @@ public class SimpleGame extends GameEngine {
             for (GameObject object : hostileList) {
                 if (isCollision(playerPlane[pi], object)) {
                     if (object instanceof Enemy enemy) {
-                        System.out.println("isEnemy");
-                        System.out.println("Enemy Type is" + ((Enemy) object).getEnemyType());
                         if (playerPlane[pi].getProtectTime() <= 0) {
                             int playerDamage = 200;
                             enemy.setEnemyHP(enemy.getEnemyHP() - playerDamage);
@@ -463,12 +451,9 @@ public class SimpleGame extends GameEngine {
                             } else if(((Enemy) object).getEnemyType() == EnemyType.MISSILE_ENEMY){
                                 playerPlane[pi].setPlaneHP(playerPlane[pi].getPlaneHP() - 600);
                             }
-                            System.out.println("Collision!"); //TODO: only for test
                             playerPlane[pi].decreaseHp();
                         }
                     } else if (object instanceof Bullet) {
-                        System.out.println("isBullet");
-                        System.out.println("Bullet Type is " + ((Bullet) object).getBulletType());//TODO: only for test
                         if (playerPlane[pi].getProtectTime() <= 0) {
                             initialize_ExplodeSound();
                             clip_explode.start();
@@ -504,7 +489,6 @@ public class SimpleGame extends GameEngine {
             while (bulletIterator.hasNext()) {
                 Bullet bullet = bulletIterator.next();
                 if (isCollision(enemy, bullet)) {
-                    System.out.println("Hit!!"); //TODO: only for test
                     enemy.setEnemyHP(enemy.getEnemyHP() - bullet.getDamage());
                     checkEnemyHP(enemy);
                     if(bullet.getBulletType() != BulletType.LASER_BULLET)
@@ -585,24 +569,19 @@ public class SimpleGame extends GameEngine {
                     switch (item.getItemType()) {
                         case Item.ITEM_TYPE_LIFE -> {
                             playerPlane[pi].increaseHp();
-                            System.out.println("Collected: ITEM_TYPE_LIFE");
                         }
                         case Item.ITEM_TYPE_FIRE -> {
-                            System.out.println("Collected: ITEM_TYPE_FIRE");    //TODO: add item effect
                             isFire[pi] = true;
                             isNormal[pi] = false;
                             fireCount[pi] = 0;
                         }
                         case Item.ITEM_TYPE_LASER -> {
-                            System.out.println("Collected: ITEM_TYPE_LASER");
                             initialize_LaserSound();
-                            clip_laser.start();//TODO: add item effect
-//                            isCreateLaser[pi] = true;
+                            clip_laser.start();
                             isLaser[pi] =true;
                             laserCount[pi] = 0;
                         }
                         case Item.ITEM_TYPE_MISSILE -> {
-                            System.out.println("Collected: ITEM_TYPE_MISSILE");    //TODO: add item effect
                             isMissile[pi] = true;
                             missileCount[pi] = 0;
                         }
@@ -702,7 +681,6 @@ public class SimpleGame extends GameEngine {
 
         if(enemyType == EnemyType.MISSILE){
             //test to generate a missile
-            System.out.println("generate a missile");
             missileEnemyList.add(new Enemy(100, 100, 0, 100, 50, 50, loadImage("src/resources/BulletAutoMissile.png"), 3, 100));
         }
     }

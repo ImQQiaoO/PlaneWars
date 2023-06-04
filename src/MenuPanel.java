@@ -48,7 +48,6 @@ public class MenuPanel extends JPanel {
 
         JButton scoreButton = GameUtil.createMenuButton("Score",100,560,180,100,Color.orange);
         scoreButton.addActionListener(e -> {
-            //TODO: Add stats page
             initialize_ChooseSound();
             chooseClip.start();
             frame.setVisible(false);
@@ -58,7 +57,6 @@ public class MenuPanel extends JPanel {
 
         JButton helpButton = GameUtil.createMenuButton("Help",310,560,180,100,Color.cyan);
         helpButton.addActionListener(e -> {
-            //TODO: Add help page
             initialize_ChooseSound();
             chooseClip.start();
             frame.setVisible(false);

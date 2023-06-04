@@ -77,7 +77,6 @@ public class Enemy extends GameObject {
         setVy(newVy);
         //Calculate the angle between current velocity and Y-axis forward direction
         enemyAngle = GameEngine.atan2(getVx(), getVy());
-//        System.out.println(enemyAngle);
         //Assign the direction for enemy
         setX(getX() + getVx() * dt);
         setY(getY() + getVy() * dt);
