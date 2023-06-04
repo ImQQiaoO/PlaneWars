@@ -13,7 +13,6 @@ public class PlayerPlane extends GameObject{
     private Image turnLeftImage;
     private Image turnRightImage;
     public static Image normalTailFireImage = GameEngine.loadImage("src/resources/TailFire01.png");
-    public static Image superTailFireImage = GameEngine.loadImage("src/resources/TailFire02.png");
 
     public PlayerPlane(double x, double y,int playerID) {
         super(x, y, 0, 0, 61, 63, GameEngine.loadImage("src/resources/PlayerPlane0"+ playerID +".png"));

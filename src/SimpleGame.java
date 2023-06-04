@@ -667,7 +667,7 @@ public class SimpleGame extends GameEngine {
             double enemyYMiddle = -enemyHeight / 2;
             double enemyVx = 0;
             double enemyVy = 200; //200
-            Image enemyImage = loadImage("src/resources/EE0.png");
+            Image enemyImage = loadImage("src/resources/SpecialEnemy1.png");
             int enemyHp = 2000;
             EnemyType.fullHp = 2000 * 3;
             Enemy groupEliteEnemyLeft = new Enemy(enemyXL, enemyYSide, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp);
@@ -682,7 +682,7 @@ public class SimpleGame extends GameEngine {
             double enemyY = -enemyHeight / 2;  //TODO: TO BE CHANGED
             double enemyVx = 0;
             double enemyVy = 100; //200
-            Image enemyImage = loadImage("src/resources/specialEnemy2.jpg"); //TODO: TO BE CHANGED
+            Image enemyImage = loadImage("src/resources/SpecialEnemy2.jpg"); //TODO: TO BE CHANGED
             int enemyHp = 3000;  //TODO: TO BE CHANGED
             EnemyType.fullHp = 3000;
             specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
@@ -694,7 +694,7 @@ public class SimpleGame extends GameEngine {
             double enemyY = -enemyHeight / 2;  //TODO: TO BE CHANGED
             double enemyVx = 0;
             double enemyVy = 100; //200
-            Image enemyImage = loadImage("src/resources/specialEnemy3.jpg"); //TODO: TO BE CHANGED
+            Image enemyImage = loadImage("src/resources/SpecialEnemy3.jpg"); //TODO: TO BE CHANGED
             int enemyHp = 4000;  //TODO: TO BE CHANGED
             EnemyType.fullHp = 4000;
             specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
