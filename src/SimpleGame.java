@@ -123,7 +123,7 @@ public class SimpleGame extends GameEngine {
         friendlyBulletList = new ArrayList<>(); // Store all friendly bullets in the game
         specialEnemyList = new ArrayList<>();// Store all special enemies in the game
         specialEnemyWaitTime = new Random().nextDouble(24, 36) * 5; //2-3min
-        specialEnemyWaitTime = 5; //TODO: Only for test
+        specialEnemyWaitTime = 10; //TODO: Only for test
 
         itemList = new ArrayList<>(); // Store all items in the game
         enemyBulletList = new ArrayList<>(); // Store all enemy bullets in the game
@@ -240,7 +240,7 @@ public class SimpleGame extends GameEngine {
         // Reset the generate time of special enemy
         if (isSpecialEnemy && specialEnemyList.size() == 0) {
             specialEnemyWaitTime = new Random().nextDouble(24, 36) * 5; //2-3min
-            specialEnemyWaitTime = 5; //TODO: FOR TEST
+            specialEnemyWaitTime = 10; //TODO: FOR TEST
             specialEnemySpendTime = 0;
             isSpecialEnemy = false;
         }
@@ -259,7 +259,6 @@ public class SimpleGame extends GameEngine {
             }
         } else if (enemyList.size() == 0 && specialEnemyList.size() == 0) {
             randBoss = new Random().nextInt(1, 4);
-//            randBoss = 3; //TODO: FOR TEST Boss TYPE 2 (IMPACT_BOSS)
             if (randBoss == EnemyType.THREE_MEMBER_GROUP) {
                 generateEnemies(EnemyType.THREE_MEMBER_GROUP); // Generate special enemies
             }
@@ -655,26 +654,26 @@ public class SimpleGame extends GameEngine {
             Collections.addAll(specialEnemyList, groupEliteEnemyLeft, groupEliteEnemyMiddle, groupEliteEnemyRight);
         } else if (enemyType == EnemyType.IMPACT_BOSS) {
             // Create impact boss
-            double enemyWidth = 171;  //TODO: TO BE CHANGED
-            double enemyHeight = 111;  //TODO: TO BE CHANGED
-            double enemyX = gameWidth / 2.0;  //TODO: TO BE CHANGED
-            double enemyY = -enemyHeight / 2;  //TODO: TO BE CHANGED
+            double enemyWidth = 171;
+            double enemyHeight = 111;
+            double enemyX = gameWidth / 2.0;
+            double enemyY = -enemyHeight / 2;
             double enemyVx = 0;
             double enemyVy = 100; //200
-            Image enemyImage = loadImage("src/resources/SpecialEnemy2.jpg"); //TODO: TO BE CHANGED
-            int enemyHp = 3000;  //TODO: TO BE CHANGED
+            Image enemyImage = loadImage("src/resources/SpecialEnemy2.jpg");
+            int enemyHp = 3000;
             EnemyType.fullHp = 3000;
             specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
         } else if (enemyType == EnemyType.MISSILE_ENEMY) {
             // Create impact boss
-            double enemyWidth = 171;  //TODO: TO BE CHANGED
-            double enemyHeight = 111;  //TODO: TO BE CHANGED
-            double enemyX = gameWidth / 2.0;  //TODO: TO BE CHANGED
-            double enemyY = -enemyHeight / 2;  //TODO: TO BE CHANGED
+            double enemyWidth = 171;
+            double enemyHeight = 111;
+            double enemyX = gameWidth / 2.0;
+            double enemyY = -enemyHeight / 2;
             double enemyVx = 0;
             double enemyVy = 100; //200
-            Image enemyImage = loadImage("src/resources/SpecialEnemy3.jpg"); //TODO: TO BE CHANGED
-            int enemyHp = 4000;  //TODO: TO BE CHANGED
+            Image enemyImage = loadImage("src/resources/SpecialEnemy3.jpg");
+            int enemyHp = 4000;
             EnemyType.fullHp = 4000;
             specialEnemyList.add(new Enemy(enemyX, enemyY, enemyVx, enemyVy, enemyWidth, enemyHeight, enemyImage, enemyType, enemyHp));
         }
@@ -701,7 +700,7 @@ public class SimpleGame extends GameEngine {
                 double bulletVy = -1000;
                 Image bulletImage = loadImage("src/resources/Bullet01.png");
                 int bulletDamage = 50;
-                int bulletIntervalP1 = 10; // TODO: Shoot every 10 frames
+                int bulletIntervalP1 = 10;
                 if (intervalCounter % bulletIntervalP1 == 0) {
                     friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.NORMAL_BULLET, bulletDamage, bulletIntervalP1));
                     initialize_ShootSound();
@@ -717,7 +716,7 @@ public class SimpleGame extends GameEngine {
                 double bulletVy = -500;
                 Image bulletImage = loadImage("src/resources/Bullet02.png");
                 int bulletDamage = 100;
-                int bulletIntervalP1 = 8; // TODO: Shoot every 10 frames
+                int bulletIntervalP1 = 8;
                 if (intervalCounter % bulletIntervalP1 == 0) {
                     if (fireCount[pi] < 30) {
                         friendlyBulletList.add(new Bullet(bulletX1, bulletY1, bulletVx, bulletVy, bulletWidth, bulletHeight, bulletImage, BulletType.FIRE_BULLET, bulletDamage, bulletIntervalP1));
@@ -780,7 +779,7 @@ public class SimpleGame extends GameEngine {
                 Image bulletImage_simple = loadImage("src/resources/Bullet01.png");
                 Image bulletImage_simple_side = loadImage("src/resources/Bullet04.png");
 
-                int bulletInterval_simple = 30;// TODO: Shoot every 30 frames
+                int bulletInterval_simple = 30;
 
                 //Randomly fire the center and side rounds
                 if(intervalCounter % bulletInterval_simple == 0){
@@ -886,8 +885,8 @@ public class SimpleGame extends GameEngine {
             saveCurrentTransform();
             translate(enemy.getX(), enemy.getY());
             rotate(-enemy.getEnemyAngle());
-            changeColor(pink);//TODO: for test
-            drawRectangle(- enemy.getWidth() / 2, - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
+            changeColor(pink);
+//            drawRectangle(- enemy.getWidth() / 2, - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
             drawImage(enemy.getImage(), - enemy.getWidth() / 2, - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
             restoreLastTransform();
         }
@@ -964,25 +963,25 @@ public class SimpleGame extends GameEngine {
             drawImage(item.getImage(), item.getX() - item.getWidth() / 2, item.getY() - item.getHeight() / 2, item.getWidth(), item.getHeight());
         }
 
-        changeColor(green);//TODO: for testing only
-        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
-            drawRectangle(playerPlane[pi].getX() - playerPlane[pi].getWidth() / 2, playerPlane[pi].getY() - playerPlane[pi].getHeight() / 2, playerPlane[pi].getWidth(), playerPlane[pi].getHeight());
-        }
-
-        changeColor(red);//TODO: for testing only
-        for (Enemy enemy : enemyList) {
-            drawRectangle(enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
-        }
-        for (Enemy enemy : missileEnemyList) {
-            drawRectangle(enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
-        }
-
-        changeColor(blue);//TODO: for testing only
-        for (Bullet bullet : friendlyBulletList) {
-            drawRectangle(bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
-        }
-
-        changeColor(white);//TODO: for testing only
+//        changeColor(green);
+//        for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
+//            drawRectangle(playerPlane[pi].getX() - playerPlane[pi].getWidth() / 2, playerPlane[pi].getY() - playerPlane[pi].getHeight() / 2, playerPlane[pi].getWidth(), playerPlane[pi].getHeight());
+//        }
+//
+//        changeColor(red);
+//        for (Enemy enemy : enemyList) {
+//            drawRectangle(enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
+//        }
+//        for (Enemy enemy : missileEnemyList) {
+//            drawRectangle(enemy.getX() - enemy.getWidth() / 2, enemy.getY() - enemy.getHeight() / 2, enemy.getWidth(), enemy.getHeight());
+//        }
+//
+//        changeColor(blue);
+//        for (Bullet bullet : friendlyBulletList) {
+//            drawRectangle(bullet.getX() - bullet.getWidth() / 2, bullet.getY() - bullet.getHeight() / 2, bullet.getWidth(), bullet.getHeight());
+//        }
+//
+        changeColor(white);
         for (int pi = 0; pi < PlayerPlane.playerNumber; pi++) {
             drawText(20 + 300 * pi, 50, "Player " + (pi + 1) + " HP: " + playerPlane[pi].getHp(), "Arial", 30);
         }

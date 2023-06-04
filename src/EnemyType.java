@@ -5,10 +5,6 @@ import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
 
 public class EnemyType {
-    /*
-        TODO: 修改敌人的图片！！！
-     */
-
     /**
      * Enumeration of enemy types.
      * The type of the enemy.
