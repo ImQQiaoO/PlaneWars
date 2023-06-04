@@ -208,6 +208,9 @@ public class SimpleGame extends GameEngine {
             playerPlane[pi].updatePlane(dt);
         }
 
+        //todo:delete
+        System.out.println("ITEMSIZE:"+itemList.size());
+
         //Update the location of the enemies
         for (Enemy enemy : enemyList) {
             enemy.updateEnemy(dt);
