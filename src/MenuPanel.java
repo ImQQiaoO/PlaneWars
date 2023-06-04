@@ -21,6 +21,7 @@ public class MenuPanel extends JPanel {
             e.printStackTrace();
         }
         backgroundClip.loop(Clip.LOOP_CONTINUOUSLY);
+        ScorePanel.initScoreList();
     }
 
     //Create the buttons in Menu
