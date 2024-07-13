@@ -56,7 +56,7 @@ git clone https://github.com/ImQQiaoO/PlaneWars.git
 ### License
 This project is licensed under the **AGPL-3.0 License**. See the LICENSE file for details.
 
-![license](./images/png-transparent-agpl-license-icon-small.png)
+![license](./images/agpl_license_icon_160876.png)
 
 ### Declaration
 - If you like this project, please give it a star. This is the greatest encouragement for us.
@@ -120,7 +120,7 @@ git clone https://github.com/ImQQiaoO/PlaneWars.git
 ### 许可证
 此项目根据**AGPL-3.0 License**许可证授权。详见LICENSE文件。
 
-![license](./images/png-transparent-agpl-license-icon-small.png)
+![license](./images/agpl_license_icon_160876.png)
 
 ### 声明
 - 如果你喜欢本项目，请为它点一个Star，这是对我们最大的鼓励。
